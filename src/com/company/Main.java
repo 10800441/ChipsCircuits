@@ -27,7 +27,7 @@ public class Main {
             System.out.println("");
 
             for(int k = 0; k < grid[1].length; k++){    //creation of width
-                if(grid[0][k] == null); System.out.print(" 0 ");
+                if(grid[i][k] == ""); System.out.print(" 0 ");
 
             }
 
