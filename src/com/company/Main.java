@@ -1,63 +1,19 @@
 package com.company;
 
 
-
 public class Main {
 
-    private static int x_SIZE = 4;
-    private static int y_SIZE = 5;
-
     public static void main(String[] args) {
+        // Het aanmaken van de grid LET OP 0 telt niet mee!
+        int X_SIZE = 19;
+        int Y_SIZE = 14;
+        Grid grid = new Grid(X_SIZE, Y_SIZE);
 
-        String[][] grid = new String[x_SIZE][y_SIZE];
-        grid = placeNodes(grid);
-        grid = placeLines(grid);
-         printGrid(grid);
-
-
-    }
-    public static String[][] placeNodes(String[][] grid){
-       int x = 2;
-        int y = 3;
-            grid[x][y] = "node";
-        return  grid;
-    }
-
-    public static String[][] placeLines(String[][] grid){
-        int x = 2;
-        int y = 2;
-        grid[x][y] = "line";
-        return  grid;
-    }
-
-
-    private static void printGrid(String[][] grid) {
-        for(int i = 0; i < grid.length; i++){   //creation of height
-            System.out.println("");
-
-            for(int k = 0; k < grid[1].length; k++){    //creation of width
-                if(grid[i][k] == null) {
-                    System.out.print(" . ");
-                } else if (grid[i][k] == "line"){
-                    System.out.print(" * ");
-                } else if (grid[i][k] == "node") {
-                    System.out.print(" O ");
-                }
-            }
-
+        // Inlezen van een array als nieuwe grid
+        for(int i = 0; i < grid.gateDatabase().length; i++){
+            grid.addGate(i, grid.gateDatabase()[i][1],grid.gateDatabase()[i][2]);
         }
+        grid.printGrid();
 
     }
-
-    private static void findLine(int x1, int y1, int x2, int y2) {
-        String[][] line =  new String[x_SIZE][y_SIZE];
-
-        if(x1 == x2) {
-            if(y1 < y2)
-            for(int i = y1 + 1; i < y2; i++ ) {
-                line[x1][i] = "line";
-            }
-        }
-    }
-
 }
