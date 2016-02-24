@@ -1,7 +1,6 @@
-package com.company;
-
-
 import java.io.BufferedReader;
+
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +74,6 @@ public class Grid {
         gateDatabase[8][2] = 4;
         gateDatabase[9][1] = 9;
         gateDatabase[9][2] = 5;
-
         gateDatabase[10][1] = 2;
         gateDatabase[10][2] = 6;
         gateDatabase[11][1] = 5;
@@ -112,24 +110,27 @@ public class Grid {
         return  gateDatabase;
     }
 
-    private void netDatabase(){
-        ArrayList<Net> netDatabase = new ArrayList<Net>();
+    public void netDatabase(){
+
+
+        ArrayList<Net> netDatabase = new ArrayList<>();
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("print1.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("src/print.txt"));
 
 
             String line;
 
+
             while (true) {
                 line = rd.readLine();
                 if (line == null) break;
-                String value1 = line.substring(0,2);
-                Integer x = Integer.valueOf(value1);
-                String value2 = line.substring(3,5);
-                Integer y = Integer.valueOf(value2);
-                Net net = new Net(x ,y);
+                String[] words = line.split(" ");
 
-                netDatabase.add(net);
+                Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
+                //netDatabase.add(net);
+                System.out.println(words[0]);
+
+
 
 
             }
