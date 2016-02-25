@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Grid {
     String[][] grid;
@@ -16,31 +18,44 @@ public class Grid {
     public void printGrid() {
 
 
-        for (int i = 1; i < grid.length; i++) {   //creation of height Y
-            System.out.println("");
-            for (int k = 1; k < grid[1].length; k++) {    //creation of width X
+            for (int i = 1; i < grid.length; i++) {   //creation of height Y
+                System.out.println("");
 
-                if (grid[i][k] == null) {
-                    System.out.print(" . ");
-                } else {
+                for (int k = 1; k < grid[1].length; k++) {    //creation of width X
 
-                    String gridContent = grid[i][k];
-                    char identifier = gridContent.charAt(0);
+                    if (grid[i][k] == null) {
+                        System.out.print(" O ");
 
-                    // Labeling bij het printen
-                    // Voor gates
-                    if (identifier == 'G' && grid[i][k].length() == 3) {
-                        System.out.print(grid[i][k]);
-                    } else  if (identifier == 'G') {
-                        System.out.print(" " + grid[i][k]);
-                    } else if (identifier == 'L') {
-                    System.out.print(" " + grid[i][k]);
+
+                    } else {
+
+                        String gridContent = grid[i][k];
+                        char identifier = gridContent.charAt(0);
+
+                        // Labeling bij het printen
+                        // Voor gates
+                        if (identifier == 'G' && grid[i][k].length() == 3) {
+                            System.out.print(grid[i][k]);
+                        } else  if (identifier == 'G') {
+                            System.out.print(" " + grid[i][k]);
+                        } else if (identifier == 'L') {
+                            System.out.print(" " + grid[i][k]);
+                        }
                     }
+
                 }
+
             }
-        }
+
     }
 
+   /*public void LineFinder(){
+       Queue<String[][]> queue = new LinkedList<>();
+       grid.move()
+
+
+
+   }*/
     public void addGate(int number, int y_coordinate, int x_coordinate) {
        grid[x_coordinate][y_coordinate]= "G"+ number;
     }
@@ -129,7 +144,7 @@ public class Grid {
                 Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
                 netDatabase.add(net);
 
-                System.out.println(net);
+                System.out.println(net.gate1);
 
             }
             rd.close();
