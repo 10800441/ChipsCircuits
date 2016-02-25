@@ -127,11 +127,9 @@ public class Grid {
                 String[] words = line.split(" ");
 
                 Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
-                //netDatabase.add(net);
-                System.out.println(words[0]);
+                netDatabase.add(net);
 
-
-
+                System.out.println(net);
 
             }
             rd.close();
