@@ -4,70 +4,65 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Grid {
-    String[][] grid;
+    String[][][] grid;
+    int[][] gateDatabase = new int[26][50];
+    ArrayList<Net> netDatabase = new ArrayList<>();
 
-    public Grid(int height, int width) {
-        grid = new String[width][height];
+
+    public Grid(int height, int width, int depth) {
+        grid = new String[width][height][depth];
+        makeNetDatabase();
+
+        for(int i = 0; i < gateDatabase().length; i++){
+            addGate(i, gateDatabase()[i][1],gateDatabase()[i][2]);
+        }
+
     }
+
+
 
 
     public void printGrid() {
 
 
-            for (int i = 1; i < grid.length; i++) {   //creation of height Y
-                System.out.println("");
+        for (int i = 1; i < grid.length; i++) {   //creation of height Y
+            System.out.println("");
+            for (int k = 1; k < grid[1].length; k++) {    //creation of width X
 
-                for (int k = 1; k < grid[1].length; k++) {    //creation of width X
+                if (grid[i][k][0] == null) {
+                    System.out.print(" . ");
+                } else {
 
-                    if (grid[i][k] == null) {
-                        System.out.print(" O ");
+                    String gridContent = grid[i][k][0];
+                    char identifier = gridContent.charAt(0);
 
-
-                    } else {
-
-                        String gridContent = grid[i][k];
-                        char identifier = gridContent.charAt(0);
-
-                        // Labeling bij het printen
-                        // Voor gates
-                        if (identifier == 'G' && grid[i][k].length() == 3) {
-                            System.out.print(grid[i][k]);
-                        } else  if (identifier == 'G') {
-                            System.out.print(" " + grid[i][k]);
-                        } else if (identifier == 'L') {
-                            System.out.print(" " + grid[i][k]);
-                        }
+                    // Labeling bij het printen
+                    // Voor gates
+                    if (identifier == 'G' && grid[i][k][0].length() == 3) {
+                        System.out.print(grid[i][k][0]);
+                    } else  if (identifier == 'G') {
+                        System.out.print(" " + grid[i][k][0]);
+                    } else if (identifier == 'L') {
+                    System.out.print(" " + grid[i][k][0]);
                     }
-
                 }
-
             }
-
+        }
     }
 
-   /*public void LineFinder(){
-       Queue<String[][]> queue = new LinkedList<>();
-       grid.move()
-
-
-
-   }*/
     public void addGate(int number, int y_coordinate, int x_coordinate) {
-       grid[x_coordinate][y_coordinate]= "G"+ number;
+       grid[x_coordinate][y_coordinate][0] = "G"+ number;
     }
     public void addLine(int number, int x1, int y1, int x2, int y2) {
-        grid[x1][y1]= "L"+ number;
-        grid[x2][y2]= "L"+ number;
+        grid[x1][y1][0] = "L"+ number;
+        grid[x2][y2][0] = "L"+ number;
 
 
     }
 
-    public static int[][] gateDatabase() {
-        int[][] gateDatabase = new int[26][50];
+    public int[][] gateDatabase() {
 
         //Print #1
         // format: gateDatabase[nummer][coordinaat]
@@ -125,10 +120,11 @@ public class Grid {
         return  gateDatabase;
     }
 
-    public void netDatabase(){
 
 
-        ArrayList<Net> netDatabase = new ArrayList<>();
+
+    public void makeNetDatabase(){
+
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print.txt"));
 
@@ -144,7 +140,7 @@ public class Grid {
                 Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
                 netDatabase.add(net);
 
-                System.out.println(net.gate1);
+                System.out.println(net);
 
             }
             rd.close();
