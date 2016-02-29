@@ -37,7 +37,14 @@ public class Grid {
     }
 
 
+    public void expandGrid(Grid grid, int number, int x, int y, int z) {
+        ArrayList miniqueue = grid.possible_lines(grid, number, x, y, z);
 
+        for (int i = 0; i < miniqueue.size(); i++) {
+            Grid miniqueue_element = (Grid) miniqueue.get(i);
+            miniqueue_element.printGrid();
+        }
+    }
 
     public void printGrid() {
 
@@ -175,7 +182,7 @@ public class Grid {
 
 
 
-
+    // Read in the netdatabase from the file "print.txt"
     public void makeNetDatabase(){
 
         try {
