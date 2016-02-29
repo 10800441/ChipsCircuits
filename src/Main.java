@@ -11,13 +11,12 @@ public class Main {
 
         // Inlezen van een array als nieuwe grid
 
-        ArrayList ieks = grid.possible_lines(grid, 1,2,2,0);
+        ArrayList miniqueue = grid.possible_lines(grid, 1,2,2,0);
 
-        for(int i = 0; i < 4; i++) {
-            Grid ieksieks = (Grid) ieks.get(i);
-            ieksieks.printGrid();
+        for(int i = 0; i < miniqueue.size(); i++) {
+            Grid miniqueue_element = (Grid) miniqueue.get(i);
+            miniqueue_element.printGrid();
         }
-
 
 
 

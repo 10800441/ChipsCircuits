@@ -81,32 +81,32 @@ public class Grid {
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
             Grid grid1 = new Grid(input_grid);
-            addLine(number, x+1, y, z);
+            grid1.addLine(number, x+1, y, z);
             miniqueue.add(grid1);
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
             Grid grid2 = new Grid(input_grid);
-            addLine(number, x-1, y, z);
+            grid2.addLine(number, x-1, y, z);
             miniqueue.add(grid2);
         }
         if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
             Grid grid3 = new Grid(input_grid);
-            addLine(number, x, y+1, z);
+            grid3.addLine(number, x, y+1, z);
             miniqueue.add(grid3);
         }
         if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
             Grid grid4 = new Grid(input_grid);
-            addLine(number, x, y-1, z);
+            grid4.addLine(number, x, y-1, z);
             miniqueue.add(grid4);
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
             Grid grid5 = new Grid(input_grid);
-            addLine(number, x, y, z+1);
+            grid5.addLine(number, x, y, z+1);
             miniqueue.add(grid5);
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
             Grid grid6 = new Grid(input_grid);
-            addLine(number, x, y, z-1);
+            grid6.addLine(number, x, y, z-1);
             miniqueue.add(grid6);
         }
 
