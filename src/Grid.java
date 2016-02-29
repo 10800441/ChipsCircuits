@@ -11,13 +11,30 @@ public class Grid {
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-    public Grid(int height, int width, int depth) {
+    public Grid( int width, int height, int depth) {
         grid = new String[width][height][depth];
         makeNetDatabase();
 
         for(int i = 0; i < gateDatabase().length; i++){
             addGate(i, gateDatabase()[i][1],gateDatabase()[i][2]);
         }
+
+    }
+     //copy constructor to make copies of the current grid
+    public Grid(Grid oldGrid){
+       this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
+        for(int i = 0; i < oldGrid.grid[0][0].length; i ++){
+            for(int k = 0; k < oldGrid.grid[0].length; k ++) {
+                for (int n = 0; n < oldGrid.grid.length; n++) {
+
+                    grid[n][k][i] = oldGrid.grid[n][k][i];
+
+
+                }
+            }
+        }
+
+ 
 
     }
 
@@ -61,6 +78,9 @@ public class Grid {
 
 
     }
+
+
+
 
     public int[][] gateDatabase() {
 
