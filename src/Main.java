@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -9,8 +11,16 @@ public class Main {
 
         // Inlezen van een array als nieuwe grid
 
-        Grid grid3 = new Grid(grid);
-        grid.printGrid();
+        ArrayList ieks = grid.possible_lines(grid, 1,2,2,0);
+
+        for(int i = 0; i < 4; i++) {
+            Grid ieksieks = (Grid) ieks.get(i);
+            ieksieks.printGrid();
+        }
+
+
+
+
 
     }
 

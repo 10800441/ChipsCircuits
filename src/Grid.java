@@ -34,8 +34,6 @@ public class Grid {
             }
         }
 
- 
-
     }
 
 
@@ -67,18 +65,53 @@ public class Grid {
                 }
             }
         }
+        System.out.println("");
     }
 
     public void addGate(int number, int y_coordinate, int x_coordinate) {
        grid[x_coordinate][y_coordinate][0] = "G"+ number;
     }
-    public void addLine(int number, int x1, int y1, int x2, int y2) {
-        grid[x1][y1][0] = "L"+ number;
-        grid[x2][y2][0] = "L"+ number;
 
-
+    public void addLine(int number, int x, int y, int z) {
+        grid[x][y][z] = "L"+ number;
     }
 
+    public ArrayList possible_lines(Grid input_grid, int number, int x, int y, int z) {
+        ArrayList<Grid> miniqueue = new ArrayList<>();
+
+        if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
+            Grid grid1 = new Grid(input_grid);
+            addLine(number, x+1, y, z);
+            miniqueue.add(grid1);
+        }
+        if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
+            Grid grid2 = new Grid(input_grid);
+            addLine(number, x-1, y, z);
+            miniqueue.add(grid2);
+        }
+        if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
+            Grid grid3 = new Grid(input_grid);
+            addLine(number, x, y+1, z);
+            miniqueue.add(grid3);
+        }
+        if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
+            Grid grid4 = new Grid(input_grid);
+            addLine(number, x, y-1, z);
+            miniqueue.add(grid4);
+        }
+        if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
+            Grid grid5 = new Grid(input_grid);
+            addLine(number, x, y, z+1);
+            miniqueue.add(grid5);
+        }
+        if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
+            Grid grid6 = new Grid(input_grid);
+            addLine(number, x, y, z-1);
+            miniqueue.add(grid6);
+        }
+
+        return miniqueue;
+    }
 
 
 
@@ -160,7 +193,7 @@ public class Grid {
                 Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
                 netDatabase.add(net);
 
-                System.out.println(net);
+                //System.out.println(net);
 
             }
             rd.close();
