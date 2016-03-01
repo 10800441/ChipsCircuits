@@ -79,37 +79,33 @@ public class Grid {
     public ArrayList possible_lines(Grid input_grid, int number, int x, int y, int z) {
         ArrayList<Grid> miniqueue = new ArrayList<>();
 
-        if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
-            Grid grid1 = new Grid(input_grid);
-            grid1.addLine(number, x+1, y, z);
-            miniqueue.add(grid1);
+        for(int i = 0; i < 6; i++) {
+            Grid copy_grid = new Grid(input_grid);
+            if( i == 0 && x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
+                copy_grid.addLine(number, x+1, y, z);
+                miniqueue.add(copy_grid);
+            }
+            if(i == 1 && x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
+                copy_grid.addLine(number, x-1, y, z);
+                miniqueue.add(copy_grid);
+            }
+            if(i == 2 && y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
+                copy_grid.addLine(number, x, y+1, z);
+                miniqueue.add(copy_grid);
+            }
+            if(i == 3 && y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
+                copy_grid.addLine(number, x, y-1, z);
+                miniqueue.add(copy_grid);
+            }
+            if(i == 4 && z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
+                copy_grid.addLine(number, x, y, z+1);
+                miniqueue.add(copy_grid);
+            }
+            if(i == 5 && z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
+                copy_grid.addLine(number, x, y, z-1);
+                miniqueue.add(copy_grid);
+            }
         }
-        if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
-            Grid grid2 = new Grid(input_grid);
-            grid2.addLine(number, x-1, y, z);
-            miniqueue.add(grid2);
-        }
-        if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
-            Grid grid3 = new Grid(input_grid);
-            grid3.addLine(number, x, y+1, z);
-            miniqueue.add(grid3);
-        }
-        if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
-            Grid grid4 = new Grid(input_grid);
-            grid4.addLine(number, x, y-1, z);
-            miniqueue.add(grid4);
-        }
-        if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
-            Grid grid5 = new Grid(input_grid);
-            grid5.addLine(number, x, y, z+1);
-            miniqueue.add(grid5);
-        }
-        if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
-            Grid grid6 = new Grid(input_grid);
-            grid6.addLine(number, x, y, z-1);
-            miniqueue.add(grid6);
-        }
-
         return miniqueue;
     }
 
