@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main {
 
@@ -8,23 +10,30 @@ public class Main {
         int Y_SIZE = 14;
         int Z_SIZE = 1;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
+        Grid grid1 = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
-        // Inlezen van een array als nieuwe grid
 
-        ArrayList<Grid> queue = new ArrayList<>();
+        Queue<ExpandGrid> gridQueue = new LinkedList();
 
-        ArrayList miniqueue = grid.possible_lines(grid, 1,2,2,0);
+        Net layLine = new Net(1, 3);
 
-        for(int i = 0; i < miniqueue.size(); i++) {
-            Grid miniqueue_element = (Grid) miniqueue.get(i);
-            miniqueue_element.printGrid();
-            queue.add(miniqueue_element);
-        }
+
+
+        ExpandGrid gridditydoo = new ExpandGrid(grid, 1, 2, 2, 0);
+        gridQueue.add(gridditydoo);
+        // uitbreden van de grid
+        ExpandGrid expandable = gridQueue.remove();
+        grid.expandGrid(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z);
+
+
 
 
 
 
     }
+
+
+
 
 
 
