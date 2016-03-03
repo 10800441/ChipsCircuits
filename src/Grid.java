@@ -183,6 +183,12 @@ public class Grid {
         }
         return endCondition;
     }
+    public int getManhattan(){
+
+
+    }
+
+
 
     public int manhattanDistance(ExpandGrid coordinateGiver, Net endGate){
         int x = coordinateGiver.x;

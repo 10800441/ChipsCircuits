@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         int X_SIZE = 19;
         int Y_SIZE = 14;
-        int Z_SIZE = 1;
+        int Z_SIZE = 2;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
 
