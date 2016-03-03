@@ -1,6 +1,4 @@
-/**
- * Created by marty_000 on 22-2-2016.
- */
+
 public class Net {
     final int gate1;
     final int gate2;

@@ -3,13 +3,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GridWithCoordinates {
+public class Grid {
     String[][][] grid;
     int[][] gateDatabase = new int[26][50];
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-    public GridWithCoordinates(int width, int height, int depth) {
+    public Grid(int width, int height, int depth) {
         grid = new String[width][height][depth];
         makeNetDatabase();
 
@@ -19,7 +19,7 @@ public class GridWithCoordinates {
 
     }
     // copy constructor to make copies of the current grid
-    public GridWithCoordinates(GridWithCoordinates oldGrid){
+    public Grid(Grid oldGrid){
        this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
         for(int i = 0; i < oldGrid.grid[0][0].length; i ++){
             for(int k = 0; k < oldGrid.grid[0].length; k ++) {
@@ -32,7 +32,7 @@ public class GridWithCoordinates {
 
     }
 
-    public ArrayList<ExpandGrid> expandGrid(GridWithCoordinates grid, int number, int x, int y, int z) {
+    public ArrayList<ExpandGrid> expandGrid(Grid grid, int number, int x, int y, int z) {
         ArrayList miniQueue = grid.possible_lines(grid, number, x, y, z);
 
         return miniQueue;
@@ -73,41 +73,41 @@ public class GridWithCoordinates {
         grid[x][y][z] = "L"+ number;
     }
 
-    public ArrayList possible_lines(GridWithCoordinates input_grid, int number, int x, int y, int z) {
+    public ArrayList possible_lines(Grid input_grid, int number, int x, int y, int z) {
         ArrayList<ExpandGrid> miniQueue = new ArrayList<>();
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
-            GridWithCoordinates grid1 = new GridWithCoordinates(input_grid);
+            Grid grid1 = new Grid(input_grid);
             grid1.addLine(number, x+1, y, z);
             ExpandGrid newGrid = new ExpandGrid(grid1, number, x+1, y, z);
             miniQueue.add(newGrid);
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
-            GridWithCoordinates grid2 = new GridWithCoordinates(input_grid);
+            Grid grid2 = new Grid(input_grid);
             grid2.addLine(number, x-1, y, z);
             ExpandGrid newGrid = new ExpandGrid(grid2, number, x-1, y, z);
             miniQueue.add(newGrid);
         }
         if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
-            GridWithCoordinates grid3 = new GridWithCoordinates(input_grid);
+            Grid grid3 = new Grid(input_grid);
             grid3.addLine(number, x, y+1, z);
             ExpandGrid newGrid = new ExpandGrid(grid3, number, x, y+1, z);
             miniQueue.add(newGrid);
         }
         if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
-            GridWithCoordinates grid4 = new GridWithCoordinates(input_grid);
+            Grid grid4 = new Grid(input_grid);
             grid4.addLine(number, x, y-1, z);
             ExpandGrid newGrid = new ExpandGrid(grid4, number, x, y-1, z);
             miniQueue.add(newGrid);
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
-            GridWithCoordinates grid5 = new GridWithCoordinates(input_grid);
+            Grid grid5 = new Grid(input_grid);
             grid5.addLine(number, x, y, z+1);
             ExpandGrid newGrid = new ExpandGrid(grid5, number, x, y, z+1);
             miniQueue.add(newGrid);
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
-            GridWithCoordinates grid6 = new GridWithCoordinates(input_grid);
+            Grid grid6 = new Grid(input_grid);
             grid6.addLine(number, x, y, z-1);
             ExpandGrid newGrid = new ExpandGrid(grid6, number, x, y, z-1);
             miniQueue.add(newGrid);
