@@ -184,4 +184,16 @@ public class Grid {
         return endCondition;
     }
 
+    public int manhattanDistance(ExpandGrid coordinateGiver, Net endGate){
+        int x = coordinateGiver.x;
+        int y = coordinateGiver.y;
+        int z = coordinateGiver.z;
+
+        int x2 = endGate.gate1;
+        int y2 = endGate.gate2;
+        int z2 = 0;
+
+        return Math.abs(x2-x) + Math.abs(y2-y) +  Math.abs(z2-z);
+    }
+
 }
