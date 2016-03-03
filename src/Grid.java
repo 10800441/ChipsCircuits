@@ -183,5 +183,11 @@ public class Grid {
         }
         return endCondition;
     }
+    public int getManhattan(){
+
+
+    }
+
+
 
 }
