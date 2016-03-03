@@ -33,8 +33,11 @@ public class Grid {
     }
 
     public ArrayList<ExpandGrid> expandGrid(Grid grid, int number, int x, int y, int z) {
-        ArrayList miniQueue = grid.possible_lines(grid, number, x, y, z);
+        ArrayList<ExpandGrid> miniQueue = grid.possible_lines(grid, number, x, y, z);
+        for(ExpandGrid alpha: miniQueue){
+            alpha.grid.printGrid();
 
+        }
         return miniQueue;
     }
 
@@ -73,13 +76,14 @@ public class Grid {
         grid[x][y][z] = "L"+ number;
     }
 
-    public ArrayList possible_lines(Grid input_grid, int number, int x, int y, int z) {
+    public ArrayList<ExpandGrid> possible_lines(Grid input_grid, int number, int x, int y, int z) {
         ArrayList<ExpandGrid> miniQueue = new ArrayList<>();
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
             Grid grid1 = new Grid(input_grid);
             grid1.addLine(number, x+1, y, z);
             ExpandGrid newGrid = new ExpandGrid(grid1, number, x+1, y, z);
+
             miniQueue.add(newGrid);
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
@@ -98,18 +102,21 @@ public class Grid {
             Grid grid4 = new Grid(input_grid);
             grid4.addLine(number, x, y-1, z);
             ExpandGrid newGrid = new ExpandGrid(grid4, number, x, y-1, z);
+
             miniQueue.add(newGrid);
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
             Grid grid5 = new Grid(input_grid);
             grid5.addLine(number, x, y, z+1);
             ExpandGrid newGrid = new ExpandGrid(grid5, number, x, y, z+1);
+
             miniQueue.add(newGrid);
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
             Grid grid6 = new Grid(input_grid);
             grid6.addLine(number, x, y, z-1);
             ExpandGrid newGrid = new ExpandGrid(grid6, number, x, y, z-1);
+
             miniQueue.add(newGrid);
         }
 
@@ -183,10 +190,7 @@ public class Grid {
         }
         return endCondition;
     }
-    public int getManhattan(){
 
-
-    }
 
 
 
