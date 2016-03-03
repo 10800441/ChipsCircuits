@@ -10,31 +10,49 @@ public class Main {
         int Y_SIZE = 14;
         int Z_SIZE = 1;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        Grid grid1 = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
-
-        Queue<ExpandGrid> gridQueue = new LinkedList();
-
-        Net layLine = new Net(1, 3);
-
-
-
-        ExpandGrid gridditydoo = new ExpandGrid(grid, 1, 2, 2, 0);
-        gridQueue.add(gridditydoo);
-        // uitbreden van de grid
-        ExpandGrid expandable = gridQueue.remove();
-        grid.expandGrid(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z);
-
-
-
-
-
+        makeLines(grid);
 
     }
 
+    private static void makeLines(Grid grid) {
+        Queue<ExpandGrid> gridQueue = new LinkedList();
+        ArrayList<Grid> finalGridLines = new ArrayList<>();
+
+        for (int i = 0; i < grid.netDatabase.size(); i++) {
+
+            Net net = grid.netDatabase.get(i);
+            int startGate = net.gate1;
+            int startGateX = grid.gateDatabase[startGate][1];
+            int startGateY = grid.gateDatabase[startGate][2];
 
 
+            ExpandGrid firstLine = new ExpandGrid(grid, i, startGateY, startGateX, 0);
+            gridQueue.add(firstLine);
+
+            // uitbreden van de grid
+            while (gridQueue.peek() != null) {
+                ExpandGrid expandable = gridQueue.remove();
+                if (grid.endCondition(expandable, net.gate2)) {
+                    finalGridLines.add(grid);
+                    break;
+                }
+                ArrayList<ExpandGrid> miniQueue = grid.expandGrid(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z);
+                for (int k = 0; k < miniQueue.size(); k++) {
+                    gridQueue.add(miniQueue.get(k));
 
 
+                }
+            }
 
+        }
+
+
+    }
 }
+
+
+
+
+
+

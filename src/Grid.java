@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Grid {
     String[][][] grid;
@@ -11,20 +13,21 @@ public class Grid {
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-    public Grid( int width, int height, int depth) {
+    public Grid(int width, int height, int depth) {
         grid = new String[width][height][depth];
         makeNetDatabase();
 
-        for(int i = 0; i < gateDatabase().length; i++){
-            addGate(i, gateDatabase()[i][1],gateDatabase()[i][2]);
+        for (int i = 0; i < makeGateDatabase().length; i++) {
+            addGate(i, makeGateDatabase()[i][1], makeGateDatabase()[i][2]);
         }
 
     }
-     //copy constructor to make copies of the current grid
-    public Grid(Grid oldGrid){
-       this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
-        for(int i = 0; i < oldGrid.grid[0][0].length; i ++){
-            for(int k = 0; k < oldGrid.grid[0].length; k ++) {
+
+    //copy constructor to make copies of the current grid
+    public Grid(Grid oldGrid) {
+        this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
+        for (int i = 0; i < oldGrid.grid[0][0].length; i++) {
+            for (int k = 0; k < oldGrid.grid[0].length; k++) {
                 for (int n = 0; n < oldGrid.grid.length; n++) {
 
                     grid[n][k][i] = oldGrid.grid[n][k][i];
@@ -37,13 +40,14 @@ public class Grid {
     }
 
 
-    public void expandGrid(Grid grid, int number, int x, int y, int z) {
+    public ArrayList<ExpandGrid> expandGrid(Grid grid, int number, int x, int y, int z) {
         ArrayList miniqueue = grid.possible_lines(grid, number, x, y, z);
 
         for (int i = 0; i < miniqueue.size(); i++) {
-            Grid miniqueue_element = (Grid) miniqueue.get(i);
-            miniqueue_element.printGrid();
+            ExpandGrid miniqueue_element = (ExpandGrid) miniqueue.get(i);
+            miniqueue_element.grid.printGrid();
         }
+        return miniqueue;
     }
 
     public void printGrid() {
@@ -64,10 +68,10 @@ public class Grid {
                     // Voor gates
                     if (identifier == 'G' && grid[i][k][0].length() == 3) {
                         System.out.print(grid[i][k][0]);
-                    } else  if (identifier == 'G') {
+                    } else if (identifier == 'G') {
                         System.out.print(" " + grid[i][k][0]);
                     } else if (identifier == 'L') {
-                    System.out.print(" " + grid[i][k][0]);
+                        System.out.print(" " + grid[i][k][0]);
                     }
                 }
             }
@@ -76,143 +80,115 @@ public class Grid {
     }
 
     public void addGate(int number, int y_coordinate, int x_coordinate) {
-       grid[x_coordinate][y_coordinate][0] = "G"+ number;
+        grid[x_coordinate][y_coordinate][0] = "G" + number;
     }
 
     public void addLine(int number, int x, int y, int z) {
-        grid[x][y][z] = "L"+ number;
+        grid[x][y][z] = "L" + number;
     }
 
     public ArrayList possible_lines(Grid input_grid, int number, int x, int y, int z) {
-        ArrayList<Grid> miniqueue = new ArrayList<>();
+        ArrayList<ExpandGrid> miniqueue = new ArrayList<>();
 
-        if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
+        if (x + 1 > 0 && x + 1 < grid.length && grid[x + 1][y][z] == null) {
             Grid grid1 = new Grid(input_grid);
-            grid1.addLine(number, x+1, y, z);
-            miniqueue.add(grid1);
+            grid1.addLine(number, x + 1, y, z);
+            ExpandGrid newGrid = new ExpandGrid(grid1, number, x + 1, y, z);
+            miniqueue.add(newGrid);
         }
-        if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
+        if (x - 1 > 0 && x - 1 < grid.length && grid[x - 1][y][z] == null) {
             Grid grid2 = new Grid(input_grid);
-            grid2.addLine(number, x-1, y, z);
-            miniqueue.add(grid2);
+            grid2.addLine(number, x - 1, y, z);
+            ExpandGrid newGrid = new ExpandGrid(grid2, number, x - 1, y, z);
+            miniqueue.add(newGrid);
         }
-        if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
+        if (y + 1 > 0 && y + 1 < grid[0].length && grid[x][y + 1][z] == null) {
             Grid grid3 = new Grid(input_grid);
-            grid3.addLine(number, x, y+1, z);
-            miniqueue.add(grid3);
+            grid3.addLine(number, x, y + 1, z);
+            ExpandGrid newGrid = new ExpandGrid(grid3, number, x, y + 1, z);
+            miniqueue.add(newGrid);
         }
-        if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
+        if (y - 1 > 0 && y - 1 < grid[0].length && grid[x][y - 1][z] == null) {
             Grid grid4 = new Grid(input_grid);
-            grid4.addLine(number, x, y-1, z);
-            miniqueue.add(grid4);
+            grid4.addLine(number, x, y - 1, z);
+            ExpandGrid newGrid = new ExpandGrid(grid4, number, x, y - 1, z);
+            miniqueue.add(newGrid);
         }
-        if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
+        if (z + 1 > 0 && z + 1 < grid[0][0].length && grid[x][y][z + 1] == null) {
             Grid grid5 = new Grid(input_grid);
-            grid5.addLine(number, x, y, z+1);
-            miniqueue.add(grid5);
+            grid5.addLine(number, x, y, z + 1);
+            ExpandGrid newGrid = new ExpandGrid(grid5, number, x, y, z + 1);
+            miniqueue.add(newGrid);
         }
-        if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
+        if (z - 1 > 0 && z - 1 < grid[0][0].length && grid[x][y][z - 1] == null) {
             Grid grid6 = new Grid(input_grid);
-            grid6.addLine(number, x, y, z-1);
-            miniqueue.add(grid6);
+            grid6.addLine(number, x, y, z - 1);
+            ExpandGrid newGrid = new ExpandGrid(grid6, number, x, y, z - 1);
+            miniqueue.add(newGrid);
         }
 
         return miniqueue;
     }
 
 
-
-    public int[][] gateDatabase() {
-
-        //Print #1
-        // format: gateDatabase[nummer][coordinaat]
-        gateDatabase[1][1] = 2;
-        gateDatabase[1][2] = 2;
-        gateDatabase[2][1] = 7;
-        gateDatabase[2][2] = 2;
-        gateDatabase[3][1] = 11;
-        gateDatabase[3][2] = 2;
-        gateDatabase[4][1] = 16;
-        gateDatabase[4][2] = 2;
-        gateDatabase[5][1] = 4;
-        gateDatabase[5][2] = 3;
-        gateDatabase[6][1] = 13;
-        gateDatabase[6][2] = 3;
-        gateDatabase[7][1] = 15;
-        gateDatabase[7][2] = 3;
-        gateDatabase[8][1] = 15;
-        gateDatabase[8][2] = 4;
-        gateDatabase[9][1] = 9;
-        gateDatabase[9][2] = 5;
-        gateDatabase[10][1] = 2;
-        gateDatabase[10][2] = 6;
-        gateDatabase[11][1] = 5;
-        gateDatabase[11][2] = 6;
-        gateDatabase[12][1] = 12;
-        gateDatabase[12][2] = 6;
-        gateDatabase[13][1] = 17;
-        gateDatabase[13][2] = 6;
-        gateDatabase[14][1] = 14;
-        gateDatabase[14][2] = 8;
-        gateDatabase[15][1] = 17;
-        gateDatabase[15][2] = 8;
-        gateDatabase[16][1] = 3;
-        gateDatabase[16][2] = 9;
-        gateDatabase[17][1] = 7;
-        gateDatabase[17][2] = 9;
-        gateDatabase[18][1] = 10;
-        gateDatabase[18][2] = 9;
-        gateDatabase[19][1] = 12;
-        gateDatabase[19][2] = 9;
-        gateDatabase[20][1] = 16;
-        gateDatabase[20][2] = 9;
-        gateDatabase[21][1] = 2;
-        gateDatabase[21][2] = 10;
-        gateDatabase[22][1] = 3;
-        gateDatabase[22][2] = 11;
-        gateDatabase[23][1] = 10;
-        gateDatabase[23][2] = 11;
-        gateDatabase[24][1] = 2;
-        gateDatabase[24][2] = 12;
-        gateDatabase[25][1] = 13;
-        gateDatabase[25][2] = 12;
-
-        return  gateDatabase;
-    }
-
-
-
-    // Read in the netdatabase from the file "print.txt"
-    public void makeNetDatabase(){
-
+    public int[][] makeGateDatabase() {
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("src/print.txt"));
-
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
 
             String line;
-
-
             while (true) {
                 line = rd.readLine();
                 if (line == null) break;
-                String[] words = line.split(" ");
+                String[] words = line.split(",");
+                gateDatabase[Integer.valueOf(words[0])][1] = Integer.valueOf(words[1]);
+                gateDatabase[Integer.valueOf(words[0])][2] = Integer.valueOf(words[2]);
+            }
+            rd.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex);
+        }
+
+        return gateDatabase;
+    }
+
+
+    // Read in the netdatabase from the file "print1Lines.txt"
+    public void makeNetDatabase() {
+
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
+
+            String line;
+            while (true) {
+                line = rd.readLine();
+                if (line == null) break;
+                String[] words = line.split(",");
 
                 Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
                 netDatabase.add(net);
 
-                //System.out.println(net);
-
             }
             rd.close();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("Error: " + ex);
         }
 
     }
+    public boolean endCondition(ExpandGrid currentGrid, int gateNumber) {
+        boolean endcondition = false;
+
+        int gateX = gateDatabase[gateNumber][1];
+        int gateY = gateDatabase[gateNumber][2];
+
+        if (currentGrid.x == gateX - 1 || currentGrid.x == gateX + 1) {
+            if (currentGrid.y == gateY - 1 || currentGrid.y == gateY + 1) {
+                if (currentGrid.z == 0 || currentGrid.z == 1) {
+                    endcondition = true;
+                }
+            }
 
 
-
-
-
+        }
+        return endcondition;
+    }
 }
