@@ -14,7 +14,7 @@ public class Main {
         ArrayList<GridScore> finalOut = new ArrayList<>();
         GridScore currentscore = new GridScore(grid, 0);
         int totalSteps = 0;
-     
+
         for(int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
             currentscore = astar(currentscore, lineNumber, totalSteps);
 
@@ -44,11 +44,12 @@ public class Main {
 
             // uitbreden van de grid
             while (true) {
+                // element uit de Queue
                 ExpandGrid expandable = gridQueue.remove();
 
 
-                ArrayList<ExpandGrid> miniQueue = grid.grid.expandGrid(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
-                for (ExpandGrid childGrid: miniQueue) {
+                ArrayList<ExpandGrid> allChildGrids = grid.grid.possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
+                for (ExpandGrid childGrid: allChildGrids) {
 
                     if (grid.grid.endCondition(childGrid, net.gate2)) {
 

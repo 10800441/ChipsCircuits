@@ -32,17 +32,7 @@ public class Grid {
 
     }
 
-    public ArrayList<ExpandGrid> expandGrid(Grid grid, int number, int x, int y, int z, int steps, Net net) {
-        ArrayList miniQueue = grid.possible_lines(grid, number, x, y, z, steps, net);
 
-        for(int i = 0; i < miniQueue.size(); i++){
-
-            ExpandGrid alpha = (ExpandGrid) miniQueue.get(i);
-
-        }
-        return miniQueue;
-
-    }
 
     public void printGrid() {
         for (int i = 1; i < grid.length; i++) {   //creation of height Y
