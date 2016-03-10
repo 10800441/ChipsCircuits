@@ -18,11 +18,12 @@ public class Grid {
         }
 
     }
+
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid){
        this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
-        for(int i = 0; i < oldGrid.grid[0][0].length; i ++){
-            for(int k = 0; k < oldGrid.grid[0].length; k ++) {
+        for(int i = 0; i < oldGrid.grid[0][0].length; i++){
+            for(int k = 0; k < oldGrid.grid[0].length; k++) {
                 for (int n = 0; n < oldGrid.grid.length; n++) {
 
                     grid[n][k][i] = oldGrid.grid[n][k][i];
@@ -33,27 +34,28 @@ public class Grid {
     }
 
 
-
     public void printGrid() {
-        for (int i = 1; i < grid.length; i++) {   //creation of height Y
+        for (int j = 0; j < grid[0][0].length; j++) {
             System.out.println("");
-            for (int k = 1; k < grid[1].length; k++) {    //creation of width X
+            for (int i = 1; i < grid.length; i++) {   //creation of height Y
+                System.out.println("");
+                for (int k = 1; k < grid[0].length; k++) {    //creation of width X
+                    if (grid[i][k][j] == null) {
+                        System.out.print(" . ");
+                    } else {
 
-                if (grid[i][k][0] == null) {
-                    System.out.print(" . ");
-                } else {
+                        String gridContent = grid[i][k][j];
+                        char identifier = gridContent.charAt(0);
 
-                    String gridContent = grid[i][k][0];
-                    char identifier = gridContent.charAt(0);
+                        // Labeling bij het printen
 
-                    // Labeling bij het printen
-
-                    if (identifier == 'G' && grid[i][k][0].length() == 3) {
-                        System.out.print(grid[i][k][0]);
-                    } else  if (identifier == 'G') {
-                        System.out.print(" " + grid[i][k][0]);
-                    } else if (identifier == 'L') {
-                    System.out.print(" " + grid[i][k][0]);
+                        if (identifier == 'G' && grid[i][k][j].length() == 3) {
+                            System.out.print(grid[i][k][j]);
+                        } else if (identifier == 'G') {
+                            System.out.print(" " + grid[i][k][j]);
+                        } else if (identifier == 'L') {
+                            System.out.print(" " + grid[i][k][j]);
+                        }
                     }
                 }
             }
@@ -69,61 +71,47 @@ public class Grid {
         grid[x][y][z] = "L"+ number;
     }
 
-    public ArrayList possible_lines(ExpandGrid expandable, Net net) {
-        ArrayList<ExpandGrid> miniQueue = new ArrayList<>();
-        int x = expandable.x;
-        int y = expandable.y;
-        int z = expandable.z;
-        int number = expandable.number;
-        Grid inputGrid = expandable.grid;
-        int steps = expandable.steps;
+
+    // provides an expandgrid for the create_possible_lines method
+    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, Net net) {
+        Grid copy_grid = new Grid(input_grid);
+        copy_grid.addLine(number, x, y, z);
+        int estimate = manhattanDistance(x, y, z, net);
+        return new ExpandGrid(copy_grid, number, x, y, z, steps+1, estimate);
+    }
 
 
+    public ArrayList create_possible_lines(Grid input_grid, int number, int x, int y, int z, int steps, Net net) {
+        ArrayList<ExpandGrid> list = new ArrayList<>();
+        int x1;
+        int y1;
+        int z1;
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
-            Grid grid1 = new Grid(inputGrid);
-            grid1.addLine(number, x+1, y, z);
-            int estimate = manhattanDistance(x+1, y, z, net);
-            ExpandGrid newGrid = new ExpandGrid(grid1, number, x+1, y, z,steps+1, estimate);
-            miniQueue.add(newGrid);
+            x1 = x+1;
+            list.add(addLine(input_grid, number, x1, y, z, steps, net));
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
-            Grid grid2 = new Grid(inputGrid);
-            grid2.addLine(number, x-1, y, z);
-            int estimate = manhattanDistance(x-1, y, z, net);
-            ExpandGrid newGrid = new ExpandGrid(grid2, number, x-1, y, z, steps+1, estimate);
-            miniQueue.add(newGrid);
+            x1 = x-1;
+            list.add(addLine(input_grid, number, x1, y, z, steps, net));
         }
         if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
-            Grid grid3 = new Grid(inputGrid);
-            grid3.addLine(number, x, y+1, z);
-            int estimate = manhattanDistance(x, y+1, z, net);
-            ExpandGrid newGrid = new ExpandGrid(grid3, number, x, y+1, z, steps+1, estimate);
-            miniQueue.add(newGrid);
+            y1 = y+1;
+            list.add(addLine(input_grid, number, x, y1, z, steps, net));
         }
         if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
-            Grid grid4 = new Grid(inputGrid);
-            grid4.addLine(number, x, y-1, z);
-            int estimate = manhattanDistance(x, y-1, z, net);
-            ExpandGrid newGrid = new ExpandGrid(grid4, number, x, y-1, z, steps+1, estimate);
-            miniQueue.add(newGrid);
+            y1 = y-1;
+            list.add(addLine(input_grid, number, x, y1, z, steps, net));
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
-            Grid grid5 = new Grid(inputGrid);
-            grid5.addLine(number, x, y, z+1);
-            int estimate = manhattanDistance(x, y, z+1, net);
-            ExpandGrid newGrid = new ExpandGrid(grid5, number, x, y, z+1, steps+1, estimate);
-            miniQueue.add(newGrid);
+            z1 = z+1;
+            list.add(addLine(input_grid, number, x, y, z1, steps, net));
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
-            Grid grid6 = new Grid(inputGrid);
-            grid6.addLine(number, x, y, z-1);
-            int estimate = manhattanDistance(x, y, z-1, net);
-            ExpandGrid newGrid = new ExpandGrid(grid6, number, x, y, z-1, steps+1,  estimate);
-            miniQueue.add(newGrid);
+            z1 = z-1;
+            list.add(addLine(input_grid, number, x, y, z1, steps, net));
         }
-
-        return miniQueue;
+        return list;
     }
 
 
@@ -178,15 +166,12 @@ public class Grid {
 
         int gateY = gateDatabase[GateNumber][1];
         int gateX = gateDatabase[GateNumber][2];
+        int gateZ = gateDatabase[GateNumber][3];
 
-
-        if((((grid.x == gateX+1 || grid.x == gateX-1) && (grid.y == gateY)) ||
-                ((grid.x == gateX) && (grid.y == gateY + 1 || grid.y == gateY - 1))) &&
-                (grid.z == 0)) {
-
+        if(((grid.x == gateX+1 || grid.x == gateX-1) && (grid.y == gateY && grid.z == gateZ)) ||
+                ((grid.x == gateX && grid.z == gateZ) && (grid.y == gateY + 1 || grid.y == gateY - 1)) ||
+                ((grid.z == gateZ + 1) && (grid.x == gateX && grid.y == gateY))){
                     endCondition = true;
-
-
         }
         return endCondition;
     }
@@ -198,9 +183,8 @@ public class Grid {
         int gateNumber = netGate.gate2;
         int y2 = gateDatabase[gateNumber][1];
         int x2 = gateDatabase[gateNumber][2];
-        int z2 = 0;
 
-        return Math.abs(x2-x) + Math.abs(y2-y) + Math.abs(z2-z);
+        return Math.abs(x2-x) + Math.abs(y2-y) + z;
     }
 
 }
