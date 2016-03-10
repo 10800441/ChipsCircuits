@@ -18,6 +18,7 @@ public class Grid {
         }
 
     }
+    
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid){
        this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
