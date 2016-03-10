@@ -18,7 +18,7 @@ public class Grid {
         }
 
     }
-    
+
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid){
        this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
@@ -33,22 +33,10 @@ public class Grid {
 
     }
 
-    public ArrayList<ExpandGrid> expandGrid(Grid grid, int number, int x, int y, int z, int steps, Net net) {
-        ArrayList miniQueue = grid.create_possible_lines(grid, number, x, y, z, steps, net);
-
-        for (Object aMiniQueue : miniQueue) {
-
-            ExpandGrid alpha = (ExpandGrid) aMiniQueue;
-            alpha.grid.printGrid();
-            System.out.println("estimate " + alpha.estimate);
-            System.out.println("steps " + alpha.steps);
-        }
-        return miniQueue;
-
-    }
 
     public void printGrid() {
         for (int j = 0; j < grid[0][0].length; j++) {
+            System.out.println("");
             for (int i = 1; i < grid.length; i++) {   //creation of height Y
                 System.out.println("");
                 for (int k = 1; k < grid[0].length; k++) {    //creation of width X
@@ -182,11 +170,8 @@ public class Grid {
 
         if(((grid.x == gateX+1 || grid.x == gateX-1) && (grid.y == gateY && grid.z == gateZ)) ||
                 ((grid.x == gateX && grid.z == gateZ) && (grid.y == gateY + 1 || grid.y == gateY - 1)) ||
-                ((grid.z == gateZ + 1 || grid.z == gateZ - 1) && (grid.x == gateX && grid.y == gateY))){
-
+                ((grid.z == gateZ + 1) && (grid.x == gateX && grid.y == gateY))){
                     endCondition = true;
-
-
         }
         return endCondition;
     }
@@ -198,9 +183,8 @@ public class Grid {
         int gateNumber = netGate.gate2;
         int y2 = gateDatabase[gateNumber][1];
         int x2 = gateDatabase[gateNumber][2];
-        int z2 = 0;
 
-        return Math.abs(x2-x) + Math.abs(y2-y) + Math.abs(z2-z);
+        return Math.abs(x2-x) + Math.abs(y2-y) + z;
     }
 
 }

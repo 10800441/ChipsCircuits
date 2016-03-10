@@ -9,60 +9,49 @@ public class Main {
         int X_SIZE = 19;
         int Y_SIZE = 14;
         int Z_SIZE = 1;
-        int totalscore = 0;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        ArrayList<GridScore> finalOut = new ArrayList<>();
-        GridScore currentscore = new GridScore(grid, 0);
-        int totalSteps = 0;
 
         for(int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-            currentscore = astar(currentscore, lineNumber, totalSteps);
-
-            finalOut.add(currentscore);
+            grid = breathFirstSearch(grid, lineNumber);
         }
-        for(GridScore score: finalOut) {
-
-            totalscore += score.gate2;
-        }
-        assert currentscore != null;
-        currentscore.grid.printGrid();
-        System.out.println("Totalscore: " + totalscore);
     }
 
 
-    private static GridScore astar(GridScore grid, int lineNumber, int totalSteps){
-        for (int i = 0; i < grid.grid.netDatabase.size(); i++) {
+    private static Grid breathFirstSearch(Grid grid, int lineNumber){
+        for (int i = 0; i < grid.netDatabase.size(); i++) {
             PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
-            Net net = grid.grid.netDatabase.get(lineNumber);
+            Net net = grid.netDatabase.get(lineNumber);
             int startGate = net.gate1;
-            int startGateX = grid.grid.gateDatabase[startGate][1];
-            int startGateY = grid.grid.gateDatabase[startGate][2];
+            int startGateX = grid.gateDatabase[startGate][1];
+            int startGateY = grid.gateDatabase[startGate][2];
 
-            ExpandGrid firstLine = new ExpandGrid(grid.grid, lineNumber,startGateY, startGateX, 0, 0, 0);
+            ExpandGrid firstLine = new ExpandGrid(grid, lineNumber,startGateY, startGateX, 0, 0, 0);
             gridQueue.add(firstLine);
 
 
             // uitbreden van de grid
             while (true) {
-                // element uit de Queue
                 ExpandGrid expandable = gridQueue.remove();
 
 
-                ArrayList<ExpandGrid> allChildGrids = grid.grid.create_possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
-                for (ExpandGrid childGrid: allChildGrids) {
+                ArrayList<ExpandGrid> miniQueue = grid.create_possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
+                for (ExpandGrid childGrid: miniQueue) {
 
-                    if (grid.grid.endCondition(childGrid, net.gate2)) {
+                    if (grid.endCondition(childGrid, net.gate2)) {
 
-                        return new GridScore(childGrid.grid, childGrid.steps);
+                        childGrid.grid.printGrid();
+
+
+                        return childGrid.grid;
                     }
+                    //childGrid.grid.printGrid();
                     gridQueue.add(childGrid);
                 }
 
             }
         } return null;
     }
-
 }
 
 
