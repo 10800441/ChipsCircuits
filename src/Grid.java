@@ -197,12 +197,9 @@ public class Grid {
         int gateNumber = netGate.gate2;
         int y2 = gateDatabase[gateNumber][1];
         int x2 = gateDatabase[gateNumber][2];
+        int z2 = 0;
 
-
-
-
-
-        return Math.abs(x2-x) + Math.abs(y2-y); // +  Math.abs(z2-z);
+        return Math.abs(x2-x) + Math.abs(y2-y) + Math.abs(z2-z);
     }
 
 }
