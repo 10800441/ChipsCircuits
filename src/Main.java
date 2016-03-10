@@ -24,7 +24,8 @@ public class Main {
 
             totalscore += score.gate2;
         }
-       currentscore.grid.printGrid();
+        assert currentscore != null;
+        currentscore.grid.printGrid();
         System.out.println("Totalscore: " + totalscore);
     }
 
@@ -48,14 +49,12 @@ public class Main {
                 ExpandGrid expandable = gridQueue.remove();
 
 
-                ArrayList<ExpandGrid> allChildGrids = grid.grid.possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
+                ArrayList<ExpandGrid> allChildGrids = grid.grid.create_possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
                 for (ExpandGrid childGrid: allChildGrids) {
 
                     if (grid.grid.endCondition(childGrid, net.gate2)) {
 
-                        GridScore score = new GridScore(childGrid.grid, childGrid.steps);
-                        return score;
-
+                        return new GridScore(childGrid.grid, childGrid.steps);
                     }
                     gridQueue.add(childGrid);
                 }
