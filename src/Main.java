@@ -2,38 +2,59 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
-
+import java.util.Random;
 public class Main {
 
+
     public static void main(String[] args) {
+
         int X_SIZE = 19;
         int Y_SIZE = 14;
         int Z_SIZE = 1;
         int totalscore = 0;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
         ArrayList<GridScore> finalOut = new ArrayList<>();
-        GridScore currentscore = new GridScore(grid, 0);
-        int totalSteps = 0;
+        ArrayList<Net> netDatabase1 = grid.netDatabase;
+        GridScore currentscore = new GridScore(grid, 0,  grid.netDatabase);
 
-        for(int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-            currentscore = astar(currentscore, lineNumber, totalSteps);
 
-            finalOut.add(currentscore);
+        //first try at a hillclimber
+
+       // for (int i = 0; i < 5; i++) {
+         //   netDatabase1 = makeRandomChangeNet(netDatabase1);
+
+
+            // use astar on all nets
+            for (int lineNumber = 0; lineNumber < netDatabase1.size(); lineNumber++) {
+                currentscore = astar(currentscore, lineNumber);
+                finalOut.add(currentscore);
+            }
+
+
+            for (GridScore score : finalOut) {
+
+                totalscore += score.gate2;
+            }
+            currentscore.grid.printGrid();
+            System.out.println("Totalscore: " + totalscore);
         }
-        for(GridScore score: finalOut) {
+   // }
+    private static ArrayList<Net> makeRandomChangeNet(ArrayList<Net> netDatabase){
 
-            totalscore += score.gate2;
-        }
-       currentscore.grid.printGrid();
-        System.out.println("Totalscore: " + totalscore);
+        Random rgen = new Random();
+
+        int index = rgen.nextInt(netDatabase.size());
+        Net net = netDatabase.get(index);
+        netDatabase.add(net);
+        netDatabase.get(index);
+        return netDatabase;
     }
 
-
-    private static GridScore astar(GridScore grid, int lineNumber, int totalSteps){
-        for (int i = 0; i < grid.grid.netDatabase.size(); i++) {
+    private static GridScore astar(GridScore grid, int lineNumber){
+        for (int i = 0; i < grid.netDatabase.size(); i++) {
             PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
-            Net net = grid.grid.netDatabase.get(lineNumber);
+            Net net = grid.netDatabase.get(lineNumber);
             int startGate = net.gate1;
             int startGateX = grid.grid.gateDatabase[startGate][1];
             int startGateY = grid.grid.gateDatabase[startGate][2];
@@ -45,15 +66,13 @@ public class Main {
             // uitbreden van de grid
             while (true) {
                 // element uit de Queue
-                ExpandGrid expandable = gridQueue.remove();
 
-
-                ArrayList<ExpandGrid> allChildGrids = grid.grid.possible_lines(expandable.grid, expandable.number, expandable.x, expandable.y, expandable.z, expandable.steps, net);
+                ArrayList<ExpandGrid> allChildGrids = grid.grid.possible_lines(gridQueue.remove(), net);
                 for (ExpandGrid childGrid: allChildGrids) {
 
                     if (grid.grid.endCondition(childGrid, net.gate2)) {
 
-                        GridScore score = new GridScore(childGrid.grid, childGrid.steps);
+                        GridScore score = new GridScore(childGrid.grid, childGrid.steps, grid.netDatabase);
                         return score;
 
                     }
