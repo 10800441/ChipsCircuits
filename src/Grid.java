@@ -37,6 +37,8 @@ public class Grid {
     public void printGrid() {
         for (int j = 0; j < grid[0][0].length; j++) {
             System.out.println("");
+            int layer = j+1;
+            System.out.println("Grid: " + layer);
             for (int i = 1; i < grid.length; i++) {   //creation of height Y
                 System.out.println("");
                 for (int k = 1; k < grid[0].length; k++) {    //creation of width X
@@ -81,7 +83,16 @@ public class Grid {
     }
 
 
-    public ArrayList create_possible_lines(Grid input_grid, int number, int x, int y, int z, int steps, Net net) {
+    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, Net net) {
+        Grid inputGrid = inputExpandGrid.grid;
+        int number = inputExpandGrid.number;
+        int x = inputExpandGrid.x;
+        int y = inputExpandGrid.y;
+        int z = inputExpandGrid.z;
+        int steps = inputExpandGrid.steps;
+
+
+
         ArrayList<ExpandGrid> list = new ArrayList<>();
         int x1;
         int y1;
@@ -89,27 +100,27 @@ public class Grid {
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
             x1 = x+1;
-            list.add(addLine(input_grid, number, x1, y, z, steps, net));
+            list.add(addLine(inputGrid, number, x1, y, z, steps, net));
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
             x1 = x-1;
-            list.add(addLine(input_grid, number, x1, y, z, steps, net));
+            list.add(addLine(inputGrid, number, x1, y, z, steps, net));
         }
         if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
             y1 = y+1;
-            list.add(addLine(input_grid, number, x, y1, z, steps, net));
+            list.add(addLine(inputGrid, number, x, y1, z, steps, net));
         }
         if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
             y1 = y-1;
-            list.add(addLine(input_grid, number, x, y1, z, steps, net));
+            list.add(addLine(inputGrid, number, x, y1, z, steps, net));
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
             z1 = z+1;
-            list.add(addLine(input_grid, number, x, y, z1, steps, net));
+            list.add(addLine(inputGrid, number, x, y, z1, steps, net));
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
             z1 = z-1;
-            list.add(addLine(input_grid, number, x, y, z1, steps, net));
+            list.add(addLine(inputGrid, number, x, y, z1, steps, net));
         }
         return list;
     }

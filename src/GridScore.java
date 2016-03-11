@@ -2,16 +2,16 @@ import java.util.ArrayList;
 
 public class GridScore{
     final Grid grid;
-    final int gate2;
+    final int score;
     ArrayList<Net> netDatabase;
 
-    public GridScore(Grid grid, int gate2, ArrayList<Net> netDatabase) {
+    public GridScore(Grid grid, int score, ArrayList<Net> netDatabase) {
         this.grid = grid;
-        this.gate2 = gate2;
+        this.score = score;
         this.netDatabase = netDatabase;
     }
     public String toString(){
-        return "Net: " + grid + " " + gate2;
+        return "Net: " + grid + " " + score;
 
 
     }
