@@ -46,11 +46,11 @@ int totalScore = 0;
                     checkScore ++;
 
                     if ( childGrid.estimate <= 1) {
-                        System.out.println("e " + childGrid.estimate);
-                        childGrid.grid.printGrid();
-                        System.out.println("s " + childGrid.steps);
-
-                        System.out.println("t " + (childGrid.estimate+childGrid.steps));
+                       childGrid.grid.printGrid();
+                        System.out.println("");
+                        System.out.print("\033[36m");
+                        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                        System.out.print("\033[0m");
 
                         System.out.println("score of your program: " + checkScore + " for line L" + childGrid.number);
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);

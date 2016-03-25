@@ -28,7 +28,7 @@ public class ExpandGrid implements Comparable{
         ExpandGrid other = (ExpandGrid) o;
 
 
-        if((this.steps + this.estimate == other.steps + other.estimate) && (this.estimate < other.estimate)) return -1;
+        if((this.steps + this.estimate == other.steps + other.estimate)) return -1;
         if((this.steps + this.estimate < other.steps + other.estimate)) return -1;
         if(this.steps + this.estimate > other.steps + other.estimate) return 1;
         return 0;
