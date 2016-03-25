@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class Main {
-
+    static int checkScore= 0;
     public static void main(String[] args) {
 
 
@@ -34,34 +34,27 @@ int totalScore = 0;
             ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber,startGateY, startGateX, 0, 0, 0);
             gridQueue.add(firstLine);
 
-            int conter = 0;
-            long timet =0;
-
-            int conter2 = 0;
 
             // uitbreden van de grid
             while (true) {
 
-                conter2 ++;
 
-                long start = System.currentTimeMillis();
+
               ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
-
-                long end = System.currentTimeMillis();
-                timet += end-start;
                 for (ExpandGrid childGrid:  allChildren) {
+                    checkScore ++;
 
-                    conter ++;
-                    if (currentGrid.grid.endCondition(childGrid, net.gate2)) {
+                    if ( childGrid.estimate <= 1) {
+                        System.out.println("e " + childGrid.estimate);
+                        childGrid.grid.printGrid();
+                        System.out.println("s " + childGrid.steps);
 
+                        System.out.println("t " + (childGrid.estimate+childGrid.steps));
 
-                      childGrid.grid.printGrid();
-                        System.out.println("cont: " + conter + "/ " + conter2 +" T " + timet );
-
+                        System.out.println("score of your program: " + checkScore + " for line L" + childGrid.number);
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
-
                     gridQueue.add(childGrid);
                 }
 

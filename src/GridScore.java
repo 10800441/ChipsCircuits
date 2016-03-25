@@ -13,7 +13,6 @@ public class GridScore{
     public String toString(){
         return "Net: " + grid + " " + score;
 
-
     }
 
 }
