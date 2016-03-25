@@ -38,7 +38,7 @@ public class Grid {
         for (int j = 0; j < grid[0][0].length; j++) {
             System.out.println("");
             int layer = j+1;
-            System.out.println("Grid: " + layer);
+            System.out.println("Grid layer: " + layer);
             for (int i = 1; i < grid.length; i++) {   //creation of height Y
                 System.out.println("");
                 for (int k = 1; k < grid[0].length; k++) {    //creation of width X
@@ -52,10 +52,16 @@ public class Grid {
                         // Labeling bij het printen
 
                         if (identifier == 'G' && grid[i][k][j].length() == 3) {
+                            System.out.print("\033[31m");
                             System.out.print(grid[i][k][j]);
+                            System.out.print("\033[0m");
                         } else if (identifier == 'G') {
+                            System.out.print("\033[31m");
                             System.out.print(" " + grid[i][k][j]);
-                        } else if (identifier == 'L') {
+                            System.out.print("\033[0m");
+                        }
+
+                        else if (identifier == 'L') {
                             System.out.print(" " + grid[i][k][j]);
                         }
                     }
@@ -73,7 +79,6 @@ public class Grid {
         grid[x][y][z] = "L"+ number;
     }
 
-
     // provides an expandgrid for the create_possible_lines method
     public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, Net net) {
         Grid copy_grid = new Grid(input_grid);
@@ -90,8 +95,6 @@ public class Grid {
         int y = inputExpandGrid.y;
         int z = inputExpandGrid.z;
         int steps = inputExpandGrid.steps;
-
-
 
         ArrayList<ExpandGrid> list = new ArrayList<>();
         int x1;
@@ -125,8 +128,6 @@ public class Grid {
         return list;
     }
 
-
-
     public int[][] makeGateDatabase() {
 
         try {
@@ -148,8 +149,6 @@ public class Grid {
         }
         return  gateDatabase;
     }
-
-
 
     // Read in the net database from the file "print1Lines.txt"
     public void makeNetDatabase() {
@@ -186,9 +185,6 @@ public class Grid {
         }
         return endCondition;
     }
-
-
-
 
     public int manhattanDistance(int x, int y, int z, Net netGate){
         int gateNumber = netGate.gate2;

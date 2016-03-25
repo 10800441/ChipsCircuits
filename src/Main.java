@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Main {
 
@@ -36,27 +34,40 @@ int totalScore = 0;
             ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber,startGateY, startGateX, 0, 0, 0);
             gridQueue.add(firstLine);
 
+            int conter = 0;
+            long timet =0;
+
+            int conter2 = 0;
 
             // uitbreden van de grid
             while (true) {
 
+                conter2 ++;
+
+                long start = System.currentTimeMillis();
+              ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
 
-                ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
+                long end = System.currentTimeMillis();
+                timet += end-start;
                 for (ExpandGrid childGrid:  allChildren) {
 
+                    conter ++;
                     if (currentGrid.grid.endCondition(childGrid, net.gate2)) {
 
-                        childGrid.grid.printGrid();
 
+                      childGrid.grid.printGrid();
+                        System.out.println("cont: " + conter + "/ " + conter2 +" T " + timet );
 
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
-                    //childGrid.grid.printGrid();
+
                     gridQueue.add(childGrid);
                 }
 
             }
+
+
         } return null;
     }
 }
