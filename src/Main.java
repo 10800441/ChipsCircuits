@@ -45,7 +45,7 @@ int totalScore = 0;
                 for (ExpandGrid childGrid:  allChildren) {
                     checkScore ++;
 
-                    if ( childGrid.estimate <= 1) {
+                    if ( childGrid.estimate < 1) {
                        childGrid.grid.printGrid();
                         System.out.println("");
                         System.out.print("\033[36m");
