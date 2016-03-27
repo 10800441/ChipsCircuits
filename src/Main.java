@@ -8,7 +8,7 @@ public class Main {
 
         int X_SIZE = 19;
         int Y_SIZE = 14;
-        int Z_SIZE = 7;
+        int Z_SIZE = 1;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
         ArrayList<Net> nets = grid.netDatabase;
         GridScore currentGrid = new GridScore(grid, 0, nets);
@@ -44,9 +44,9 @@ int totalScore = 0;
 
                 for (ExpandGrid childGrid:  allChildren) {
                     checkScore ++;
-
+                    childGrid.grid.printGrid();
                     if ( childGrid.estimate < 1) {
-                       childGrid.grid.printGrid();
+
                         System.out.println("");
                         System.out.print("\033[36m");
                         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
