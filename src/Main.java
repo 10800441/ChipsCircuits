@@ -8,7 +8,7 @@ public class Main {
 
         int X_SIZE = 19;
         int Y_SIZE = 14;
-        int Z_SIZE = 1;
+        int Z_SIZE = 7;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
         ArrayList<Net> nets = grid.netDatabase;
         GridScore currentGrid = new GridScore(grid, 0, nets);
@@ -43,17 +43,20 @@ int totalScore = 0;
               ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
                 for (ExpandGrid childGrid:  allChildren) {
-                    checkScore ++;
-                    childGrid.grid.printGrid();
-                    if ( childGrid.estimate < 1) {
 
+
+                    if ( childGrid.estimate < 1) {
+                        checkScore += childGrid.steps;
+                        childGrid.grid.printGrid();
                         System.out.println("");
                         System.out.print("\033[36m");
                         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                         System.out.print("\033[0m");
 
-                        System.out.println("score of your program: " + checkScore + " for line L" + childGrid.number);
+                        checkScore += childGrid.steps + 1;
+                        System.out.println("score of your program: total Length " + checkScore + " (till line L"  + childGrid.number + " )");
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
+
                     }
                     gridQueue.add(childGrid);
                 }
