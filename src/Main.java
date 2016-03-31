@@ -1,26 +1,40 @@
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 public class Main {
-    static int checkScore= 0;
     public static void main(String[] args) {
 
-long start = System.currentTimeMillis();
-            int X_SIZE = 19;
-            int Y_SIZE = 14;
-            int Z_SIZE = 7;
-            Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-            ArrayList<Net> nets = grid.netDatabase;
-            GridScore currentGrid = new GridScore(grid, 0, nets);
+        int X_SIZE = 19;
+        int Y_SIZE = 14;
+        int Z_SIZE = 7;
+        Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
+        ArrayList<Net> nets1 = grid.netDatabase;
+        int currentTotal = 10000;
+        for (int i = 0; i < 100; i++) {
+
+            ArrayList<Net> nets = randomNets(nets1);
             int totalScore = 0;
+            GridScore currentGrid = new GridScore(grid, 0, nets);
+
 
             for (int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
                 currentGrid = astar(currentGrid, lineNumber);
+
+
                 totalScore += currentGrid.score;
             }
-            System.out.print(totalScore);
-        long end = System.currentTimeMillis();
-        System.out.print("Time " +  (end-start));
+
+
+            if(totalScore < currentTotal){
+
+                currentTotal = totalScore;
+
+                currentGrid.grid.printGrid();
+                System.out.print(totalScore);
+            }
+        }
+
     }
 
     private static GridScore astar(GridScore currentGrid, int lineNumber){
@@ -38,21 +52,15 @@ long start = System.currentTimeMillis();
             // uitbreden van de grid
             while (true) {
 
+
+
               ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
                 for (ExpandGrid childGrid:  allChildren) {
 
 
                     if ( childGrid.estimate < 1) {
-                        childGrid.grid.printGrid();
-                        checkScore += childGrid.steps;
-                        System.out.println("");
-                        System.out.print("\033[36m");
-                        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                        System.out.print("\033[0m");
 
-                        checkScore += childGrid.steps;
-                        System.out.println("score of your program: total Length " + checkScore + " (till line L"  + childGrid.number + ")");
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
                     gridQueue.add(childGrid);
@@ -62,6 +70,18 @@ long start = System.currentTimeMillis();
 
 
         } return null;
+    }
+    
+    private static ArrayList<Net>randomNets(ArrayList<Net> nets1){
+Random rgen = new Random();
+
+        int random1 = rgen.nextInt(nets1.size());
+        int random2 = rgen.nextInt(nets1.size());
+        Net interchangable = nets1.get(random2);
+        nets1.set(random2, nets1.get(random1));
+        nets1.set(random1, interchangable);
+        return nets1;
+        
     }
 }
 
