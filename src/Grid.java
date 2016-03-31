@@ -5,24 +5,29 @@ import java.util.ArrayList;
 
 public class Grid {
     String[][][] grid;
-    int[][] gateDatabase = new int[100][100];
+    int[][] gateDatabase;
     ArrayList<Net> netDatabase = new ArrayList<>();
+
+
+public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
+    grid = new String[width][height][depth];
+    this.gateDatabase = gateDatabase;
+    for(int i = 0; i < gateDatabase.length; i++){
+        addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
+    }
+    this.netDatabase = netDatabase;
+
+    }
 
 
 
     public Grid(int width, int height, int depth) {
-        grid = new String[width][height][depth];
-        makeNetDatabase();
-
-        for(int i = 0; i < makeGateDatabase().length; i++){
-            addGate(i, makeGateDatabase()[i][1], makeGateDatabase()[i][2]);
-        }
-
+        this(width, height, depth, makeGateDatabase(), makeNetDatabase());
     }
 
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid){
-       this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length);
+       this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length, oldGrid.gateDatabase, oldGrid.netDatabase);
         for(int i = 0; i < oldGrid.grid[0][0].length; i++){
             for(int k = 0; k < oldGrid.grid[0].length; k++) {
                 for (int n = 0; n < oldGrid.grid.length; n++) {
@@ -125,8 +130,8 @@ public class Grid {
         return list;
     }
 
-    public int[][] makeGateDatabase() {
-
+    public static int[][] makeGateDatabase() {
+        int[][] gateDatabase = new int[100][100];
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
             String line;
@@ -148,8 +153,8 @@ public class Grid {
     }
 
     // Read in the net database from the file "print1Lines.txt"
-    public void makeNetDatabase() {
-
+    public static ArrayList<Net> makeNetDatabase() {
+        ArrayList<Net> netDatabase = new ArrayList<>();
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
             String line;
@@ -166,6 +171,7 @@ public class Grid {
         } catch (IOException ex) {
             System.err.println("Error: " + ex);
         }
+        return netDatabase;
     }
 
 

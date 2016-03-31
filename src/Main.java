@@ -5,22 +5,23 @@ public class Main {
     static int checkScore= 0;
     public static void main(String[] args) {
 
+long start = System.currentTimeMillis();
+            int X_SIZE = 19;
+            int Y_SIZE = 14;
+            int Z_SIZE = 7;
+            Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
+            ArrayList<Net> nets = grid.netDatabase;
+            GridScore currentGrid = new GridScore(grid, 0, nets);
+            int totalScore = 0;
 
-        int X_SIZE = 19;
-        int Y_SIZE = 14;
-        int Z_SIZE = 7;
-        Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        ArrayList<Net> nets = grid.netDatabase;
-        GridScore currentGrid = new GridScore(grid, 0, nets);
-        int totalScore = 0;
-
-        for(int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-            currentGrid = astar(currentGrid, lineNumber);
-            totalScore +=  currentGrid.score;
-        }
-        System.out.print(totalScore);
+            for (int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
+                currentGrid = astar(currentGrid, lineNumber);
+                totalScore += currentGrid.score;
+            }
+            System.out.print(totalScore);
+        long end = System.currentTimeMillis();
+        System.out.print("Time " +  (end-start));
     }
-
 
     private static GridScore astar(GridScore currentGrid, int lineNumber){
         for (int i = 0; i < currentGrid.netDatabase.size(); i++) {
@@ -36,7 +37,7 @@ public class Main {
 
             // uitbreden van de grid
             while (true) {
-             
+
               ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
                 for (ExpandGrid childGrid:  allChildren) {
