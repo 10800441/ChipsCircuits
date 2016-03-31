@@ -39,6 +39,8 @@ public class Grid {
         for (int j = 0; j < grid[0][0].length; j++) {
             System.out.println("");
             int layer = j+1;
+
+            System.out.println("");
             System.out.println("Grid layer: " + layer);
             for (int i = 1; i < grid.length; i++) {   //creation of height Y
                 System.out.println("");

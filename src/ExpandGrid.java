@@ -26,7 +26,7 @@ public class ExpandGrid implements Comparable{
     @Override
     public int compareTo(Object o) {
         ExpandGrid other = (ExpandGrid) o;
-        if(this.steps + this.estimate < other.steps + other.estimate) return -1; 
+        if(this.steps + this.estimate < other.steps + other.estimate) return -1;
         if(this.steps + this.estimate > other.steps + other.estimate) return 1;
         return 0;
 
