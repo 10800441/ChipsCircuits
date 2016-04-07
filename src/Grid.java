@@ -23,6 +23,7 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
 
     public Grid(int width, int height, int depth) {
         this(width, height, depth, makeGateDatabase(), makeNetDatabase());
+        //sort();
     }
 
     // copy constructor to make copies of the current grid
@@ -149,6 +150,7 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
         catch (IOException ex) {
             System.err.println("Error: " + ex);
         }
+
         return  gateDatabase;
     }
 

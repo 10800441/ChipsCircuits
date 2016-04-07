@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -9,11 +10,13 @@ public class Main {
         int Y_SIZE = 14;
         int Z_SIZE = 7;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        ArrayList<Net> nets1 = grid.netDatabase;
+        ArrayList<Net> nets = grid.netDatabase;
+        Collections.shuffle(nets);
+
         int currentTotal = 10000;
         for (int i = 0; i < 100; i++) {
 
-            ArrayList<Net> nets = randomNets(nets1);
+            nets = mutateNets(nets);
             int totalScore = 0;
             GridScore currentGrid = new GridScore(grid, 0, nets);
 
@@ -25,12 +28,12 @@ public class Main {
                 totalScore += currentGrid.score;
             }
 
-
+            System.out.println("Score: " + totalScore);
             if(totalScore < currentTotal){
 
                 currentTotal = totalScore;
 
-                currentGrid.grid.printGrid();
+                //currentGrid.grid.printGrid();
                 System.out.print(totalScore);
             }
         }
@@ -38,7 +41,7 @@ public class Main {
     }
 
     private static GridScore astar(GridScore currentGrid, int lineNumber){
-        for (int i = 0; i < currentGrid.netDatabase.size(); i++) {
+
             PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
             Net net = currentGrid.netDatabase.get(lineNumber);
@@ -50,8 +53,8 @@ public class Main {
             gridQueue.add(firstLine);
 
             // uitbreden van de grid
-            while (true) {
-
+            int count = 0;
+            while (count < 10000) {
 
 
               ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
@@ -66,13 +69,16 @@ public class Main {
                     gridQueue.add(childGrid);
                 }
 
+
             }
+            count++;
+         return new GridScore(currentGrid.grid, 100000, currentGrid.netDatabase);
 
-
-        } return null;
     }
-    
-    private static ArrayList<Net>randomNets(ArrayList<Net> nets1){
+
+
+
+    private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
 Random rgen = new Random();
 
         int random1 = rgen.nextInt(nets1.size());

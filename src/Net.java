@@ -10,7 +10,6 @@ public class Net {
     public String toString(){
         return "Net: " + gate1 + " " + gate2;
 
-
     }
 
 }
