@@ -1,3 +1,4 @@
+package solver;
 
 public class Net {
     final int gate1;

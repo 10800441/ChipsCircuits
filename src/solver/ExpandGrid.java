@@ -1,3 +1,5 @@
+package solver;
+
 public class ExpandGrid implements Comparable{
     final Grid grid;
     final int number;

@@ -1,3 +1,5 @@
+package solver;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,6 +23,7 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
 
 
 
+
     public Grid(int width, int height, int depth) {
         this(width, height, depth, makeGateDatabase(), makeNetDatabase());
         //sort();
@@ -28,7 +31,11 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
 
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid){
-       this(oldGrid.grid.length, oldGrid.grid[0].length, oldGrid.grid[0][0].length, oldGrid.gateDatabase, oldGrid.netDatabase);
+
+        grid = new String[oldGrid.grid.length][oldGrid.grid[0].length][oldGrid.grid[0][0].length];
+        this.gateDatabase = oldGrid.gateDatabase;
+        this.netDatabase = oldGrid.netDatabase;
+
         for(int i = 0; i < oldGrid.grid[0][0].length; i++){
             for(int k = 0; k < oldGrid.grid[0].length; k++) {
                 for (int n = 0; n < oldGrid.grid.length; n++) {

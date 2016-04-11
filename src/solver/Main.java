@@ -1,3 +1,5 @@
+package solver;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -14,7 +16,9 @@ public class Main {
         Collections.shuffle(nets);
 
         int currentTotal = 10000;
-        for (int i = 0; i < 100; i++) {
+
+
+        while(true) {
 
             nets = mutateNets(nets);
             int totalScore = 0;
@@ -33,7 +37,7 @@ public class Main {
 
                 currentTotal = totalScore;
 
-                //currentGrid.grid.printGrid();
+                currentGrid.grid.printGrid();
                 System.out.print(totalScore);
             }
         }
@@ -54,24 +58,20 @@ public class Main {
 
             // uitbreden van de grid
             int count = 0;
-            while (count < 10000) {
+            while (count < 10000 && !gridQueue.isEmpty()) {
+                //if (count % 100 == 0) System.out.println(gridQueue.size());
 
-
-              ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
+                ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
 
                 for (ExpandGrid childGrid:  allChildren) {
-
-
                     if ( childGrid.estimate < 1) {
-
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
                     gridQueue.add(childGrid);
                 }
 
-
+                count++;
             }
-            count++;
          return new GridScore(currentGrid.grid, 100000, currentGrid.netDatabase);
 
     }
