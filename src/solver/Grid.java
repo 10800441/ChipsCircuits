@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Grid {
-    static String[][][] grid;
-    static int[][] gateDatabase;
+    String[][][] grid;
+    int[][] gateDatabase;
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
@@ -100,15 +100,15 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
     }
 
     // provides an expandgrid for the create_possible_lines method
-    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, Net net) {
+    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2) {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
-        int estimate = manhattanDistance(x, y, z, net);
+        int estimate = manhattanDistance(x, y, x2, y2);
         return new ExpandGrid(copy_grid, number, x, y, z, steps+1, estimate);
     }
 
 
-    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, Net net) {
+    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, int x2, int y2) {
         Grid inputGrid = inputExpandGrid.grid;
         int number = inputExpandGrid.number;
         int x = inputExpandGrid.x;
@@ -119,29 +119,29 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
         ArrayList<ExpandGrid> list = new ArrayList<>();
 
         if( x+1 > 0 && x+1 < grid.length && grid[x+1][y][z] == null) {
-            list.add(addLine(inputGrid, number, x+1, y, z, steps, net));
+            list.add(addLine(inputGrid, number, x+1, y, z, steps, x2, y2));
         }
         if( x-1 > 0 && x-1 < grid.length && grid[x-1][y][z] == null) {
-            list.add(addLine(inputGrid, number, x-1, y, z, steps, net));
+            list.add(addLine(inputGrid, number, x-1, y, z, steps, x2, y2));
         }
         if( y+1 > 0 && y+1 < grid[0].length && grid[x][y+1][z] == null) {
-            list.add(addLine(inputGrid, number, x,  y+1, z, steps, net));
+            list.add(addLine(inputGrid, number, x,  y+1, z, steps, x2, y2));
         }
         if( y-1 > 0 && y-1 < grid[0].length && grid[x][y-1][z] == null) {
-            list.add(addLine(inputGrid, number, x, y-1, z, steps, net));
+            list.add(addLine(inputGrid, number, x, y-1, z, steps, x2, y2));
         }
         if( z+1 > 0 && z+1 < grid[0][0].length && grid[x][y][z+1] == null) {
-            list.add(addLine(inputGrid, number, x, y,  z+1, steps, net));
+            list.add(addLine(inputGrid, number, x, y,  z+1, steps, x2, y2));
         }
         if( z-1 > 0 && z-1 < grid[0][0].length && grid[x][y][z-1] == null) {
-            list.add(addLine(inputGrid, number, x, y, z-1, steps, net));
+            list.add(addLine(inputGrid, number, x, y, z-1, steps, x2, y2));
         }
         return list;
     }
 
 
-    public static Grid create_line(GridScore inputGridScore, Net net, int layer, int lineNumber) {
-        Grid inputGrid = inputGridScore.grid;
+    public int[] create_line(Net net, int layer, int lineNumber) {
+
         int gate1 = net.gate1;
         int gate2 = net.gate2;
 
@@ -152,46 +152,45 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
         int gate2Y = gateDatabase[gate2][1];
 
         int i1 = 1;
-        if(grid[gate1X][gate1Y][1] != null ) {
+        if(this.grid[gate1X][gate1Y][1] != null ) {
             i1 = 0;
-            if (grid[gate1X + 1][gate1Y][1] == null) {
+            if (this.grid[gate1X + 1][gate1Y][1] == null) {
                 gate1X = gate1X + 1;
-            } else if (grid[gate1X - 1][gate1Y][1] == null) {
+            } else if (this.grid[gate1X - 1][gate1Y][1] == null) {
                 gate1X = gate1X - 1;
-            } else if (grid[gate1X][gate1Y + 1][1] == null) {
+            } else if (this.grid[gate1X][gate1Y + 1][1] == null) {
                 gate1Y = gate1Y + 1;
-            } else if (grid[gate1X][gate1Y - 1][1] == null) {
+            } else if (this.grid[gate1X][gate1Y - 1][1] == null) {
                 gate1Y = gate1Y - 1;
             }
         }
 
         int i2 = 1;
-        if(grid[gate2X][gate2Y][1] != null ) {
+        if(this.grid[gate2X][gate2Y][1] != null ) {
             i2 = 0;
-            if(grid[gate2X+1][gate2Y][1] == null ) {
+            if(this.grid[gate2X+1][gate2Y][1] == null ) {
                 gate2X = gate2X+1;
-            } else if(grid[gate2X-1][gate2Y][1] == null ) {
+            } else if(this.grid[gate2X-1][gate2Y][1] == null ) {
                 gate2X = gate2X-1;
-            } else if(grid[gate2X][gate2Y+1][1] == null ) {
+            } else if(this.grid[gate2X][gate2Y+1][1] == null ) {
                 gate2Y = gate2Y+1;
-            } else if(grid[gate2X][gate2Y-1][1] == null ) {
+            } else if(this.grid[gate2X][gate2Y-1][1] == null ) {
                 gate2Y = gate2Y-1;
             }
 
         }
 
 
-
-
-
-        for(int z1 = i1; z1 < layer; z1++) {
-            inputGrid.addLine(lineNumber, gate1X, gate1Y, z1);
+        for(int z1 = i1; z1 <= layer; z1++) {
+            this.addLine(lineNumber, gate1X, gate1Y, z1);
         }
 
-        for(int z2 = i2; z2 < layer; z2++) {
-            inputGrid.addLine(lineNumber, gate2X, gate2Y, z2);
+        for(int z2 = i2; z2 <= layer; z2++) {
+            this.addLine(lineNumber, gate2X, gate2Y, z2);
         }
-        return inputGrid;
+
+        int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y};
+        return coordinates;
     }
 
 
@@ -243,12 +242,9 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
 
 
 
-    public int manhattanDistance(int x, int y, int z, Net netGate){
-        int gateNumber = netGate.gate2;
-        int y2 = gateDatabase[gateNumber][1];
-        int x2 = gateDatabase[gateNumber][2];
+    public int manhattanDistance(int x1, int y1, int x2, int y2){
 
-        return Math.abs(x2-x) + Math.abs(y2-y) + (z-1);
+        return Math.abs(x2-x1) + Math.abs(y2-y1);
     }
 
 }
