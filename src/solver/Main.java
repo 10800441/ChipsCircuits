@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import static solver.Grid.*;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -27,24 +29,28 @@ public class Main {
             GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-            for(int i = 0; i < nets.size(); i++) {
-                Net net1 = nets.get(i);
-                Grid.create_line(currentGrid, net1, 5, i);
-            }
-            //for (int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-             //   currentGrid = astar(currentGrid, lineNumber);
-
-
-               // totalScore += currentGrid.score;
+            //for(int i = 0; i < nets.size(); i++) {
+            //    Net net1 = nets.get(i);
+            //    Grid.create_line(currentGrid, net1, 7, i);
             //}
+            for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
+                Net net1 = nets.get(lineNumber);
+                int layerNumber = 4;
+
+                int[] coordinates = grid.create_line(net1, layerNumber, lineNumber);
+
+                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
+
+                totalScore += currentGrid.score;
+            }
 
             System.out.println("Score: " + totalScore);
            // if(totalScore < currentTotal){
 
            //     currentTotal = totalScore;
 
-                currentGrid.grid.printGrid();
-           //     System.out.print(totalScore);
+               grid.printGrid();
+                System.out.print(totalScore);
            // }
         //}
 
@@ -52,27 +58,33 @@ public class Main {
 
 
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber){
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates){
+
+        int x1 = coordinates[0];
+        int y1 = coordinates[1];
+        int x2 = coordinates[2];
+        int y2 = coordinates[3];
 
             PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
             Net net = currentGrid.netDatabase.get(lineNumber);
             int startGate = net.gate1;
-            int startGateX = currentGrid.grid.gateDatabase[startGate][1];
-            int startGateY = currentGrid.grid.gateDatabase[startGate][2];
+            int startGateX = x1;
+            int startGateY = y1;
 
-            ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber,startGateY, startGateX, 0, 0, 0);
-            gridQueue.add(firstLine);
+            ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, startGateY, startGateX, layerNumber, 0, 0);
+
+        gridQueue.add(firstLine);
 
             // uitbreden van de grid
             int count = 0;
             while (count < 5000 && !gridQueue.isEmpty()) {
-                //if (count % 100 == 0) System.out.println(gridQueue.size());
 
-                ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
+                ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2);
 
                 for (ExpandGrid childGrid:  allChildren) {
-                    if ( childGrid.estimate < 1) {
+
+                    if ( childGrid.estimate <= 1) {
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
                     gridQueue.add(childGrid);
