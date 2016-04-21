@@ -18,31 +18,39 @@ public class Main {
         int currentTotal = 10000;
 
 
-        while(true) {
+
+
+        //while(true) {
 
             nets = mutateNets(nets);
             int totalScore = 0;
             GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-            for (int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-                currentGrid = astar(currentGrid, lineNumber);
-
-
-                totalScore += currentGrid.score;
+            for(int i = 0; i < nets.size(); i++) {
+                Net net1 = nets.get(i);
+                Grid.create_line(currentGrid, net1, 5, i);
             }
+            //for (int lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
+             //   currentGrid = astar(currentGrid, lineNumber);
+
+
+               // totalScore += currentGrid.score;
+            //}
 
             System.out.println("Score: " + totalScore);
-            if(totalScore < currentTotal){
+           // if(totalScore < currentTotal){
 
-                currentTotal = totalScore;
+           //     currentTotal = totalScore;
 
                 currentGrid.grid.printGrid();
-                System.out.print(totalScore);
-            }
-        }
+           //     System.out.print(totalScore);
+           // }
+        //}
 
     }
+
+
 
     private static GridScore astar(GridScore currentGrid, int lineNumber){
 
@@ -58,7 +66,7 @@ public class Main {
 
             // uitbreden van de grid
             int count = 0;
-            while (count < 10000 && !gridQueue.isEmpty()) {
+            while (count < 5000 && !gridQueue.isEmpty()) {
                 //if (count % 100 == 0) System.out.println(gridQueue.size());
 
                 ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), net);
