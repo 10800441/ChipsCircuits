@@ -6,27 +6,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Grid {
-    String[][][] grid;
-    int[][] gateDatabase;
+    static String[][][] grid;
+    static int[][] gateDatabase;
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
+public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
+    grid = new String[width][height][depth];
+    this.gateDatabase = gateDatabase;
+    for(int i = 0; i < gateDatabase.length; i++){
+        addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
+    }
+    this.netDatabase = netDatabase;
 
-    public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
-        grid = new String[width][height][depth];
-        this.gateDatabase = gateDatabase;
-        for(int i = 0; i < gateDatabase.length; i++){
-            addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
-        }
-        this.netDatabase = netDatabase;
+
 
     }
 
 
 
+
     public Grid(int width, int height, int depth) {
         this(width, height, depth, makeGateDatabase(), makeNetDatabase());
-        //sort();
     }
 
     // copy constructor to make copies of the current grid
@@ -138,6 +139,63 @@ public class Grid {
         return list;
     }
 
+
+    public static Grid create_line(GridScore inputGridScore, Net net, int layer, int lineNumber) {
+        Grid inputGrid = inputGridScore.grid;
+        int gate1 = net.gate1;
+        int gate2 = net.gate2;
+
+        int gate1X = gateDatabase[gate1][2];
+        int gate1Y = gateDatabase[gate1][1];
+
+        int gate2X = gateDatabase[gate2][2];
+        int gate2Y = gateDatabase[gate2][1];
+
+        int i1 = 1;
+        if(grid[gate1X][gate1Y][1] != null ) {
+            i1 = 0;
+            if (grid[gate1X + 1][gate1Y][1] == null) {
+                gate1X = gate1X + 1;
+            } else if (grid[gate1X - 1][gate1Y][1] == null) {
+                gate1X = gate1X - 1;
+            } else if (grid[gate1X][gate1Y + 1][1] == null) {
+                gate1Y = gate1Y + 1;
+            } else if (grid[gate1X][gate1Y - 1][1] == null) {
+                gate1Y = gate1Y - 1;
+            }
+        }
+
+        int i2 = 1;
+        if(grid[gate2X][gate2Y][1] != null ) {
+            i2 = 0;
+            if(grid[gate2X+1][gate2Y][1] == null ) {
+                gate2X = gate2X+1;
+            } else if(grid[gate2X-1][gate2Y][1] == null ) {
+                gate2X = gate2X-1;
+            } else if(grid[gate2X][gate2Y+1][1] == null ) {
+                gate2Y = gate2Y+1;
+            } else if(grid[gate2X][gate2Y-1][1] == null ) {
+                gate2Y = gate2Y-1;
+            }
+
+        }
+
+
+
+
+
+        for(int z1 = i1; z1 < layer; z1++) {
+            inputGrid.addLine(lineNumber, gate1X, gate1Y, z1);
+        }
+
+        for(int z2 = i2; z2 < layer; z2++) {
+            inputGrid.addLine(lineNumber, gate2X, gate2Y, z2);
+        }
+        return inputGrid;
+    }
+
+
+
     public static int[][] makeGateDatabase() {
         int[][] gateDatabase = new int[100][100];
         try {
@@ -170,9 +228,9 @@ public class Grid {
             while (true) {
                 line = rd.readLine();
                 if (line == null) break;
-                String[] words = line.split(", ");
+                String[] words = line.split(",");
 
-                Net net = new Net((Integer.valueOf(words[0])+1), (Integer.valueOf(words[1])+1));
+                Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
                 netDatabase.add(net);
 
             }
