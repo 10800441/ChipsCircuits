@@ -11,16 +11,16 @@ public class Grid {
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
-    grid = new String[width][height][depth];
-    this.gateDatabase = gateDatabase;
-    for(int i = 0; i < gateDatabase.length; i++){
-        addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
-    }
-    this.netDatabase = netDatabase;
+
+    public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
+        grid = new String[width][height][depth];
+        this.gateDatabase = gateDatabase;
+        for(int i = 0; i < gateDatabase.length; i++){
+            addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
+        }
+        this.netDatabase = netDatabase;
 
     }
-
 
 
 
@@ -170,9 +170,9 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
             while (true) {
                 line = rd.readLine();
                 if (line == null) break;
-                String[] words = line.split(",");
+                String[] words = line.split(", ");
 
-                Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
+                Net net = new Net((Integer.valueOf(words[0])+1), (Integer.valueOf(words[1])+1));
                 netDatabase.add(net);
 
             }
