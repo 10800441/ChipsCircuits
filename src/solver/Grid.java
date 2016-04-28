@@ -11,13 +11,13 @@ public class Grid {
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
-    grid = new String[width][height][depth];
-    this.gateDatabase = gateDatabase;
-    for(int i = 0; i < gateDatabase.length; i++){
-        addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
-    }
-    this.netDatabase = netDatabase;
+    public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase){
+        grid = new String[width][height][depth];
+        this.gateDatabase = gateDatabase;
+        for(int i = 0; i < gateDatabase.length; i++){
+            addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
+        }
+        this.netDatabase = netDatabase;
 
 
 
@@ -92,7 +92,7 @@ public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Ne
     }
 
     public void addGate(int number, int y_coordinate, int x_coordinate) {
-       grid[x_coordinate][y_coordinate][0] = "G"+ number;
+        grid[x_coordinate][y_coordinate][0] = "G"+ number;
     }
 
     public void addLine(int number, int x, int y, int z) {
