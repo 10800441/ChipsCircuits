@@ -99,6 +99,9 @@ public class Main {
 
 
 
+
+
+
     private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
 Random rgen = new Random();
 
@@ -111,6 +114,7 @@ Random rgen = new Random();
         
     }
 }
+
 
 
 

@@ -1,9 +1,12 @@
+
+
 package solver;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Prior ityQueue;
 import java.util.PriorityQueue;
 
 public class Grid {
@@ -87,12 +90,17 @@ public class Grid {
     }
 
     public void addGate(int number, int y_coordinate, int x_coordinate) {
+<<<<<<< HEAD
         grid[x_coordinate][y_coordinate][0] = "G" + number;
     }
 
     public void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
     }
+        grid[x_coordinate][y_coordinate][0] = "G"+ number;
+=======
+        grid[x_coordinate][y_coordinate][0] = "G" + number;
+>>>>>>> 1928f01145922deb46b8700178cd91b8ace6d32d
 
     // provides an expandgrid for the create_possible_lines method
     public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2) {
@@ -242,3 +250,4 @@ public class Grid {
     }
 }
 
+    public int manhattanDistance(int x1, int y1, int x2, int y2) {

@@ -1,7 +1,6 @@
 package solver;
 
 public class ExpandGrid implements Comparable{
-
     final int number;
     final int x;
     final int y;
@@ -21,6 +20,9 @@ public class ExpandGrid implements Comparable{
     }
     public String toString(){
         return "CurrentGrid: " + number + " x: " + z + " y: " + y + " z: " + z;
+
+
+
 
 
     }
