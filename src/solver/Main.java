@@ -35,7 +35,7 @@ public class Main {
 
                 int[] coordinates = grid.create_line(net1, layerNumber, lineNumber);
 
-                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates, grid);
+                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
 
                 totalScore += currentGrid.score;
             }
@@ -54,7 +54,7 @@ public class Main {
 
 
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates, Grid grid){
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates){
 
         int x1 = coordinates[0];
         int y1 = coordinates[1];
@@ -68,7 +68,7 @@ public class Main {
             int startGateX = x1;
             int startGateY = y1;
 
-            ExpandGrid firstLine = new ExpandGrid(grid, lineNumber, startGateY, startGateX, layerNumber, 0, 0);
+            ExpandGrid firstLine = new ExpandGrid(lineNumber, startGateY, startGateX, layerNumber, 0, 0);
 
         gridQueue.add(firstLine);
 
@@ -80,7 +80,7 @@ public class Main {
 
                 for (ExpandGrid childGrid:  allChildren) {
                     if ( childGrid.estimate <= 1) {
-                        return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
+                        return new GridScore(childGrid.steps+1, currentGrid.netDatabase);
                     }
                     gridQueue.add(childGrid);
                 }
