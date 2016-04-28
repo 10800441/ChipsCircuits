@@ -154,9 +154,9 @@ public class Grid {
         int gate2X = gateDatabase[gate2][2];
         int gate2Y = gateDatabase[gate2][1];
 
-        int i1 = 1;
+        int p1 = 1;
         if (this.grid[gate1X][gate1Y][1] != null) {
-            i1 = 0;
+            p1 = 0;
             if (this.grid[gate1X + 1][gate1Y][1] == null) {
                 gate1X = gate1X + 1;
             } else if (this.grid[gate1X - 1][gate1Y][1] == null) {
@@ -168,9 +168,9 @@ public class Grid {
             }
         }
 
-        int i2 = 1;
+        int p2 = 1;
         if (this.grid[gate2X][gate2Y][1] != null) {
-            i2 = 0;
+            p2 = 0;
             if (this.grid[gate2X + 1][gate2Y][1] == null) {
                 gate2X = gate2X + 1;
             } else if (this.grid[gate2X - 1][gate2Y][1] == null) {
@@ -183,16 +183,30 @@ public class Grid {
 
         }
 
-
-        for (int z1 = i1; z1 <= layer; z1++) {
-            this.addLine(lineNumber, gate1X, gate1Y, z1);
+        int z;
+        for(z = p1; z < layer; z++) {
+            this.addLine(lineNumber, gate1X, gate1Y, z);
         }
 
-        for (int z2 = i2; z2 <= layer; z2++) {
-            this.addLine(lineNumber, gate2X, gate2Y, z2);
+        for(z = p2; z < layer; z++) {
+            this.addLine(lineNumber, gate2X, gate2Y, z);
         }
 
-        int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y};
+/*
+            while (p1 <= layer && p2 <= layer) {
+                if(this.grid[gate1X][gate1Y][p1] != null || this.grid[gate2X][gate2Y][p2] != null) {
+                    p1++;
+                    break;
+                } else {
+                        this.addLine(lineNumber, gate1X, gate1Y, p1);
+                        this.addLine(lineNumber, gate2X, gate2Y, p2);
+                        p1++;
+                        p2++;
+                    }
+                }
+*/
+
+        int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y, z-1};
         return coordinates;
     }
 
