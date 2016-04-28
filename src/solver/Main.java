@@ -24,41 +24,39 @@ public class Main {
 
         //while(true) {
 
-        nets = mutateNets(nets);
-        int totalScore = 0;
-        GridScore currentGrid = new GridScore(grid, 0, nets);
+            nets = mutateNets(nets);
+            int totalScore = 0;
+
+            GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-        //for(int i = 0; i < nets.size(); i++) {
-        //    Net net1 = nets.get(i);
-        //    Grid.create_line(currentGrid, net1, 7, i);
-        //}
-        for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
-            Net net1 = nets.get(lineNumber);
-            int layerNumber = 4;
+            //for(int i = 0; i < nets.size(); i++) {
+            //    Net net1 = nets.get(i);
+            //    Grid.create_line(currentGrid, net1, 7, i);
+            //}
+            for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
+                Net net1 = nets.get(lineNumber);
+                int layerNumber = 4;
+                int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
 
-            int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
+                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
 
-            currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
+                totalScore += currentGrid.score;
+            }
+        currentGrid.grid.printGrid();
+            System.out.println("Score: " + totalScore);
+           // if(totalScore < currentTotal){
 
-            totalScore += currentGrid.score;
-        }
+           //     currentTotal = totalScore;
 
-        System.out.println("Score: " + totalScore);
-        // if(totalScore < currentTotal){
 
-        //     currentTotal = totalScore;
-
-        grid.printGrid();
-        System.out.print(totalScore);
-        // }
+                System.out.print(totalScore);
+           // }
         //}
 
     }
 
-
-
-    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates){
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates) {
 
         int x1 = coordinates[0];
         int y1 = coordinates[1];
@@ -82,10 +80,10 @@ public class Main {
 
             ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2);
 
-            for (ExpandGrid childGrid:  allChildren) {
+            for (ExpandGrid childGrid : allChildren) {
 
-                if ( childGrid.estimate <= 1) {
-                    return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
+                if (childGrid.estimate <= 1) {
+                    return new GridScore(childGrid.grid, childGrid.steps + 1, currentGrid.netDatabase);
                 }
                 gridQueue.add(childGrid);
             }
@@ -98,8 +96,11 @@ public class Main {
 
 
 
+
+
+
     private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
-        Random rgen = new Random();
+Random rgen = new Random();
 
         int random1 = rgen.nextInt(nets1.size());
         int random2 = rgen.nextInt(nets1.size());
@@ -107,9 +108,10 @@ public class Main {
         nets1.set(random2, nets1.get(random1));
         nets1.set(random1, interchangable);
         return nets1;
-
+        
     }
 }
+
 
 
 
