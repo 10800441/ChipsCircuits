@@ -70,7 +70,6 @@ public class Main {
 
               currentTotal = totalScore;
 
-               currentGrid.grid.printGrid();
                 System.out.println("totals: "+totalScore);
           // }
             System.out.println("failedtotal: "  + totalScore);
@@ -114,6 +113,11 @@ public class Main {
 
             count++;
         }
+        if(count >= 5000 || gridQueue.isEmpty()) {
+            System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+            currentGrid.grid.printGrid();
+        }
+
         return new GridScore(currentGrid.grid, 100000, currentGrid.netDatabase);
 
     }
@@ -133,7 +137,7 @@ public class Main {
     }
 
     private static int[] countGateOccurrence(ArrayList<Net> nets) {
-        int[] gateOccurrence = new int[25];
+        int[] gateOccurrence = new int[26];
 
         for(int i = 0; i < nets.size(); i++ ) {
             int gate1 = nets.get(i).gate1;

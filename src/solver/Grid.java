@@ -157,6 +157,8 @@ public class Grid {
                 gate1Y = gate1Y + 1;
             } else if (this.grid[gate1X][gate1Y - 1][1] == null) {
                 gate1Y = gate1Y - 1;
+            } else {
+                System.out.println("Error: Could not place pole " + lineNumber);
             }
         }
 
@@ -171,6 +173,8 @@ public class Grid {
                 gate2Y = gate2Y + 1;
             } else if (this.grid[gate2X][gate2Y - 1][1] == null) {
                 gate2Y = gate2Y - 1;
+            } else {
+                System.out.println("Error: Could not place pole " + lineNumber);
             }
 
         }
