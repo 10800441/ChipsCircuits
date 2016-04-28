@@ -34,17 +34,28 @@ public class Main {
             //    Net net1 = nets.get(i);
             //    Grid.create_line(currentGrid, net1, 7, i);
             //}
+            int layerNumber = 7;
+            PoleCoordinates[] poleCoordinates = new PoleCoordinates[nets.size()];
+
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net1 = nets.get(lineNumber);
-                int layerNumber = 4;
-                int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
 
-                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
+                int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
+                poleCoordinates[lineNumber] = new PoleCoordinates(coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                System.out.println("Z!!! " + coordinates[4]);
+                if(lineNumber % 5 == 0 && layerNumber > 0 && lineNumber > 0)
+                    layerNumber--;
+            }
+
+             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
+                currentGrid = astar(currentGrid, lineNumber, poleCoordinates[lineNumber]);
 
                 totalScore += currentGrid.score;
             }
+
+
+
         currentGrid.grid.printGrid();
-            System.out.println("Score: " + totalScore);
            // if(totalScore < currentTotal){
 
            //     currentTotal = totalScore;
@@ -56,21 +67,22 @@ public class Main {
 
     }
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates) {
+    private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates) {
 
-        int x1 = coordinates[0];
-        int y1 = coordinates[1];
-        int x2 = coordinates[2];
-        int y2 = coordinates[3];
+        int x1 = coordinates.x1;
+        int y1 = coordinates.y1;
+        int z = coordinates.z1;
+        int x2 = coordinates.x2;
+        int y2 = coordinates.y2;
+
 
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
         Net net = currentGrid.netDatabase.get(lineNumber);
-        int startGate = net.gate1;
-        int startGateX = x1;
-        int startGateY = y1;
+        int startGateX = y1;
+        int startGateY = x1;
 
-        ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, startGateY, startGateX, layerNumber, 0, 0);
+        ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, startGateY, startGateX, z, 0, 0);
 
         gridQueue.add(firstLine);
 
