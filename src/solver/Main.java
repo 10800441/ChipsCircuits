@@ -20,7 +20,7 @@ public class Main {
         int currentTotal = 10000;
 
 
-
+ 
 
         //while(true) {
 
