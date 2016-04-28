@@ -19,12 +19,21 @@ public class Main {
 
         int currentTotal = 10000;
 
+        int[] occ = countGateOccurrence(nets);
+        for(int i = 0; i < occ.length; i++) {
+            if(occ[i] > 5) {
+                System.out.println("There are no solutions.");
+                break;
+            }
+        }
+        System.out.println("Calculating solution...");
 
- 
 
         //while(true) {
 
             nets = mutateNets(nets);
+
+
             int totalScore = 0;
 
             GridScore currentGrid = new GridScore(grid, 0, nets);
@@ -42,8 +51,9 @@ public class Main {
 
                 int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
                 poleCoordinates[lineNumber] = new PoleCoordinates(coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
-                System.out.println("Z!!! " + coordinates[4]);
-                if(lineNumber % 5 == 0 && layerNumber > 0 && lineNumber > 0)
+
+                int devisionNumber = (nets.size()/Z_SIZE) + 1;
+                if(lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
                     layerNumber--;
             }
 
@@ -55,15 +65,17 @@ public class Main {
 
 
 
-        currentGrid.grid.printGrid();
-           // if(totalScore < currentTotal){
 
-           //     currentTotal = totalScore;
+          // if(totalScore < currentTotal){
 
+              currentTotal = totalScore;
 
-                System.out.print(totalScore);
-           // }
-        //}
+               currentGrid.grid.printGrid();
+                System.out.println("totals: "+totalScore);
+          // }
+            System.out.println("failedtotal: "  + totalScore);
+            currentGrid.grid.printGrid();
+       // }
 
     }
 
@@ -108,11 +120,8 @@ public class Main {
 
 
 
-
-
-
     private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
-Random rgen = new Random();
+        Random rgen = new Random();
 
         int random1 = rgen.nextInt(nets1.size());
         int random2 = rgen.nextInt(nets1.size());
@@ -121,6 +130,18 @@ Random rgen = new Random();
         nets1.set(random1, interchangable);
         return nets1;
         
+    }
+
+    private static int[] countGateOccurrence(ArrayList<Net> nets) {
+        int[] gateOccurrence = new int[25];
+
+        for(int i = 0; i < nets.size(); i++ ) {
+            int gate1 = nets.get(i).gate1;
+            int gate2 = nets.get(i).gate2;
+            gateOccurrence[gate1]++;
+            gateOccurrence[gate2]++;
+        }
+        return gateOccurrence;
     }
 }
 
