@@ -26,20 +26,16 @@ public class Main {
 
             nets = mutateNets(nets);
             int totalScore = 0;
-            GridScore currentGrid = new GridScore(grid, 0, nets);
 
+        GridScore currentGrid = new GridScore(grid, 0, nets);
 
-            //for(int i = 0; i < nets.size(); i++) {
-            //    Net net1 = nets.get(i);
-            //    Grid.create_line(currentGrid, net1, 7, i);
-            //}
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net1 = nets.get(lineNumber);
                 int layerNumber = 4;
 
                 int[] coordinates = grid.create_line(net1, layerNumber, lineNumber);
 
-                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates);
+                currentGrid = astar(currentGrid, lineNumber, layerNumber, coordinates, grid);
 
                 totalScore += currentGrid.score;
             }
@@ -48,8 +44,8 @@ public class Main {
            // if(totalScore < currentTotal){
 
            //     currentTotal = totalScore;
+        grid.printGrid();
 
-               grid.printGrid();
                 System.out.print(totalScore);
            // }
         //}
@@ -58,7 +54,7 @@ public class Main {
 
 
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates){
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int layerNumber, int[] coordinates, Grid grid){
 
         int x1 = coordinates[0];
         int y1 = coordinates[1];
@@ -72,7 +68,7 @@ public class Main {
             int startGateX = x1;
             int startGateY = y1;
 
-            ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, startGateY, startGateX, layerNumber, 0, 0);
+            ExpandGrid firstLine = new ExpandGrid(grid, lineNumber, startGateY, startGateX, layerNumber, 0, 0);
 
         gridQueue.add(firstLine);
 
@@ -80,10 +76,9 @@ public class Main {
             int count = 0;
             while (count < 5000 && !gridQueue.isEmpty()) {
 
-                ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2);
+                ArrayList<ExpandGrid> allChildren = Grid.create_possible_lines(gridQueue.remove(), x2, y2);
 
                 for (ExpandGrid childGrid:  allChildren) {
-
                     if ( childGrid.estimate <= 1) {
                         return new GridScore(childGrid.grid, childGrid.steps+1, currentGrid.netDatabase);
                     }
