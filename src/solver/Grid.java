@@ -95,15 +95,15 @@ public class Grid {
     }
 
     // provides an expandgrid for the create_possible_lines method
-    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2) {
+    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
-        int estimate = manhattanDistance(x, y, x2, y2);
+        int estimate = manhattanDistance(x, y, x2, y2, z, z2);
         return new ExpandGrid(copy_grid, number, x, y, z, steps + 1, estimate);
     }
 
 
-    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, int x2, int y2) {
+    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, int x2, int y2, int z2) {
         Grid inputGrid = inputExpandGrid.grid;
         int number = inputExpandGrid.number;
         int x = inputExpandGrid.x;
@@ -114,22 +114,22 @@ public class Grid {
         ArrayList<ExpandGrid> list = new ArrayList<>();
 
         if (x + 1 > 0 && x + 1 < grid.length && grid[x + 1][y][z] == null) {
-            list.add(addLine(inputGrid, number, x + 1, y, z, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x + 1, y, z, steps, x2, y2, z2));
         }
         if (x - 1 > 0 && x - 1 < grid.length && grid[x - 1][y][z] == null) {
-            list.add(addLine(inputGrid, number, x - 1, y, z, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x - 1, y, z, steps, x2, y2, z2));
         }
         if (y + 1 > 0 && y + 1 < grid[0].length && grid[x][y + 1][z] == null) {
-            list.add(addLine(inputGrid, number, x, y + 1, z, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x, y + 1, z, steps, x2, y2, z2));
         }
         if (y - 1 > 0 && y - 1 < grid[0].length && grid[x][y - 1][z] == null) {
-            list.add(addLine(inputGrid, number, x, y - 1, z, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x, y - 1, z, steps, x2, y2, z2));
         }
         if (z + 1 > 0 && z + 1 < grid[0][0].length && grid[x][y][z + 1] == null) {
-            list.add(addLine(inputGrid, number, x, y, z + 1, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x, y, z + 1, steps, x2, y2, z2));
         }
         if (z - 1 > 0 && z - 1 < grid[0][0].length && grid[x][y][z - 1] == null) {
-            list.add(addLine(inputGrid, number, x, y, z - 1, steps, x2, y2));
+            list.add(addLine(inputGrid, number, x, y, z - 1, steps, x2, y2, z2));
         }
         return list;
     }
@@ -149,32 +149,35 @@ public class Grid {
         int p1 = 1;
         if (this.grid[gate1X][gate1Y][1] != null) {
             p1 = 0;
-            if (this.grid[gate1X + 1][gate1Y][1] == null) {
+            if (this.grid[gate1X + 1][gate1Y][0] == null) {
                 gate1X = gate1X + 1;
-            } else if (this.grid[gate1X - 1][gate1Y][1] == null) {
+            } else if (this.grid[gate1X - 1][gate1Y][0] == null) {
                 gate1X = gate1X - 1;
-            } else if (this.grid[gate1X][gate1Y + 1][1] == null) {
+            } else if (this.grid[gate1X][gate1Y + 1][0] == null) {
                 gate1Y = gate1Y + 1;
-            } else if (this.grid[gate1X][gate1Y - 1][1] == null) {
+            } else if (this.grid[gate1X][gate1Y - 1][0] == null) {
                 gate1Y = gate1Y - 1;
             } else {
                 System.out.println("Error: Could not place pole " + lineNumber);
+                int[] error = {-1, -1, -1, -1, -1};
+                return error;
             }
         }
 
         int p2 = 1;
         if (this.grid[gate2X][gate2Y][1] != null) {
             p2 = 0;
-            if (this.grid[gate2X + 1][gate2Y][1] == null) {
+            if (this.grid[gate2X + 1][gate2Y][0] == null) {
                 gate2X = gate2X + 1;
-            } else if (this.grid[gate2X - 1][gate2Y][1] == null) {
+            } else if (this.grid[gate2X - 1][gate2Y][0] == null) {
                 gate2X = gate2X - 1;
-            } else if (this.grid[gate2X][gate2Y + 1][1] == null) {
+            } else if (this.grid[gate2X][gate2Y + 1][0] == null) {
                 gate2Y = gate2Y + 1;
-            } else if (this.grid[gate2X][gate2Y - 1][1] == null) {
+            } else if (this.grid[gate2X][gate2Y - 1][0] == null) {
                 gate2Y = gate2Y - 1;
             } else {
-                System.out.println("Error: Could not place pole " + lineNumber);
+                int[] error = {-1, -1, -1, -1, -1};
+                return error;
             }
 
         }
@@ -188,19 +191,6 @@ public class Grid {
             this.addLine(lineNumber, gate2X, gate2Y, z);
         }
 
-/*
-            while (p1 <= layer && p2 <= layer) {
-                if(this.grid[gate1X][gate1Y][p1] != null || this.grid[gate2X][gate2Y][p2] != null) {
-                    p1++;
-                    break;
-                } else {
-                        this.addLine(lineNumber, gate1X, gate1Y, p1);
-                        this.addLine(lineNumber, gate2X, gate2Y, p2);
-                        p1++;
-                        p2++;
-                    }
-                }
-*/
 
         int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y, z-1};
         return coordinates;
@@ -254,9 +244,8 @@ public class Grid {
 
 
 
-    public int manhattanDistance(int x1, int y1, int x2, int y2) {
-
-        return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+    public int manhattanDistance(int x1, int y1, int x2, int y2, int z1, int z2) {
+        return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
 }
 
