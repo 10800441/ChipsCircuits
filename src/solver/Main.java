@@ -41,11 +41,9 @@ public class Main {
         //    Net net1 = nets.get(i);
         //    Grid.create_line(currentGrid, net1, 7, i);
         //}
-        boolean error1 = true;
         boolean error = true;
         PoleCoordinates[] poleCoordinates = null;
         int count = 0;
-        while (error1 == true) {
             currentGrid = new GridScore(grid, 0, nets);
             while (error == true) {
                 poleCoordinates = new PoleCoordinates[nets.size()];
@@ -72,32 +70,33 @@ public class Main {
                 }
             }
             System.out.println("Succesfully placed poles.");
+            GridScore gridWithPoles = currentGrid;
 
+        boolean error1 = true;
+        while(error1 == true) {
             error1 = false;
             for (int lineNumber = 0; lineNumber < poleCoordinates.length; lineNumber++) {
 
-                currentGrid = astar(currentGrid, lineNumber, poleCoordinates[lineNumber]);
+                currentGrid = astar(gridWithPoles, lineNumber, poleCoordinates[lineNumber]);
                 if (currentGrid == null) {
                     error1 = true;
                     break;
                 }
                 totalScore += currentGrid.score;
-
             }
+        }
 
-            if(error = false) {
+
+
                 // if(totalScore < currentTotal){
 
                 //currentTotal = totalScore;
 
                 System.out.println("totals: " + totalScore);
                 // }
-                System.out.println("failedtotal: " + totalScore);
                 currentGrid.grid.printGrid();
                 // }
-            }
         }
-    }
 
     private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates) {
 
@@ -133,7 +132,7 @@ public class Main {
             System.out.println("Error: could not generate line " + lineNumber + ", " + net);
             currentGrid.grid.printGrid();
             return null;
-        }
+            }
         return new GridScore(currentGrid.grid, 100000, currentGrid.netDatabase);
     }
 
