@@ -3,7 +3,7 @@ package solver;
 import java.util.ArrayList;
 
 public class GridScore{
-    final Grid grid;
+     Grid grid;
     final int score;
     ArrayList<Net> netDatabase;
 

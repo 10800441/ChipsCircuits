@@ -29,18 +29,13 @@ public class Main {
         System.out.println("Calculating solution...");
 
 
-        //while(true) {
-
 
         int totalScore = 0;
 
         GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-        //for(int i = 0; i < nets.size(); i++) {
-        //    Net net1 = nets.get(i);
-        //    Grid.create_line(currentGrid, net1, 7, i);
-        //}
+        ArrayList<PoleCoordinates> pooolie = new ArrayList<>();
         boolean error = true;
         PoleCoordinates[] poleCoordinates = null;
         int count = 0;
@@ -53,6 +48,7 @@ public class Main {
                 int layerNumber = 7;
                 count++;
                 error = false;
+
                 for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                     Net net1 = nets.get(lineNumber);
 
@@ -61,7 +57,8 @@ public class Main {
                         error = true;
                         System.out.println("Pole error try: " + count);
                     } else {
-                        poleCoordinates[lineNumber] = new PoleCoordinates(coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                        PoleCoordinates alpha = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                       pooolie.add(alpha);
 
                         int devisionNumber = (nets.size() / Z_SIZE) + 1;
                         if (lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
@@ -70,21 +67,29 @@ public class Main {
                 }
             }
             System.out.println("Succesfully placed poles.");
-            GridScore gridWithPoles = currentGrid;
 
-        boolean error1 = true;
-        while(error1 == true) {
-            error1 = false;
-            for (int lineNumber = 0; lineNumber < poleCoordinates.length; lineNumber++) {
+        Grid trialGrid = currentGrid.grid;
+        int lineNumber =0;
+        while(lineNumber < grid.netDatabase.size()) {
+            Collections.shuffle(pooolie);
+            for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
-                currentGrid = astar(gridWithPoles, lineNumber, poleCoordinates[lineNumber]);
-                if (currentGrid == null) {
-                    error1 = true;
-                    break;
+
+               trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
+
+                if (trialGrid == null) {
+                    lineNumber = 0;
+                    trialGrid = currentGrid.grid;
+                    System.out.println("FailedAttempt");
+
+                    totalScore += currentGrid.score;
+
+                } else {                    System.out.println("succesfullay laid line" + lineNumber);
+                     trialGrid.printGrid();
                 }
-                totalScore += currentGrid.score;
             }
         }
+            trialGrid.printGrid();
 
 
 
@@ -94,46 +99,34 @@ public class Main {
 
                 System.out.println("totals: " + totalScore);
                 // }
-                currentGrid.grid.printGrid();
+
                 // }
         }
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates) {
-
-        int x1 = coordinates.x1;
-        int y1 = coordinates.y1;
-        int z = coordinates.z1;
-        int x2 = coordinates.x2;
-        int y2 = coordinates.y2;
+    private static Grid  astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
         Net net = currentGrid.netDatabase.get(lineNumber);
-        int startGateX = y1;
-        int startGateY = x1;
 
-        ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, startGateY, startGateX, z, 0, 0);
+
+        ExpandGrid firstLine = new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0);
         gridQueue.add(firstLine);
 
         // uitbreden van de grid
-        int count = 0;
-        while (count < 5000 && !gridQueue.isEmpty()) {
-            ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z);
+        while (!gridQueue.isEmpty()) {
+            ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
                 if (childGrid.estimate <= 1) {
-                    return new GridScore(childGrid.grid, childGrid.steps + 1, currentGrid.netDatabase);
+                    return new Grid (childGrid.grid);
                 }
                 gridQueue.add(childGrid);
             }
-            count++;
         }
-        if(count >= 5000 || gridQueue.isEmpty()) {
-            System.out.println("Error: could not generate line " + lineNumber + ", " + net);
-            currentGrid.grid.printGrid();
-            return null;
-            }
-        return new GridScore(currentGrid.grid, 100000, currentGrid.netDatabase);
+
+        System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+        return null;
     }
 
     private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
