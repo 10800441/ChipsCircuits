@@ -68,6 +68,7 @@ public class Main {
             }
             System.out.println("Succesfully placed poles.");
 
+        Collections.shuffle(pooolie);
         Grid trialGrid = currentGrid.grid;
         int lineNumber =0;
         while(lineNumber < grid.netDatabase.size()) {
@@ -75,7 +76,8 @@ public class Main {
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
                 System.out.println("Trying to place line " + lineNumber + "...");
-               trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
+                trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
+                System.out.println(trialGrid);
 
                 if (trialGrid == null) {
                     lineNumber = 0;
@@ -83,9 +85,9 @@ public class Main {
                     System.out.println("FailedAttempt");
                     Collections.shuffle(pooolie);
                     totalScore += currentGrid.score;
-
-                } else {                    System.out.println("succesfullay laid line" + lineNumber);
-                     trialGrid.printGrid();
+                } else {
+                    System.out.println("Succesfully placed line " + lineNumber);
+                    trialGrid.printGrid();
                 }
             }
         }
@@ -97,7 +99,7 @@ public class Main {
 
                 //currentTotal = totalScore;
 
-                System.out.println("totals: " + totalScore);
+                System.out.println("Total score: " + totalScore);
                 // }
 
                 // }
@@ -116,7 +118,7 @@ public class Main {
         gridQueue.add(firstLine);
 
         // uitbreden van de grid
-        while (gridQueue.size()>=1) {
+        while (!gridQueue.isEmpty() || gridQueue.size() < 3000 || trialGrid != null) {
             ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
@@ -143,7 +145,6 @@ public class Main {
                 }
             }
         }
-
         System.out.println("Error: could not generate line " + lineNumber + ", " + net);
         return null;
     }
