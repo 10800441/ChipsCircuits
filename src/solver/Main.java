@@ -71,17 +71,17 @@ public class Main {
         Grid trialGrid = currentGrid.grid;
         int lineNumber =0;
         while(lineNumber < grid.netDatabase.size()) {
-            Collections.shuffle(pooolie);
+
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
-
+                System.out.println("Trying to place line " + lineNumber + "...");
                trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
 
                 if (trialGrid == null) {
                     lineNumber = 0;
                     trialGrid = currentGrid.grid;
                     System.out.println("FailedAttempt");
-
+                    Collections.shuffle(pooolie);
                     totalScore += currentGrid.score;
 
                 } else {                    System.out.println("succesfullay laid line" + lineNumber);
@@ -105,23 +105,42 @@ public class Main {
 
     private static Grid  astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
+        ArrayList<ExpandGrid> memory = new ArrayList<>();
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
         Net net = currentGrid.netDatabase.get(lineNumber);
 
 
         ExpandGrid firstLine = new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0);
+
         gridQueue.add(firstLine);
 
         // uitbreden van de grid
-        while (!gridQueue.isEmpty()) {
+        while (gridQueue.size()>=1) {
             ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
-                if (childGrid.estimate <= 1) {
-                    return new Grid (childGrid.grid);
+                boolean exist = false;
+                for(int i = 0; i < memory.size(); i++) {
+                    int memoryx = memory.get(i).x;
+                    int memoryy = memory.get(i).y;
+                    int memoryz = memory.get(i).z;
+                    int memorysteps = memory.get(i).steps;
+                    int memoryestimate = memory.get(i).estimate;
+                    if(childGrid.x == memoryx && childGrid.y == memoryy && childGrid.z == memoryz &&
+                            childGrid.steps == memorysteps && childGrid.estimate == memoryestimate) {
+                        exist = true;
+                        break;
+                    }
                 }
-                gridQueue.add(childGrid);
+
+                if(exist == false) {
+                    if (childGrid.estimate <= 1) {
+                        return new Grid(childGrid.grid);
+                    }
+                    gridQueue.add(childGrid);
+                    memory.add(childGrid);
+                }
             }
         }
 
