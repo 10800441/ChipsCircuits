@@ -248,7 +248,22 @@ public class Grid {
     }
 
 
+    public int totalMinimumScore(ArrayList<Net> nets) {
+        int score = 0;
+        for(int i = 0; i < nets.size(); i++) {
+            int gate1 = nets.get(i).gate1;
+            int gate2 = nets.get(i).gate2;
 
+            int gate1X = gateDatabase[gate1][2];
+            int gate1Y = gateDatabase[gate1][1];
+
+            int gate2X = gateDatabase[gate2][2];
+            int gate2Y = gateDatabase[gate2][1];
+
+            score += manhattanDistance(gate1X, gate1Y, gate2X, gate2Y, 0, 0);
+        }
+        return score;
+    }
 
     public int manhattanDistance(int x1, int y1, int x2, int y2, int z1, int z2) {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
