@@ -8,37 +8,110 @@ import java.util.Random;
 import static solver.Grid.*;
 
 public class Main {
+    final static int X_SIZE = 19;
+    final static int Y_SIZE = 14;
+    final static int Z_SIZE = 7;
     public static void main(String[] args) {
 
-        int X_SIZE = 19;
-        int Y_SIZE = 14;
-        int Z_SIZE = 7;
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        ArrayList<Net> nets = grid.netDatabase;
-        Collections.shuffle(nets);
+        generateSolution(grid);
 
-        int currentTotal = 10000;
+    }
 
-        int[] occ = countGateOccurrence(nets);
-        for (int i = 0; i < occ.length; i++) {
-            if (occ[i] > 5) {
-                System.out.println("There are no solutions.");
-                break;
+    private static Grid astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
+
+            ArrayList<ExpandGrid> memory = new ArrayList<>();
+            PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
+
+            Net net = currentGrid.netDatabase.get(lineNumber);
+
+
+            ExpandGrid firstLine = new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0);
+
+            gridQueue.add(firstLine);
+
+            // uitbreden van de grid
+            int counter = 0;
+            while (!gridQueue.isEmpty() && counter < 9000) {
+                ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
+                for (ExpandGrid childGrid : allChildren) {
+
+                    boolean exist = false;
+                    for(int i = 0; i < memory.size(); i++) {
+                        int memoryx = memory.get(i).x;
+                        int memoryy = memory.get(i).y;
+                        int memoryz = memory.get(i).z;
+                        int memorysteps = memory.get(i).steps;
+                        int memoryestimate = memory.get(i).estimate;
+                        if(childGrid.x == memoryx && childGrid.y == memoryy && childGrid.z == memoryz &&
+                                childGrid.steps == memorysteps && childGrid.estimate == memoryestimate) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if(exist == false) {
+                        counter++;
+                        if (childGrid.estimate <= 1) {
+                            return new Grid(childGrid.grid);
+                        }
+                        gridQueue.add(childGrid);
+                        memory.add(childGrid);
+                    }
+                }
             }
+            System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+            return null;
         }
-        System.out.println("Calculating solution...");
+
+        private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
+            Random rgen = new Random();
+
+            int random1 = rgen.nextInt(nets1.size());
+            int random2 = rgen.nextInt(nets1.size());
+            Net interchangable = nets1.get(random2);
+            nets1.set(random2, nets1.get(random1));
+            nets1.set(random1, interchangable);
+            return nets1;
+        }
+
+        private static int[] countGateOccurrence(ArrayList<Net> nets) {
+            int[] gateOccurrence = new int[26];
+
+            for(int i = 0; i < nets.size(); i++ ) {
+                int gate1 = nets.get(i).gate1;
+                int gate2 = nets.get(i).gate2;
+                gateOccurrence[gate1]++;
+                gateOccurrence[gate2]++;
+            }
+            return gateOccurrence;
+        }
+
+        private static void generateSolution(Grid grid) {
+            ArrayList<Net> nets = grid.netDatabase;
+            Collections.shuffle(nets);
+
+            int currentTotal = 10000;
+
+            int[] occ = countGateOccurrence(nets);
+            for (int i = 0; i < occ.length; i++) {
+                if (occ[i] > 5) {
+                    System.out.println("There are no solutions.");
+                    break;
+                }
+            }
+            System.out.println("Calculating solution...");
 
 
+            int totalScore = 0;
 
-        int totalScore = 0;
-
-        GridScore currentGrid = new GridScore(grid, 0, nets);
+            GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-        ArrayList<PoleCoordinates> pooolie = null;
-        boolean error = true;
-        PoleCoordinates[] poleCoordinates = null;
-        int count = 0;
+            ArrayList<PoleCoordinates> pooolie = null;
+            boolean error = true;
+            PoleCoordinates[] poleCoordinates = null;
+            int count = 0;
             currentGrid = new GridScore(grid, 0, nets);
             while (error == true) {
                 pooolie = new ArrayList<>();
@@ -68,121 +141,51 @@ public class Main {
                 }
             }
             System.out.println("Succesfully placed poles.");
-            for(int i = 0; i < pooolie.size(); i++) {
+            for (int i = 0; i < pooolie.size(); i++) {
                 System.out.println("Pole no.: " + i);
                 System.out.println("x1: " + pooolie.get(i).x1);
                 System.out.println("y1: " + pooolie.get(i).y1);
                 System.out.println("z1: " + pooolie.get(i).z1);
                 System.out.println("x2: " + pooolie.get(i).x2);
                 System.out.println("y2: " + pooolie.get(i).y2);
-               System.out.println("z2: " + pooolie.get(i).z2);
+                System.out.println("z2: " + pooolie.get(i).z2);
             }
 
-        Grid trialGrid = currentGrid.grid;
-        int lineNumber =0;
-        while(lineNumber < grid.netDatabase.size()) {
+            Grid trialGrid = currentGrid.grid;
+            int lineNumber = 0;
+            while (lineNumber < grid.netDatabase.size()) {
 
-            for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
+                for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
-                System.out.println("Trying to place line " + lineNumber + "...");
-                trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
-                System.out.println(trialGrid); // see if it can be null (never)
+                    System.out.println("Trying to place " + lineNumber + "ste line...");
+                    trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
+                    System.out.println(trialGrid); // see if it can be null (never)
 
-                if (trialGrid == null) {
-                    lineNumber = 0;
-                    trialGrid = currentGrid.grid;
-                    System.out.println("FailedAttempt");
-                    Collections.shuffle(pooolie);
-                    totalScore += currentGrid.score;
-                } else {
-                    System.out.println("Succesfully placed line " + lineNumber);
-                    trialGrid.printGrid();
+                    if (trialGrid == null) {
+                        lineNumber = 0;
+                        trialGrid = currentGrid.grid;
+                        System.out.println("FailedAttempt");
+                        Collections.shuffle(pooolie);
+                        totalScore += currentGrid.score;
+                    } else {
+                        System.out.println("Succesfully placed line " + lineNumber);
+                        trialGrid.printGrid();
+                    }
                 }
             }
-        }
             trialGrid.printGrid();
 
 
+            // if(totalScore < currentTotal){
 
-                // if(totalScore < currentTotal){
+            //currentTotal = totalScore;
 
-                //currentTotal = totalScore;
+            // }
 
-                System.out.println("Total score: " + totalScore);
-                // }
-
-                // }
+            // }
         }
-
-    private static Grid astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
-
-        ArrayList<ExpandGrid> memory = new ArrayList<>();
-        PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
-
-        Net net = currentGrid.netDatabase.get(lineNumber);
-
-
-        ExpandGrid firstLine = new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0);
-
-        gridQueue.add(firstLine);
-
-        // uitbreden van de grid
-        int counter = 0;
-        while (!gridQueue.isEmpty() && counter < 9000) {
-            ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
-            for (ExpandGrid childGrid : allChildren) {
-
-                boolean exist = false;
-                for(int i = 0; i < memory.size(); i++) {
-                    int memoryx = memory.get(i).x;
-                    int memoryy = memory.get(i).y;
-                    int memoryz = memory.get(i).z;
-                    int memorysteps = memory.get(i).steps;
-                    int memoryestimate = memory.get(i).estimate;
-                    if(childGrid.x == memoryx && childGrid.y == memoryy && childGrid.z == memoryz &&
-                            childGrid.steps == memorysteps && childGrid.estimate == memoryestimate) {
-                        exist = true;
-                        break;
-                    }
-                }
-
-                if(exist == false) {
-                    counter++;
-                    if (childGrid.estimate <= 1) {
-                        return new Grid(childGrid.grid);
-                    }
-                    gridQueue.add(childGrid);
-                    memory.add(childGrid);
-                }
-            }
-        }
-        System.out.println("Error: could not generate line " + lineNumber + ", " + net);
-        return null;
     }
 
-    private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
-        Random rgen = new Random();
-
-        int random1 = rgen.nextInt(nets1.size());
-        int random2 = rgen.nextInt(nets1.size());
-        Net interchangable = nets1.get(random2);
-        nets1.set(random2, nets1.get(random1));
-        nets1.set(random1, interchangable);
-        return nets1;
-    }
-
-    private static int[] countGateOccurrence(ArrayList<Net> nets) {
-        int[] gateOccurrence = new int[26];
-
-        for(int i = 0; i < nets.size(); i++ ) {
-            int gate1 = nets.get(i).gate1;
-            int gate2 = nets.get(i).gate2;
-            gateOccurrence[gate1]++;
-            gateOccurrence[gate2]++;
-        }
-        return gateOccurrence;
-    }
-}
 
 
 

@@ -237,7 +237,7 @@ public class Grid {
                 if (line == null) break;
                 String[] words = line.split(",");
 
-                Net net = new Net(Integer.valueOf(words[0]), Integer.valueOf(words[1]));
+                Net net = new Net(Integer.valueOf(words[0])+1, Integer.valueOf(words[1])+1);
                 netDatabase.add(net);
 
             }
