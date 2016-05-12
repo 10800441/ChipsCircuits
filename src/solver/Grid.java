@@ -264,7 +264,6 @@ public class Grid {
         }
         return score;
     }
-
     public int manhattanDistance(int x1, int y1, int x2, int y2, int z1, int z2) {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
