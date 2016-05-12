@@ -17,12 +17,17 @@ public class Main {
 
 
         System.out.println("Calculating solution...");
+        long time1 = System.currentTimeMillis();
 
         Grid solution = generateSolution(grid);
         while(solution == null) {
             solution = generateSolution(grid);
         }
+
+        long time2 = System.currentTimeMillis();
+
         solution.printGrid();
+        System.out.println("It took " + (time2-time1) + " miliseconds.");
 
 
 
