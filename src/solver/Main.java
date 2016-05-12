@@ -8,14 +8,14 @@ import java.util.Random;
 import static solver.Grid.*;
 
 public class Main {
-    static Random randomGen = new Random(0);
+    //static Random randomGen = new Random(1);
     final static int X_SIZE = 19;
     final static int Y_SIZE = 14;
     final static int Z_SIZE = 7;
+
     public static void main(String[] args) {
 
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-
 
         System.out.println("Calculating solution...");
         long time1 = System.currentTimeMillis();
@@ -107,7 +107,7 @@ public class Main {
 
         private static Grid generateSolution(Grid grid) {
             ArrayList<Net> nets = grid.netDatabase;
-            Collections.shuffle(nets, randomGen);
+            Collections.shuffle(nets);
 
             int currentTotal = 10000;
 
@@ -133,7 +133,7 @@ public class Main {
             while (error == true) {
                 pooolie = new ArrayList<>();
                 poleCoordinates = new PoleCoordinates[nets.size()];
-                Collections.shuffle(nets, randomGen);
+                Collections.shuffle(nets);
                 grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
                 currentGrid = new GridScore(grid, 0, nets);
                 int layerNumber = 7;
@@ -171,15 +171,15 @@ public class Main {
                     trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
 
                     if (trialGrid == null) {
-                        System.out.println("Failed attempt at placing line " + lineNumber);
+                        //System.out.println("Failed attempt at placing line " + lineNumber);
                         lineNumber = -1;
                         trialGrid = currentGrid.grid;
-                        Collections.shuffle(pooolie, randomGen);
+                        Collections.shuffle(pooolie);
                         counter++;
                         totalScore += currentGrid.score;
                         if (counter > nets.size()) return null;
                     //} else {
-                        System.out.println("Succesfully placed line " + lineNumber);
+                        //System.out.println("Succesfully placed line " + lineNumber);
                         //trialGrid.printGrid();
                     }
                 }
