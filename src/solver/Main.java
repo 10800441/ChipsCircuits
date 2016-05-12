@@ -22,7 +22,7 @@ public class Main {
         solution.printGrid();
 
     }
-
+ 
     private static Grid astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
             ArrayList<ExpandGrid> memory = new ArrayList<>();
