@@ -15,14 +15,20 @@ public class Main {
 
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
+
+        System.out.println("Calculating solution...");
+
         Grid solution = generateSolution(grid);
         while(solution == null) {
             solution = generateSolution(grid);
         }
         solution.printGrid();
 
+
+
+
     }
- 
+
     private static Grid astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
             ArrayList<ExpandGrid> memory = new ArrayList<>();
@@ -37,7 +43,7 @@ public class Main {
 
             // uitbreden van de grid
             int counter = 0;
-            while (!gridQueue.isEmpty() && counter < 3000) {
+            while (!gridQueue.isEmpty() && counter < 1000) {
                 ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
                 for (ExpandGrid childGrid : allChildren) {
 
@@ -105,7 +111,6 @@ public class Main {
                     break;
                 }
             }
-            System.out.println("Calculating solution...");
 
 
             int totalScore = 0;
@@ -146,14 +151,13 @@ public class Main {
                 }
             }
 
-            System.out.println("Succesfully placed poles.");
+            //System.out.println("Succesfully placed poles.");
 
 
             Grid trialGrid = currentGrid.grid;
             int lineNumber = 0;
             int counter = 0;
             while (lineNumber < grid.netDatabase.size()) {
-                if (counter > 20) return null;
                 for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
                     //System.out.println("Trying to place " + lineNumber + "th line...");
@@ -166,6 +170,7 @@ public class Main {
                         Collections.shuffle(pooolie);
                         counter++;
                         totalScore += currentGrid.score;
+                        if (counter > 25) return null;
                     }// else {
                         //System.out.println("Succesfully placed line " + lineNumber);
                         //trialGrid.printGrid();
