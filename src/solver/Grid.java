@@ -102,7 +102,7 @@ public class Grid {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
         int estimate = manhattanDistance(x, y, x2, y2, z, z2);
-        return new ExpandGrid(copy_grid, number, x, y, z, steps + 1, estimate);
+        return new ExpandGrid(copy_grid, number, x, y, z, (steps + 1), estimate);
     }
 
 
@@ -141,7 +141,8 @@ public class Grid {
 
 
     public int[] create_line(Net net, int layer, int lineNumber) {
-
+        int lineLength1 = 0;
+        int lineLength2 = 0;
         int gate1 = net.gate1;
         int gate2 = net.gate2;
 
@@ -190,14 +191,14 @@ public class Grid {
         int z;
         for(z = p1; z < layer; z++) {
             this.addLine(lineNumber, gate1X, gate1Y, z);
+            lineLength1 = layer-p1;
         }
-
         for(z = p2; z < layer; z++) {
             this.addLine(lineNumber, gate2X, gate2Y, z);
+            lineLength2 = layer-p2;
         }
 
-
-        int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y, z-1};
+        int[] coordinates = {gate1X, gate1Y, gate2X, gate2Y, z-1,  (lineLength1+lineLength2)};
         return coordinates;
     }
 
@@ -253,5 +254,3 @@ public class Grid {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
 }
-
-    public int manhattanDistance(int x1, int y1, int x2, int y2) {
