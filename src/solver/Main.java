@@ -177,7 +177,7 @@ public class Main {
                         Collections.shuffle(pooolie);
                         counter++;
                         totalScore += currentGrid.score;
-                        if (counter > nets.size()) return null;
+                        if (counter > nets.size()/4) return null;
                     //} else {
                         //System.out.println("Succesfully placed line " + lineNumber);
                         //trialGrid.printGrid();
