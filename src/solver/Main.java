@@ -11,18 +11,27 @@ public class Main {
     final static int X_SIZE = 19;
     final static int Y_SIZE = 14;
     final static int Z_SIZE = 7;
-
     public static void main(String[] args) {
 
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
-        GridScore solution = generateSolution(grid);
-        while (solution == null) {
+        System.out.println("Calculating solution...");
+        long time1 = System.currentTimeMillis();
+
+        Grid solution = generateSolution(grid);
+        while(solution == null) {
             solution = generateSolution(grid);
         }
         System.out.println("Score " + solution.score);
         System.out.println("Initialising Iterative round");
         optimiseSolution(solution);
+
+        long time2 = System.currentTimeMillis();
+        System.out.println("It took " + (time2-time1) + " miliseconds.");
+
+
+
+
     }
 
     private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates, Grid trialGrid) {
@@ -39,9 +48,10 @@ public class Main {
 
         // uitbreden van de grid
         int counter = 0;
-        while (!gridQueue.isEmpty() && counter < 3000) {
-            ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(), coordinates.x2, coordinates.y2, coordinates.z2);
-            for (ExpandGrid childGrid : allChildren) {
+
+            while (!gridQueue.isEmpty() && counter < Y_SIZE*X_SIZE*Z_SIZE) {
+                ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
+                for (ExpandGrid childGrid : allChildren) {
 
                 boolean exist = false;
                 for (int i = 0; i < memory.size(); i++) {
@@ -146,12 +156,16 @@ public class Main {
 
                 trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid.grid);
 
-                if (trialGrid == null) {
-                    lineNumber = 0;
-                    trialGrid = currentGrid;
-                    Collections.shuffle(pooolie);
-                    counter++;
-                    totalALineLength = 0;
+                    if (trialGrid == null) {
+                        //System.out.println("Failed attempt at placing line " + lineNumber);
+                        lineNumber = -1;
+                        trialGrid = currentGrid.grid;
+                        Collections.shuffle(pooolie);
+                        counter++;
+                        totalScore += currentGrid.score;
+                        if (counter > nets.size()/4) return null;
+                        totalALineLength = 0;
+            }
                 }
                 totalALineLength += trialGrid.score;
             }
@@ -192,7 +206,7 @@ public class Main {
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
 
-    
+
 }
 
 
