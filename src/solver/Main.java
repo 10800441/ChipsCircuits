@@ -14,7 +14,12 @@ public class Main {
     public static void main(String[] args) {
 
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
-        generateSolution(grid);
+
+        Grid solution = generateSolution(grid);
+        while(solution == null) {
+            solution = generateSolution(grid);
+        }
+        solution.printGrid();
 
     }
 
@@ -32,7 +37,7 @@ public class Main {
 
             // uitbreden van de grid
             int counter = 0;
-            while (!gridQueue.isEmpty() && counter < 9000) {
+            while (!gridQueue.isEmpty() && counter < 3000) {
                 ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
                 for (ExpandGrid childGrid : allChildren) {
 
@@ -60,7 +65,7 @@ public class Main {
                     }
                 }
             }
-            System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+            //System.out.println("Error: could not generate line " + lineNumber + ", " + net);
             return null;
         }
 
@@ -87,7 +92,7 @@ public class Main {
             return gateOccurrence;
         }
 
-        private static void generateSolution(Grid grid) {
+        private static Grid generateSolution(Grid grid) {
             ArrayList<Net> nets = grid.netDatabase;
             Collections.shuffle(nets);
 
@@ -129,7 +134,7 @@ public class Main {
                     int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
                     if (coordinates[0] == -1) {
                         error = true;
-                        System.out.println("Pole error try: " + count);
+                        //System.out.println("Pole error try: " + count);
                     } else {
                         PoleCoordinates alpha = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
                         pooolie.add(alpha);
@@ -143,29 +148,31 @@ public class Main {
 
             System.out.println("Succesfully placed poles.");
 
+
             Grid trialGrid = currentGrid.grid;
             int lineNumber = 0;
+            int counter = 0;
             while (lineNumber < grid.netDatabase.size()) {
-
+                if (counter > 20) return null;
                 for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
-                    System.out.println("Trying to place " + lineNumber + "ste line...");
+                    //System.out.println("Trying to place " + lineNumber + "th line...");
                     trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
-                    System.out.println(trialGrid); // see if it can be null (never)
 
                     if (trialGrid == null) {
                         lineNumber = 0;
                         trialGrid = currentGrid.grid;
-                        System.out.println("FailedAttempt");
+                        //System.out.println("Failed attempt at placing line " + lineNumber);
                         Collections.shuffle(pooolie);
+                        counter++;
                         totalScore += currentGrid.score;
-                    } else {
-                        System.out.println("Succesfully placed line " + lineNumber);
-                        trialGrid.printGrid();
-                    }
+                    }// else {
+                        //System.out.println("Succesfully placed line " + lineNumber);
+                        //trialGrid.printGrid();
+                    //}
                 }
             }
-            trialGrid.printGrid();
+            return trialGrid;
 
 
             // if(totalScore < currentTotal){
