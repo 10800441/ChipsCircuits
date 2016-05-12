@@ -95,6 +95,9 @@ public class Main {
 
     private static GridScore generateSolution(Grid grid) {
         ArrayList<Net> nets = grid.netDatabase;
+        int minimumScore = grid.totalMinimumScore(nets);
+        System.out.println("min " + minimumScore);
+
         Collections.shuffle(nets);
         int[] occ = countGateOccurrence(nets);
         for (int i = 0; i < occ.length; i++) {
@@ -205,7 +208,6 @@ public class Main {
         System.out.println("L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
-
 
 }
 
