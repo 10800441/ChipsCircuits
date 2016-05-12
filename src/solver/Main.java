@@ -77,7 +77,7 @@ public class Main {
 
                 System.out.println("Trying to place line " + lineNumber + "...");
                 trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
-                System.out.println(trialGrid);
+                System.out.println(trialGrid); // see if it can be null (never)
 
                 if (trialGrid == null) {
                     lineNumber = 0;
@@ -118,7 +118,7 @@ public class Main {
         gridQueue.add(firstLine);
 
         // uitbreden van de grid
-        while (!gridQueue.isEmpty() || gridQueue.size() < 3000 || trialGrid != null) {
+        while (!gridQueue.isEmpty() && trialGrid != null) {
             ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
