@@ -140,16 +140,8 @@ public class Main {
                     }
                 }
             }
+
             System.out.println("Succesfully placed poles.");
-            for (int i = 0; i < pooolie.size(); i++) {
-                System.out.println("Pole no.: " + i);
-                System.out.println("x1: " + pooolie.get(i).x1);
-                System.out.println("y1: " + pooolie.get(i).y1);
-                System.out.println("z1: " + pooolie.get(i).z1);
-                System.out.println("x2: " + pooolie.get(i).x2);
-                System.out.println("y2: " + pooolie.get(i).y2);
-                System.out.println("z2: " + pooolie.get(i).z2);
-            }
 
             Grid trialGrid = currentGrid.grid;
             int lineNumber = 0;
