@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.PriorityQueue;
 
 public class Grid {
     String[][][] grid;
@@ -89,15 +90,12 @@ public class Grid {
     }
 
     public void addGate(int number, int y_coordinate, int x_coordinate) {
-
         grid[x_coordinate][y_coordinate][0] = "G" + number;
     }
 
     public void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
-
     }
-
 
     // provides an expandgrid for the create_possible_lines method
     public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
@@ -253,3 +251,5 @@ public class Grid {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
 }
+
+    public int manhattanDistance(int x1, int y1, int x2, int y2) {
