@@ -35,12 +35,13 @@ public class Main {
         GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
-        ArrayList<PoleCoordinates> pooolie = new ArrayList<>();
+        ArrayList<PoleCoordinates> pooolie = null;
         boolean error = true;
         PoleCoordinates[] poleCoordinates = null;
         int count = 0;
             currentGrid = new GridScore(grid, 0, nets);
             while (error == true) {
+                pooolie = new ArrayList<>();
                 poleCoordinates = new PoleCoordinates[nets.size()];
                 Collections.shuffle(nets);
                 grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
@@ -58,7 +59,7 @@ public class Main {
                         System.out.println("Pole error try: " + count);
                     } else {
                         PoleCoordinates alpha = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
-                       pooolie.add(alpha);
+                        pooolie.add(alpha);
 
                         int devisionNumber = (nets.size() / Z_SIZE) + 1;
                         if (lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
@@ -67,8 +68,16 @@ public class Main {
                 }
             }
             System.out.println("Succesfully placed poles.");
+            for(int i = 0; i < pooolie.size(); i++) {
+                System.out.println("Pole no.: " + i);
+                System.out.println("x1: " + pooolie.get(i).x1);
+                System.out.println("y1: " + pooolie.get(i).y1);
+                System.out.println("z1: " + pooolie.get(i).z1);
+                System.out.println("x2: " + pooolie.get(i).x2);
+                System.out.println("y2: " + pooolie.get(i).y2);
+               System.out.println("z2: " + pooolie.get(i).z2);
+            }
 
-        Collections.shuffle(pooolie);
         Grid trialGrid = currentGrid.grid;
         int lineNumber =0;
         while(lineNumber < grid.netDatabase.size()) {
@@ -105,7 +114,7 @@ public class Main {
                 // }
         }
 
-    private static Grid  astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
+    private static Grid astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
         ArrayList<ExpandGrid> memory = new ArrayList<>();
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
@@ -118,7 +127,8 @@ public class Main {
         gridQueue.add(firstLine);
 
         // uitbreden van de grid
-        while (!gridQueue.isEmpty() && trialGrid != null) {
+        int counter = 0;
+        while (!gridQueue.isEmpty() && counter < 9000) {
             ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
@@ -137,6 +147,7 @@ public class Main {
                 }
 
                 if(exist == false) {
+                    counter++;
                     if (childGrid.estimate <= 1) {
                         return new Grid(childGrid.grid);
                     }
