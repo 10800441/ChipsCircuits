@@ -43,7 +43,8 @@ public class Main {
 
             // uitbreden van de grid
             int counter = 0;
-            while (!gridQueue.isEmpty() && counter < 1000) {
+
+            while (!gridQueue.isEmpty() && counter < Y_SIZE*X_SIZE*Z_SIZE) {
                 ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
                 for (ExpandGrid childGrid : allChildren) {
 
@@ -170,7 +171,7 @@ public class Main {
                         Collections.shuffle(pooolie);
                         counter++;
                         totalScore += currentGrid.score;
-                        if (counter > 25) return null;
+                        if (counter > nets.size()) return null;
                     }// else {
                         //System.out.println("Succesfully placed line " + lineNumber);
                         //trialGrid.printGrid();
