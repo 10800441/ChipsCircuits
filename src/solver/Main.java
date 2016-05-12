@@ -18,6 +18,8 @@ public class Main {
         Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
 
         System.out.println("Calculating solution...");
+
+
         long time1 = System.currentTimeMillis();
 
         Grid solution = generateSolution(grid);
@@ -105,6 +107,8 @@ public class Main {
             return gateOccurrence;
         }
 
+
+
         private static Grid generateSolution(Grid grid) {
             ArrayList<Net> nets = grid.netDatabase;
             Collections.shuffle(nets);
@@ -119,10 +123,15 @@ public class Main {
                 }
             }
 
+            int minimumScore = grid.totalMinimumScore(nets);
+            System.out.println("Minimum score: " + minimumScore);
+
+
 
             int totalScore = 0;
 
             GridScore currentGrid = new GridScore(grid, 0, nets);
+
 
 
             ArrayList<PoleCoordinates> pooolie = null;
