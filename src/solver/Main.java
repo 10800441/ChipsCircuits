@@ -49,7 +49,7 @@ public class Main {
 
             gridQueue.add(firstLine);
 
-            // uitbreden van de grid
+            // uitbreden van de grid!
             int counter = 0;
 
             while (!gridQueue.isEmpty() && counter < Y_SIZE*X_SIZE*Z_SIZE) {
