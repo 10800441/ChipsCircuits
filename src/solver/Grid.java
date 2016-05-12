@@ -116,6 +116,8 @@ public class Grid {
 
         ArrayList<ExpandGrid> list = new ArrayList<>();
 
+
+
         if (x + 1 > 0 && x + 1 < grid.length && grid[x + 1][y][z] == null) {
             list.add(addLine(inputGrid, number, x + 1, y, z, steps, x2, y2, z2));
         }

@@ -35,6 +35,7 @@ public class Main {
         GridScore currentGrid = new GridScore(grid, 0, nets);
 
 
+        ArrayList<PoleCoordinates> pooolie = new ArrayList<>();
         boolean error = true;
         PoleCoordinates[] poleCoordinates = null;
         int count = 0;
@@ -47,6 +48,7 @@ public class Main {
                 int layerNumber = 7;
                 count++;
                 error = false;
+
                 for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                     Net net1 = nets.get(lineNumber);
 
@@ -55,7 +57,8 @@ public class Main {
                         error = true;
                         System.out.println("Pole error try: " + count);
                     } else {
-                        poleCoordinates[lineNumber] = new PoleCoordinates(coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                        PoleCoordinates alpha = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                       pooolie.add(alpha);
 
                         int devisionNumber = (nets.size() / Z_SIZE) + 1;
                         if (lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
@@ -65,99 +68,85 @@ public class Main {
             }
             System.out.println("Succesfully placed poles.");
 
+        Collections.shuffle(pooolie);
+        Grid trialGrid = currentGrid.grid;
+        int lineNumber =0;
+        while(lineNumber < grid.netDatabase.size()) {
 
-        boolean noLine = false;
-        int lineNumber = 0;
-        while(lineNumber < poleCoordinates.length) {
-            for ( lineNumber = 0; lineNumber < poleCoordinates.length; lineNumber++) {
+            for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
 
-                GridScore previousGrid = currentGrid;
-                currentGrid = astar(currentGrid, lineNumber, poleCoordinates[lineNumber], noLine);
-                noLine = false;
-                if (currentGrid == null) {
-                    noLine = true;
-                    currentGrid = previousGrid;
-                    lineNumber--;
-                } else {
+                System.out.println("Trying to place line " + lineNumber + "...");
+                trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid);
+                System.out.println(trialGrid);
+
+                if (trialGrid == null) {
+                    lineNumber = 0;
+                    trialGrid = currentGrid.grid;
+                    System.out.println("FailedAttempt");
+                    Collections.shuffle(pooolie);
                     totalScore += currentGrid.score;
+                } else {
+                    System.out.println("Succesfully placed line " + lineNumber);
+                    trialGrid.printGrid();
                 }
             }
         }
-        System.out.println("Succesfully created solution");
-        System.out.println("Optimizing...");
+            trialGrid.printGrid();
 
-/*
-        GridScore iterativeRound = new GridScore(currentGrid.grid, 0, nets);
-        int currentLowest = 10000;
-        int notShorter = 0;
-       // while(notShorter<100){
-            for(int i = 0; i < poleCoordinates.length; i++){
-                iterativeRound.grid =  removeLine(i,iterativeRound.grid);
-
-
-            }
-
-        iterativeRound.grid.printGrid();
-        // }
-*/
 
 
                 // if(totalScore < currentTotal){
 
                 //currentTotal = totalScore;
 
-                System.out.println("totals: " + totalScore);
+                System.out.println("Total score: " + totalScore);
                 // }
+
                 // }
         }
 
-    private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates, boolean lowerTarget) {
+    private static Grid  astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates,Grid trialGrid) {
 
+        ArrayList<ExpandGrid> memory = new ArrayList<>();
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
+
         Net net = currentGrid.netDatabase.get(lineNumber);
-        int targetZ;
-        int startZ;
-        if (lowerTarget && coordinates.z2 > 0)  {
-            targetZ = coordinates.z2--;
-            startZ = coordinates.z1;
-        }
-        else if(lowerTarget && (coordinates.z2 == 0) && coordinates.z1 > 0){
-            targetZ = coordinates.z2;
-            startZ= coordinates.z1--;
-            System.out.println("end has hit the bottom");
-        } else if(lowerTarget && (coordinates.z2 == 0) && coordinates.z1 == 0){
-            targetZ = coordinates.z2;
-            startZ = coordinates.z1;
-            System.out.println("both have hit the bottom");
 
-        } else{
-            targetZ = coordinates.z2;
-            startZ = coordinates.z1;
-        }
 
-        ExpandGrid firstLine = new ExpandGrid(currentGrid.grid, lineNumber, coordinates.x1, coordinates.y1, startZ, 0, 0);
+        ExpandGrid firstLine = new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0);
+
         gridQueue.add(firstLine);
 
-
         // uitbreden van de grid
-        int count = 0;
-        while (!gridQueue.isEmpty()) {
-            ArrayList<ExpandGrid> allChildren = currentGrid.grid.create_possible_lines(gridQueue.remove(), coordinates.x2,coordinates.y2,targetZ);
+        while (!gridQueue.isEmpty() || gridQueue.size() < 3000 || trialGrid != null) {
+            ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(),coordinates.x2, coordinates.y2, coordinates.z2);
             for (ExpandGrid childGrid : allChildren) {
 
-                if (childGrid.estimate <= 1) {
-
-                    return new GridScore(childGrid.grid, childGrid.steps + 1, currentGrid.netDatabase);
+                boolean exist = false;
+                for(int i = 0; i < memory.size(); i++) {
+                    int memoryx = memory.get(i).x;
+                    int memoryy = memory.get(i).y;
+                    int memoryz = memory.get(i).z;
+                    int memorysteps = memory.get(i).steps;
+                    int memoryestimate = memory.get(i).estimate;
+                    if(childGrid.x == memoryx && childGrid.y == memoryy && childGrid.z == memoryz &&
+                            childGrid.steps == memorysteps && childGrid.estimate == memoryestimate) {
+                        exist = true;
+                        break;
+                    }
                 }
-                gridQueue.add(childGrid);
+
+                if(exist == false) {
+                    if (childGrid.estimate <= 1) {
+                        return new Grid(childGrid.grid);
+                    }
+                    gridQueue.add(childGrid);
+                    memory.add(childGrid);
+                }
             }
-            count++;
         }
-
-            System.out.println("Error: could not generate line " + lineNumber + ", " + net);
-
-            return null;
-
+        System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+        return null;
     }
 
     private static ArrayList<Net> mutateNets(ArrayList<Net> nets1){
@@ -170,24 +159,6 @@ public class Main {
         nets1.set(random1, interchangable);
         return nets1;
     }
-private static Grid removeLine(int currentLineNumber, Grid currentGrid) {
-    System.out.print("helloha");
-    for (int j = 0; j < currentGrid.grid[0][0].length; j++) {
-        for (int i = 1; i < currentGrid.grid.length; i++) {   //creation of height
-            for (int k = 1; k < currentGrid.grid[0].length; k++) {    //creation of width X
-                String symbol = "L" + currentLineNumber + "";
-                System.out.println("j "+ j);
-                System.out.println("i "+ i);
-                System.out.println("k "+ k);
-                if (currentGrid.grid[j][k][i].equals(symbol)) {
-                // currentGrid.grid[0][k][] = null;
-                }
-            }
-        }
-    }
-    return currentGrid;
-}
-
 
     private static int[] countGateOccurrence(ArrayList<Net> nets) {
         int[] gateOccurrence = new int[26];
