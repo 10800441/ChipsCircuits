@@ -29,7 +29,7 @@ public class Main {
                 solution = generateSolution(grid);
             }
             solution.grid.printGrid();
-            System.out.println("Score " + solution.score);
+            System.out.println("Total grid score " + solution.score);
 
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
@@ -186,7 +186,7 @@ public class Main {
 
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
-            System.out.println("Score: " + solution.score);
+            System.out.println("Score after removing " + lineNum + ": " + solution.score);
             //return astar(solution, lineNum, coordinates, solution.grid);
         }
     return new GridScore(solution.grid, 0, solution.netDatabase);
@@ -206,7 +206,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("Removed: L" + lineNum);
+        //System.out.println("Removed: L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
 
