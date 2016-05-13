@@ -1,20 +1,20 @@
 package solver;
 
 public class Gate {
-    final int number;
+    int gateNumber;
     final int x;
     final int y;
-    final int z;
 
-    public Gate(int number, int x, int y, int z) {
-        this.number = number;
+    public Gate(int gateNumber, int x,int y) {
+        this.gateNumber = gateNumber;
         this.x = x;
         this.y = y;
-        this.z = z;
-    }
 
+
+    }
     public String toString(){
-        return "x: " + x + " ,y: " + y + " ,z: " + z;
+        return "Gate: " ;
+
     }
 
 }
