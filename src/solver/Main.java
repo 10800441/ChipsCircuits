@@ -189,7 +189,7 @@ public class Main {
             System.out.println("Score after removing " + lineNum + ": " + solution.score);
             //return astar(solution, lineNum, coordinates, solution.grid);
         }
-    return new GridScore(solution.grid, 0, solution.netDatabase);
+        return new GridScore(solution.grid, 0, solution.netDatabase);
     }
 
     // removes a line
