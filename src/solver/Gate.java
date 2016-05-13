@@ -14,7 +14,7 @@ public class Gate {
     }
 
     public String toString(){
-        return "x: " + x + " ,y: " + y + " ,z: " + z;
+        return "" + number;
     }
 
 }
