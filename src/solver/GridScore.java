@@ -3,8 +3,8 @@ package solver;
 import java.util.ArrayList;
 
 public class GridScore{
-     Grid grid;
-    final int score;
+    Grid grid;
+    int score;
     ArrayList<Net> netDatabase;
 
     public GridScore(Grid grid, int score, ArrayList<Net> netDatabase) {

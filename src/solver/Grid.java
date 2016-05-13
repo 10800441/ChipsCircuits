@@ -11,25 +11,25 @@ import java.util.PriorityQueue;
 
 public class Grid {
     String[][][] grid;
-    int[][] gateDatabase;
+    ArrayList<Gate> gateDatabase;// = new ArrayList<>();
     ArrayList<Net> netDatabase = new ArrayList<>();
 
 
-    public Grid(int width, int height, int depth, int[][] gateDatabase, ArrayList<Net> netDatabase) {
+    public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
         grid = new String[width][height][depth];
         this.gateDatabase = gateDatabase;
-        for (int i = 0; i < gateDatabase.length; i++) {
-            addGate(i, gateDatabase[i][1], gateDatabase[i][2]);
-        }
         this.netDatabase = netDatabase;
 
-
+        for (int i = 0; i < gateDatabase.size(); i++) {
+            addGate(i, gateDatabase.get(i).y, gateDatabase.get(i).x);
+        }
     }
 
 
     public Grid(int width, int height, int depth) {
         this(width, height, depth, makeGateDatabase(), makeNetDatabase());
     }
+
 
     // copy constructor to make copies of the current grid
     public Grid(Grid oldGrid) {
@@ -46,7 +46,6 @@ public class Grid {
                 }
             }
         }
-
     }
 
 
@@ -78,7 +77,9 @@ public class Grid {
                             System.out.print(" " + grid[i][k][j]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
+                            System.out.print("\033[22m");
                             System.out.print(grid[i][k][j]);
+                            System.out.print("\033[22m");
                         } else if (identifier == 'L') {
                             System.out.print(" " + grid[i][k][j]);
                         }
@@ -143,14 +144,12 @@ public class Grid {
     public int[] create_line(Net net, int layer, int lineNumber) {
         int lineLength1 = 0;
         int lineLength2 = 0;
-        int gate1 = net.gate1;
-        int gate2 = net.gate2;
 
-        int gate1X = gateDatabase[gate1][2];
-        int gate1Y = gateDatabase[gate1][1];
+        int gate1X = net.gate1.x;
+        int gate1Y = net.gate1.y;
 
-        int gate2X = gateDatabase[gate2][2];
-        int gate2Y = gateDatabase[gate2][1];
+        int gate2X = net.gate2.x;
+        int gate2Y = net.gate2.y;
 
         int p1 = 1;
         if (this.grid[gate1X][gate1Y][1] != null) {
@@ -203,8 +202,8 @@ public class Grid {
     }
 
 
-    public static int[][] makeGateDatabase() {
-        int[][] gateDatabase = new int[100][100];
+    public static ArrayList<Gate> makeGateDatabase() {
+        ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
             String line;
@@ -213,15 +212,16 @@ public class Grid {
                 if (line == null) break;
                 String[] words = line.split(",");
 
-                gateDatabase[Integer.valueOf(words[0])][1] = Integer.valueOf(words[1]);
-                gateDatabase[Integer.valueOf(words[0])][2] = Integer.valueOf(words[2]);
+                int lineNumber = Integer.valueOf(words[0]);
+                int x = Integer.valueOf(words[1]);
+                int y = Integer.valueOf(words[2]);
 
+                gateDatabase.add(new Gate(lineNumber, x, y, 0));
             }
             rd.close();
         } catch (IOException ex) {
             System.err.println("Error: " + ex);
         }
-
         return gateDatabase;
     }
 
@@ -236,9 +236,14 @@ public class Grid {
                 if (line == null) break;
                 String[] words = line.split(",");
 
-                Net net = new Net(Integer.valueOf(words[0])+1, Integer.valueOf(words[1])+1);
-                netDatabase.add(net);
+                int gateNumber1 = Integer.valueOf(words[0]);
+                int gateNumber2 = Integer.valueOf(words[1]);
 
+                Gate gate1 = makeGateDatabase().get(gateNumber1);
+                Gate gate2 = makeGateDatabase().get(gateNumber2);
+
+                Net net = new Net(gate1, gate2);
+                netDatabase.add(net);
             }
             rd.close();
         } catch (IOException ex) {
@@ -251,14 +256,12 @@ public class Grid {
     public int totalMinimumScore(ArrayList<Net> nets) {
         int score = 0;
         for(int i = 0; i < nets.size(); i++) {
-            int gate1 = nets.get(i).gate1;
-            int gate2 = nets.get(i).gate2;
 
-            int gate1X = gateDatabase[gate1][2];
-            int gate1Y = gateDatabase[gate1][1];
+            int gate1X = netDatabase.get(i).gate1.x;
+            int gate1Y = netDatabase.get(i).gate1.y;
 
-            int gate2X = gateDatabase[gate2][2];
-            int gate2Y = gateDatabase[gate2][1];
+            int gate2X = netDatabase.get(i).gate2.x;
+            int gate2Y = netDatabase.get(i).gate2.y;
 
             score += manhattanDistance(gate1X, gate1Y, gate2X, gate2Y, 0, 0);
         }

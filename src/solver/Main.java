@@ -3,9 +3,6 @@ package solver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
-import java.util.Random;
-
-import static solver.Grid.*;
 
 public class Main {
     final static int X_SIZE = 19;
@@ -13,19 +10,25 @@ public class Main {
     final static int Z_SIZE = 7;
 
     public static void main(String[] args) {
-
-        Grid grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
+        // initializing grid to work with
+        Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE);
 
         System.out.println("Calculating solution...");
+
         long time1 = System.currentTimeMillis();
 
+        // generate a solution
         GridScore solution = generateSolution(grid);
         while (solution == null) {
             solution = generateSolution(grid);
         }
+        solution.grid.printGrid();
+
         System.out.println("Score " + solution.score);
-        System.out.println("Initialising Iterative round");
-        optimiseSolution(solution);
+
+        //System.out.println("Initializing Iterative round...");
+        //optimizeSolution(solution).grid.printGrid();
+
 
         long time2 = System.currentTimeMillis();
         System.out.println("It took " + (time2 - time1) + " miliseconds.");
@@ -85,8 +88,8 @@ public class Main {
         int[] gateOccurrence = new int[26];
 
         for (int i = 0; i < nets.size(); i++) {
-            int gate1 = nets.get(i).gate1;
-            int gate2 = nets.get(i).gate2;
+            int gate1 = nets.get(i).gate1.number;
+            int gate2 = nets.get(i).gate2.number;
             gateOccurrence[gate1]++;
             gateOccurrence[gate2]++;
         }
@@ -96,7 +99,7 @@ public class Main {
     private static GridScore generateSolution(Grid grid) {
         ArrayList<Net> nets = grid.netDatabase;
         int minimumScore = grid.totalMinimumScore(nets);
-        System.out.println("min " + minimumScore);
+        System.out.println("Minimum score: " + minimumScore);
 
         Collections.shuffle(nets);
         int[] occ = countGateOccurrence(nets);
@@ -106,7 +109,6 @@ public class Main {
                 break;
             }
         }
-        System.out.println("Calculating solution...");
 
 
         int totalScore = 0;
@@ -119,11 +121,12 @@ public class Main {
         while (error == true) {
             pooolie = new ArrayList<>();
             Collections.shuffle(nets);
-            grid = new Grid(Y_SIZE, X_SIZE, Z_SIZE);
+            grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE);
             currentGrid = new GridScore(grid, 0, nets);
-            int layerNumber = 7;
+            int layerNumber = Z_SIZE;
             error = false;
             totalPole = 0;
+
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net1 = nets.get(lineNumber);
 
@@ -134,9 +137,8 @@ public class Main {
                 if (coordinates[0] == -1) {
                     error = true;
                 } else {
-                    PoleCoordinates alpha = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
-                    pooolie.add(alpha);
-
+                    PoleCoordinates poleCoordinates = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1], coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
+                    pooolie.add(poleCoordinates);
                     int devisionNumber = (nets.size() / Z_SIZE) + 1;
                     if (lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
                         layerNumber--;
@@ -144,22 +146,16 @@ public class Main {
             }
         }
 
-        System.out.println("Succesfully placed poles.");
+        //System.out.println("Succesfully placed poles.");
 
         GridScore trialGrid = currentGrid;
         int lineNumber = 0;
         int counter = 0;
         int totalALineLength = 0;
         while (lineNumber < grid.netDatabase.size()) {
-
-            // After 20 attempts the whole try is canceled and the program is restarted
-            if (counter > 20) return null;
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-
                 trialGrid = astar(currentGrid, pooolie.get(lineNumber).lineNum, pooolie.get(lineNumber), trialGrid.grid);
-
                 if (trialGrid == null) {
-
                     lineNumber = -1;
                     trialGrid = currentGrid;
                     Collections.shuffle(pooolie);
@@ -171,21 +167,20 @@ public class Main {
             }
             totalALineLength += trialGrid.score;
         }
-
         return new GridScore(trialGrid.grid, (totalALineLength + totalPole), trialGrid.netDatabase);
     }
 
 
 
-    private static GridScore optimiseSolution(GridScore solution) {
+    private static GridScore optimizeSolution(GridScore solution) {
 
-        for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum ++){
+        for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
             System.out.println(solution.score);
-            break;
+
+
+            //return astar(solution, lineNum, coordinates, solution.grid);
         }
-
-
     return new GridScore(solution.grid, 0, solution.netDatabase);
     }
 
@@ -196,7 +191,6 @@ public class Main {
         for (int i = 0; i <  solution.grid.grid[0][0].length; i++) {
             for (int k = 0; k < solution.grid.grid[0].length; k++) {
                 for (int n = 0; n < solution.grid.grid.length; n++) {
-
                     String line = "L"+ lineNum;
                     if(solution.grid.grid[n][k][i] != null && solution.grid.grid[n][k][i].equals(line)){
                         solution.grid.grid[n][k][i] = null;
@@ -208,9 +202,4 @@ public class Main {
         System.out.println("L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
-
 }
-
-
-
-
