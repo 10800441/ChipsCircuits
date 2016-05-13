@@ -130,7 +130,7 @@ public class Main {
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net1 = nets.get(lineNumber);
 
-                int[] coordinates = currentGrid.grid.create_line(net1, layerNumber, lineNumber);
+                int[] coordinates = currentGrid.grid.create_poles(net1, layerNumber, lineNumber);
                 if (coordinates[0] != -1) {
                     totalPole += coordinates[5];
                 }
