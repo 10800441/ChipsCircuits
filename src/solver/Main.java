@@ -32,8 +32,8 @@ public class Main {
             System.out.println("Score " + solution.score);
 
             // Shoelace - iterative round
-            //System.out.println("Initializing Iterative round...");
-            //optimizeSolution(solution).grid.printGrid();
+            System.out.println("Initializing Iterative round...");
+            optimizeSolution(solution).grid.printGrid();
         }
 
         long time2 = System.currentTimeMillis();
@@ -192,23 +192,6 @@ public class Main {
     return new GridScore(solution.grid, 0, solution.netDatabase);
     }
 
-    // calculates if solution is possible
-    private static boolean isSolutionPossible(Grid grid) {
-        ArrayList<Gate> gates = grid.gateDatabase;
-        ArrayList<Net> nets = grid.netDatabase;
-
-        int[] occ = countGateOccurrence(nets, gates);
-        // when an gate occurs > 5 in the netlist, there is no solution
-        for (int anOcc : occ) {
-            if (anOcc > 5) {
-                System.out.println("There is no solution.");
-                return false;
-            }
-        }
-        System.out.println("Calculating solution...");
-        return true;
-    }
-
     // removes a line
     private static GridScore removeLine(GridScore solution, int lineNum){
         int removeCount = 0;
@@ -225,5 +208,22 @@ public class Main {
         }
         System.out.println("L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
+    }
+
+    // calculates if solution is possible
+    private static boolean isSolutionPossible(Grid grid) {
+        ArrayList<Gate> gates = grid.gateDatabase;
+        ArrayList<Net> nets = grid.netDatabase;
+
+        int[] occ = countGateOccurrence(nets, gates);
+        // when an gate occurs > 5 in the netlist, there is no solution
+        for (int anOcc : occ) {
+            if (anOcc > 5) {
+                System.out.println("There is no solution.");
+                return false;
+            }
+        }
+        System.out.println("Calculating solution...");
+        return true;
     }
 }
