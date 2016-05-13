@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class Grid {
     String[][][] grid;
-    ArrayList<Gate> gateDatabase;// = new ArrayList<>();
-    ArrayList<Net> netDatabase = new ArrayList<>();
+    ArrayList<Gate> gateDatabase = makeGateDatabase();
+    ArrayList<Net> netDatabase = makeNetDatabase();
 
     // super constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
@@ -23,7 +23,7 @@ public class Grid {
         }
     }
 
-    // constructor
+    // constructor (waarom makeGateDatabase() & makeNetDatabase()?)
     public Grid(int width, int height, int depth) {
         this(width, height, depth, makeGateDatabase(), makeNetDatabase());
     }
