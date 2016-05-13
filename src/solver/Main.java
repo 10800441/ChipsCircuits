@@ -186,7 +186,7 @@ public class Main {
 
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
-            System.out.println(solution.score);
+            System.out.println("Score: " + solution.score);
             //return astar(solution, lineNum, coordinates, solution.grid);
         }
     return new GridScore(solution.grid, 0, solution.netDatabase);
