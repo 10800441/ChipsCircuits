@@ -206,7 +206,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("L" + lineNum);
+        System.out.println("Removed: L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
 
