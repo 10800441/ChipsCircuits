@@ -46,6 +46,7 @@ public class Grid {
 
     // prints a given grid
     public void printGrid() {
+        // creation of layers Z
         for (int j = 0; j < grid[0][0].length; j++) {
             System.out.println("");
             int layer = j + 1;

@@ -111,7 +111,7 @@ public class Main {
 
     // counts the occurrence of each gate in the netlist
     private static int[] countGateOccurrence(ArrayList<Net> nets, ArrayList<Gate> gates) {
-        int[] gateOccurrence = new int[gates.size()];
+        int[] gateOccurrence = new int[gates.size()+1];
 
         for (Net net : nets) {
             int gate1 = net.gate1.number;
