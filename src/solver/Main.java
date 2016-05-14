@@ -32,15 +32,17 @@ public class Main {
             int bestScore = solution.score;
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
+
             int iterativeRounds = 0;
             while(iterativeRounds<10){
                 solution = optimizeSolution(solution);
                 if(solution.score < bestScore) {
-                    solution.score = bestScore;
+                    bestScore = solution.score;
                     iterativeRounds = 0;
                 }
                 iterativeRounds++;
             }
+
             System.out.println("Rounds completed!");
             System.out.println("Final Score: "+ bestScore);
 
