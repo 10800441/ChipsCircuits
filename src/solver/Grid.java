@@ -231,8 +231,8 @@ public class Grid {
                 int gateNumber1 = Integer.valueOf(words[0]);
                 int gateNumber2 = Integer.valueOf(words[1]);
 
-                Gate gate1 = gates.get(gateNumber1);
-                Gate gate2 = gates.get(gateNumber2);
+                Gate gate1 = gates.get(gateNumber1-1);
+                Gate gate2 = gates.get(gateNumber2-1);
 
                 Net net = new Net(gate1, gate2);
                 netDatabase.add(net);

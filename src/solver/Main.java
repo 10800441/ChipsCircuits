@@ -110,8 +110,6 @@ public class Main {
         }
         // If a line cannot be placed, return null;
         //System.out.println("Error: could not generate line " + lineNumber + ", " + net);
-        System.out.println("Gridqueue size: " + gridQueue.size());
-        System.out.println("Counter: " + counter);
         return null;
     }
 
@@ -210,6 +208,7 @@ public class Main {
 
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
+        solution.grid.printGrid();
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             GridScore solutionRemove = removeLine(solution, lineNum);
             System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
@@ -219,6 +218,7 @@ public class Main {
             System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
 
             if(solution == null) {
+                System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
                 solutionRemove.grid.printGrid();
             } else if(solution.score <= minimumScore) break;
         }
