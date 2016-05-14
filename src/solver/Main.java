@@ -28,13 +28,26 @@ public class Main {
             }
 
             System.out.println("Total grid score " + solution.score);
-
+            // Setting the best score
+            int bestScore = solution.score;
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
-            GridScore newSolution = optimizeSolution(solution);
-            System.out.println("score: "+ newSolution.score);
-            newSolution.grid.printGrid();
-        }
+            int iterativeRounds = 0;
+            while(iterativeRounds<10){
+                solution = optimizeSolution(solution);
+                if(solution.score < bestScore) {
+                    solution.score = bestScore;
+                    iterativeRounds = 0;
+                }
+                iterativeRounds++;
+            }
+            System.out.println("Rounds completed!");
+            System.out.println("Final Score: "+ bestScore);
+
+            System.out.println("Final Grid:");
+            solution.grid.printGrid();
+
+            }
 
         long time2 = System.currentTimeMillis();
         System.out.println("It took " + (time2 - time1) + " miliseconds.");
@@ -187,8 +200,6 @@ public class Main {
 
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
-            System.out.println("Score after removing " + lineNum + ": " + solution.score);
-
             Net net = solution.netDatabase.get(lineNum);
             solution = astar(solution, lineNum,net.gate1.x,net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution);
         }
