@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Grid {
     String[][][] grid;
     ArrayList<Gate> gateDatabase = makeGateDatabase();
-    ArrayList<Net> netDatabase = makeNetDatabase();
+    ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase);
 
     // super constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
@@ -23,7 +23,7 @@ public class Grid {
 
     // constructor (waarom makeGateDatabase() & makeNetDatabase()?)
     public Grid(int width, int height, int depth) {
-        this(width, height, depth, makeGateDatabase(), makeNetDatabase());
+        this(width, height, depth, makeGateDatabase(), makeNetDatabase(makeGateDatabase()));
     }
 
 
@@ -218,7 +218,7 @@ public class Grid {
     }
 
     // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase() {
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
@@ -231,8 +231,8 @@ public class Grid {
                 int gateNumber1 = Integer.valueOf(words[0]);
                 int gateNumber2 = Integer.valueOf(words[1]);
 
-                Gate gate1 = makeGateDatabase().get(gateNumber1);
-                Gate gate2 = makeGateDatabase().get(gateNumber2);
+                Gate gate1 = gates.get(gateNumber1);
+                Gate gate2 = gates.get(gateNumber2);
 
                 Net net = new Net(gate1, gate2);
                 netDatabase.add(net);
