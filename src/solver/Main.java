@@ -33,6 +33,7 @@ public class Main {
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
 
+            // Hillclimber
             int iterativeRounds = 0;
             while(iterativeRounds < grid.netDatabase.size()*5){
                 solution = optimizeSolution(solution);
