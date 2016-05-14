@@ -34,7 +34,7 @@ public class Main {
             System.out.println("Initializing Iterative round...");
 
             int iterativeRounds = 0;
-            while(iterativeRounds < 10){
+            while(iterativeRounds < grid.netDatabase.size()*5){
                 solution = optimizeSolution(solution);
                 if(solution.score <= bestScore) {
                     bestScore = solution.score;
