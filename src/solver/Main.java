@@ -18,7 +18,7 @@ public class Main {
 
         if(isSolutionPossible(grid)) {
             // shows the theoretical minimumscore
-            int minimumScore = grid.totalMinimumScore(grid.netDatabase);
+            int minimumScore = grid.totalMinimumScore(grid.netDatabase)-1;
             System.out.println("Theoretical minimum score: " + minimumScore);
 
             // generate a solution
@@ -34,11 +34,11 @@ public class Main {
             System.out.println("Initializing Iterative round...");
 
             int iterativeRounds = 0;
-            while(iterativeRounds<10){
+            while(iterativeRounds < 10){
                 solution = optimizeSolution(solution);
-                if(solution.score < bestScore) {
+                if(solution.score <= bestScore) {
                     bestScore = solution.score;
-                    iterativeRounds = 0;
+                    break;
                 }
                 iterativeRounds++;
             }
@@ -57,7 +57,8 @@ public class Main {
 
 
     // astar search
-    private static GridScore astar(GridScore currentGrid, int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int x1, int y1, int z1, int x2, int y2,
+                                   int z2, GridScore trialGrid) {
 
         // save the visited nodes
         ArrayList<ExpandGrid> memory = new ArrayList<>();
@@ -170,7 +171,6 @@ public class Main {
             }
         }
         //System.out.println("Succesfully placed poles.");
-
         // poles are placed, draw line between poles
         GridScore trialGrid = currentGrid;
         int lineNumber = 0;
@@ -202,11 +202,15 @@ public class Main {
 
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
+            System.out.println("Score after removing line L: " + lineNum + ": " + solution.score);
+
             Net net = solution.netDatabase.get(lineNum);
-            solution = astar(solution, lineNum,net.gate1.x,net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution);
+            solution = astar(solution, lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution);
+            System.out.println("Score after placing line L: " + lineNum + ": " + solution.score);
         }
         return solution;
     }
+
 
     // removes a line
     private static GridScore removeLine(GridScore solution, int lineNum){
@@ -225,6 +229,7 @@ public class Main {
         //System.out.println("Removed: L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
+
 
     // calculates if solution is possible
     private static boolean isSolutionPossible(Grid grid) {
