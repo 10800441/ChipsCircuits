@@ -13,8 +13,6 @@ public class Main {
     public static void main(String[] args) {
         // initializing grid to work with
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE);
-
-
         long time1 = System.currentTimeMillis();
 
 
@@ -28,12 +26,14 @@ public class Main {
             while (solution == null) {
                 solution = generateSolution(grid);
             }
-            solution.grid.printGrid();
+
             System.out.println("Total grid score " + solution.score);
 
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
-            optimizeSolution(solution).grid.printGrid();
+            GridScore newSolution = optimizeSolution(solution);
+            System.out.println("score: "+ newSolution.score);
+            newSolution.grid.printGrid();
         }
 
         long time2 = System.currentTimeMillis();
@@ -42,7 +42,7 @@ public class Main {
 
 
     // astar search
-    private static GridScore astar(GridScore currentGrid, int lineNumber, PoleCoordinates coordinates, Grid trialGrid) {
+    private static GridScore astar(GridScore currentGrid, int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
 
         // save the visited nodes
         ArrayList<ExpandGrid> memory = new ArrayList<>();
@@ -51,13 +51,13 @@ public class Main {
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
         // adds the first line piece to the queue
-        gridQueue.add(new ExpandGrid(trialGrid, lineNumber, coordinates.x1, coordinates.y1, coordinates.z1, 0, 0));
+        gridQueue.add(new ExpandGrid(trialGrid.grid, lineNumber, x1, y1, z1, 0, 0));
 
         // counts the amount of grids that pass through the queue, that are not (yet) a solution
         int counter = 0;
         // while gridqueue is not empty and counter < state space, continue astar
         while (!gridQueue.isEmpty() && counter < Y_SIZE * X_SIZE * Z_SIZE) {
-            ArrayList<ExpandGrid> allChildren = trialGrid.create_possible_lines(gridQueue.remove(), coordinates.x2, coordinates.y2, coordinates.z2);
+            ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
             for (ExpandGrid childGrid : allChildren) {
 
                 // checks if generated node already exist in memory
@@ -79,7 +79,7 @@ public class Main {
                 if (!existInMemory) {
                     // if estimate <= 1, goal reached, return solution
                     if (childGrid.estimate <= 1) {
-                        return new GridScore(childGrid.grid, childGrid.steps, trialGrid.netDatabase);
+                        return new GridScore(childGrid.grid, childGrid.steps+trialGrid.score, trialGrid.netDatabase);
                     } else {
                         counter++;
                         gridQueue.add(childGrid);
@@ -163,7 +163,8 @@ public class Main {
         int totalALineLength = 0;
         while (lineNumber < grid.netDatabase.size()) {
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-                trialGrid = astar(currentGrid, poolCoordinates.get(lineNumber).lineNum, poolCoordinates.get(lineNumber), trialGrid.grid);
+                PoleCoordinates pole = poolCoordinates.get(lineNumber);
+                trialGrid = astar(currentGrid, pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2, trialGrid);
                 if (trialGrid == null) {
                     lineNumber = -1;
                     trialGrid = currentGrid;
@@ -187,9 +188,11 @@ public class Main {
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
             System.out.println("Score after removing " + lineNum + ": " + solution.score);
-            //return astar(solution, lineNum, coordinates, solution.grid);
+
+            Net net = solution.netDatabase.get(lineNum);
+            solution = astar(solution, lineNum,net.gate1.x,net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution);
         }
-        return new GridScore(solution.grid, 0, solution.netDatabase);
+        return solution;
     }
 
     // removes a line
