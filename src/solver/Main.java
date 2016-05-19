@@ -61,8 +61,7 @@ public class Main {
 
 
     // astar search
-    private static GridScore astar(int lineNumber, int x1, int y1, int z1, int x2, int y2,
-                                   int z2, GridScore trialGrid) {
+    private static GridScore astar(int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
 
         // save the visited nodes
         ArrayList<ExpandGrid> memory = new ArrayList<>();

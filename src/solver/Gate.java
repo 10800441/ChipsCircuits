@@ -14,7 +14,7 @@ public class Gate {
     }
 
     public String toString(){
-        return "" + number;
+        return "" + (number - 1);
     }
 
 }

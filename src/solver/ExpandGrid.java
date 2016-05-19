@@ -22,21 +22,13 @@ public class ExpandGrid implements Comparable{
     public String toString(){
         return "CurrentGrid: " + number + " x: " + z + " y: " + y + " z: " + z;
 
-
-
-
-
     }
 
     @Override
     public int compareTo(Object o) {
         ExpandGrid other = (ExpandGrid) o;
         if(this.steps + this.estimate < other.steps + other.estimate) return -1;
-        if((this.steps + this.estimate == other.steps + other.estimate) &&(this.estimate < other.estimate)) return -1;
         if(this.steps + this.estimate > other.steps + other.estimate) return 1;
         return 0;
-
-
-
     }
 }

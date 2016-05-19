@@ -62,21 +62,31 @@ public class Grid {
                         String gridContent = grid[i][k][j];
                         char identifier = gridContent.charAt(0);
 
+                        int n = 0;
+                        if(grid[i][k][j].length() == 3) {
+                            n = grid[i][k][j].charAt(2) % 5;
+                        } else if (grid[i][k][j].length() == 2) {
+                            n = grid[i][k][j].charAt(1)%5;
+                        }
+                        if(n == 0) n = 6;
+
                         // Labeling bij het printen
                         if (identifier == 'G' && grid[i][k][j].length() == 3) {
-                            System.out.print("\033[31m");
+                            System.out.print("\033[47m");
                             System.out.print(grid[i][k][j]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'G') {
-                            System.out.print("\033[31m");
+                            System.out.print("\033[47m");
                             System.out.print(" " + grid[i][k][j]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
-                            System.out.print("\033[22m");
+                            System.out.print("\033[3"+ n + "m");
                             System.out.print(grid[i][k][j]);
-                            System.out.print("\033[22m");
+                            System.out.print("\033[0m");
                         } else if (identifier == 'L') {
+                            System.out.print("\033[3"+ n + "m");
                             System.out.print(" " + grid[i][k][j]);
+                            System.out.print("\033[0m");
                         }
                     }
                 }
