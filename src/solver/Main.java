@@ -1,9 +1,11 @@
 package solver;
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
-
 
 public class Main {
     final static int X_SIZE = 19;
@@ -23,29 +25,28 @@ public class Main {
         try {
             // Vul hier het pad naar de bestandslocatie in !
             FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\csvFiles\\test.csv");
- 
+
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum: ");
             writer.append("" + minimumScore);
             writer.append('\n');
 
 
-            writer.append(" unoptimalised score: ");
+            writer.append("unoptimalised score:");
             writer.append(',');
             writer.append("optimised score:");
 
             writer.append("time:");
             writer.append('\n');
 
-
             for(int i = 0; i < 100; i ++) {
                 long time1 = System.currentTimeMillis();
                 int[] finalList = makeOptimalSolution(grid);
                 long time2 = System.currentTimeMillis();
-                writer.write("" + finalList[0]);
-                writer.append(",");
+                writer.append("" + finalList[0]);
+                writer.append(',');
                 writer.append("" + finalList[1]);
-                writer.append(",");
+                writer.append(',');
                 writer.append("" + (time2 - time1) );
 
                 writer.append('\n');

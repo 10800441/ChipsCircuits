@@ -209,8 +209,8 @@ public class Grid {
     public static ArrayList<Gate> makeGateDatabase() {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
-            BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
             String line;
             while (true) {
                 line = rd.readLine();
@@ -234,10 +234,10 @@ public class Grid {
     public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
             //BufferedReader rd = new BufferedReader(new FileReader("src/print2Lines.txt"));
             //BufferedReader rd = new BufferedReader(new FileReader("src/print3Lines.txt"));
-            BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
             //BufferedReader rd = new BufferedReader(new FileReader("src/print5Lines.txt"));
             //BufferedReader rd = new BufferedReader(new FileReader("src/print6Lines.txt"));
             String line;
