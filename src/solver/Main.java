@@ -8,7 +8,6 @@ import java.util.PriorityQueue;
 public class Main {
     final static int X_SIZE = 19;
     final static int Y_SIZE = 14;
-    //final static int Y_SIZE = 18;
     final static int Z_SIZE = 7;
 
     static int minimumScore;
@@ -21,7 +20,7 @@ public class Main {
 
         if(isSolutionPossible(grid)) {
             // shows the theoretical minimumscore
-            minimumScore = grid.totalMinimumScore(grid.netDatabase)-1;
+            minimumScore = grid.totalMinimumScore(grid.netDatabase);
             System.out.println("Theoretical minimum score: " + minimumScore);
 
             // generate a solution

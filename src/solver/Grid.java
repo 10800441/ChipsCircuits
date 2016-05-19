@@ -209,8 +209,8 @@ public class Grid {
     public static ArrayList<Gate> makeGateDatabase() {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
             String line;
             while (true) {
                 line = rd.readLine();
@@ -249,8 +249,8 @@ public class Grid {
                 int gateNumber1 = Integer.valueOf(words[0]);
                 int gateNumber2 = Integer.valueOf(words[1]);
 
-                Gate gate1 = gates.get(gateNumber1-1);
-                Gate gate2 = gates.get(gateNumber2-1);
+                Gate gate1 = gates.get(gateNumber1);
+                Gate gate2 = gates.get(gateNumber2);
 
                 Net net = new Net(gate1, gate2);
                 netDatabase.add(net);
