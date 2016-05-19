@@ -209,21 +209,18 @@ public class Main {
 
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
-        solution.grid.printGrid();
+
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             GridScore solutionRemove = removeLine(solution, lineNum);
-            System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
             Net net = solution.netDatabase.get(lineNum);
             solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
-            System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
-
             if(solution == null) {
                 System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
                 solutionRemove.grid.printGrid();
             } else if(solution.score <= minimumScore) break;
         }
-        return solution;
+        return solution; 
     }
 
 
