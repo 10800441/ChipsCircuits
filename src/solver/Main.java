@@ -30,12 +30,15 @@ public class Main {
             System.out.println("Total grid score " + solution.score);
             // Setting the best score
             int bestScore = solution.score;
+
+
             // Shoelace - iterative round
             System.out.println("Initializing Iterative round...");
 
             // Hillclimber
             int iterativeRounds = 0;
             while(iterativeRounds < grid.netDatabase.size()*5){
+                // Shoelace - iterative round
                 solution = optimizeSolution(solution);
                 if(solution.score <= bestScore) {
                     bestScore = solution.score;
@@ -59,7 +62,7 @@ public class Main {
 
     // astar search
     private static GridScore astar(GridScore currentGrid, int lineNumber, int x1, int y1, int z1, int x2, int y2,
-                                   int z2, GridScore trialGrid) {
+                                   int z2, GridScore trialGrid, boolean noMem) {
 
         // save the visited nodes
         ArrayList<ExpandGrid> memory = new ArrayList<>();
@@ -73,11 +76,13 @@ public class Main {
         // counts the amount of grids that pass through the queue, that are not (yet) a solution
         int counter = 0;
         // while gridqueue is not empty and counter < state space, continue astar
-        while (!gridQueue.isEmpty() && counter < Y_SIZE * X_SIZE * Z_SIZE) {
+        while (!gridQueue.isEmpty() && counter < Y_SIZE * X_SIZE * Z_SIZE*10) {
             ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
             for (ExpandGrid childGrid : allChildren) {
 
                 // checks if generated node already exist in memory
+
+
                 boolean existInMemory = false;
                 for (ExpandGrid aMemory : memory) {
                     int memory_x = aMemory.x;
@@ -92,10 +97,13 @@ public class Main {
                     }
                 }
 
+            if(noMem) {existInMemory = false;}
+
                 // if node doesn't already exist in queue, add child to memory and queue
                 if (!existInMemory) {
                     // if estimate <= 1, goal reached, return solution
                     if (childGrid.estimate <= 1) {
+
                         return new GridScore(childGrid.grid, childGrid.steps+trialGrid.score, trialGrid.netDatabase);
                     } else {
                         counter++;
@@ -107,6 +115,7 @@ public class Main {
         }
         // If a line cannot be placed, return null;
         // System.out.println("Error: could not generate line " + lineNumber + ", " + net);
+
         return null;
     }
 
@@ -180,7 +189,7 @@ public class Main {
         while (lineNumber < grid.netDatabase.size()) {
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
                 PoleCoordinates pole = poolCoordinates.get(lineNumber);
-                trialGrid = astar(currentGrid, pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2, trialGrid);
+                trialGrid = astar(currentGrid, pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2, trialGrid, false);
                 if (trialGrid == null) {
                     lineNumber = -1;
                     trialGrid = currentGrid;
@@ -203,11 +212,9 @@ public class Main {
 
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             solution = removeLine(solution, lineNum);
-            System.out.println("Score after removing line L: " + lineNum + ": " + solution.score);
 
             Net net = solution.netDatabase.get(lineNum);
-            solution = astar(solution, lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution);
-            System.out.println("Score after placing line L: " + lineNum + ": " + solution.score);
+            solution = astar(solution, lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solution, true);
         }
         return solution;
     }
