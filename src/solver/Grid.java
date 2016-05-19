@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Grid {
     String[][][] grid;
     ArrayList<Gate> gateDatabase = makeGateDatabase();
-    ArrayList<Net> netDatabase = makeNetDatabase();
+    ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase);
 
     // super constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
@@ -23,7 +23,7 @@ public class Grid {
 
     // constructor (waarom makeGateDatabase() & makeNetDatabase()?)
     public Grid(int width, int height, int depth) {
-        this(width, height, depth, makeGateDatabase(), makeNetDatabase());
+        this(width, height, depth, makeGateDatabase(), makeNetDatabase(makeGateDatabase()));
     }
 
 
@@ -62,21 +62,33 @@ public class Grid {
                         String gridContent = grid[i][k][j];
                         char identifier = gridContent.charAt(0);
 
+                        int n = 0;
+                        if(grid[i][k][j].length() == 3) {
+                            n = grid[i][k][j].charAt(2) % 5;
+                        } else if (grid[i][k][j].length() == 2) {
+                            n = grid[i][k][j].charAt(1)%5;
+                        }
+                        if(n == 0) n = 6;
+
                         // Labeling bij het printen
                         if (identifier == 'G' && grid[i][k][j].length() == 3) {
-                            System.out.print("\033[31m");
+                            System.out.print("\033[47m");
                             System.out.print(grid[i][k][j]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'G') {
-                            System.out.print("\033[31m");
-                            System.out.print(" " + grid[i][k][j]);
-                            System.out.print("\033[0m");
-                        } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
-                            System.out.print("\033[22m");
+                            System.out.print("\033[47m");
                             System.out.print(grid[i][k][j]);
-                            System.out.print("\033[22m");
+                            System.out.print("\033[0m");
+                            System.out.print(" ");
+                        } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
+                            System.out.print("\033[3"+ n + "m");
+                            System.out.print(grid[i][k][j]);
+                            System.out.print("\033[0m");
                         } else if (identifier == 'L') {
-                            System.out.print(" " + grid[i][k][j]);
+                            System.out.print("\033[3"+ n + "m");
+                            System.out.print(grid[i][k][j]);
+                            System.out.print("\033[0m");
+                            System.out.print(" ");
                         }
                     }
                 }
@@ -218,7 +230,7 @@ public class Grid {
     }
 
     // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase() {
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
             BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
@@ -231,8 +243,8 @@ public class Grid {
                 int gateNumber1 = Integer.valueOf(words[0]);
                 int gateNumber2 = Integer.valueOf(words[1]);
 
-                Gate gate1 = makeGateDatabase().get(gateNumber1);
-                Gate gate2 = makeGateDatabase().get(gateNumber2);
+                Gate gate1 = gates.get(gateNumber1-1);
+                Gate gate2 = gates.get(gateNumber2-1);
 
                 Net net = new Net(gate1, gate2);
                 netDatabase.add(net);

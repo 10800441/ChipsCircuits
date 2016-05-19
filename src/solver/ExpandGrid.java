@@ -21,6 +21,7 @@ public class ExpandGrid implements Comparable{
     }
     public String toString(){
         return "CurrentGrid: " + number + " x: " + z + " y: " + y + " z: " + z;
+
     }
 
     @Override
@@ -29,8 +30,5 @@ public class ExpandGrid implements Comparable{
         if(this.steps + this.estimate < other.steps + other.estimate) return -1;
         if(this.steps + this.estimate > other.steps + other.estimate) return 1;
         return 0;
-
-
-
     }
 }
