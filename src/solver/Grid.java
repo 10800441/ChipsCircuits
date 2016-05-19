@@ -77,16 +77,18 @@ public class Grid {
                             System.out.print("\033[0m");
                         } else if (identifier == 'G') {
                             System.out.print("\033[47m");
-                            System.out.print(" " + grid[i][k][j]);
+                            System.out.print(grid[i][k][j]);
                             System.out.print("\033[0m");
+                            System.out.print(" ");
                         } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
                             System.out.print("\033[3"+ n + "m");
                             System.out.print(grid[i][k][j]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'L') {
                             System.out.print("\033[3"+ n + "m");
-                            System.out.print(" " + grid[i][k][j]);
+                            System.out.print(grid[i][k][j]);
                             System.out.print("\033[0m");
+                            System.out.print(" ");
                         }
                     }
                 }
