@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 
 public class Main {
     final static int X_SIZE = 19;
-    final static int Y_SIZE = 14;
+    final static int Y_SIZE = 18;
     final static int Z_SIZE = 7;
 
     static int minimumScore;
@@ -106,7 +106,6 @@ public class Main {
             }
         }
         // If a line cannot be placed, return null;
-        //System.out.println("Error: could not generate line " + lineNumber + ", " + net);
         return null;
     }
 
@@ -189,7 +188,7 @@ public class Main {
                     Collections.shuffle(poolCoordinates);
                     counter++;
                     totalScore += currentGrid.score;
-                    if (counter > nets.size() / 6) return null;
+                    if (counter > nets.size() / 4) return null;
                     totalALineLength = 0;
                 }// else {
                 //    System.out.println("Succesfully placed line " + lineNumber);
