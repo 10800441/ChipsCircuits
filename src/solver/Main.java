@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 public class Main {
     final static int X_SIZE = 19;
     final static int Y_SIZE = 14;
+    //final static int Y_SIZE = 18;
     final static int Z_SIZE = 7;
 
     static int minimumScore;
