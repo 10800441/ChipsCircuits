@@ -1,12 +1,9 @@
 package solver;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
+
 
 public class Main {
     final static int X_SIZE = 19;
@@ -17,17 +14,64 @@ public class Main {
 
     public static void main(String[] args) {
         // initializing grid to work with
-        ArrayList<Gate> gateDatabase = makeGateDatabase();
-        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase);
+        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print1Gates.txt");
+        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print1Lines.txt");
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
 
-        long time1 = System.currentTimeMillis();
+
+        System.out.println("Calculating.....");
+        try {
+            // Vul hier het pad naar de bestandslocatie in !
+            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\csvFiles\\test.csv");
+ 
+            minimumScore = grid.totalMinimumScore(grid.netDatabase);
+            writer.append("Theoretical minimum: ");
+            writer.append("" + minimumScore);
+            writer.append('\n');
 
 
-        if(isSolutionPossible(grid)) {
+            writer.append(" unoptimalised score: ");
+            writer.append(',');
+            writer.append("optimised score:");
+
+            writer.append("time:");
+            writer.append('\n');
+
+
+            for(int i = 0; i < 100; i ++) {
+                long time1 = System.currentTimeMillis();
+                int[] finalList = makeOptimalSolution(grid);
+                long time2 = System.currentTimeMillis();
+                writer.write("" + finalList[0]);
+                writer.append(",");
+                writer.append("" + finalList[1]);
+                writer.append(",");
+                writer.append("" + (time2 - time1) );
+
+                writer.append('\n');
+            }
+            System.out.println("Done!");
+            writer.flush();
+            writer.close();
+        }
+
+
+    catch(IOException e){
+        e.printStackTrace();
+    }
+
+}
+
+
+
+    private static int[] makeOptimalSolution(Grid grid){
+
+        int[] anArray = new int[3];
+
+        if (isSolutionPossible(grid)) {
             // shows the theoretical minimumscore
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
-            System.out.println("Theoretical minimum score: " + minimumScore);
+            //System.out.println("Theoretical minimum score: " + minimumScore);
 
             // generate a solution
             GridScore solution = generateSolution(grid);
@@ -35,42 +79,42 @@ public class Main {
                 solution = generateSolution(grid);
             }
 
-            System.out.println("Total grid score " + solution.score);
+            //System.out.println("Total grid score " + solution.score);
             // Setting the best score
             int bestScore = solution.score;
+            int originalScore = solution.score;
             // Shoelace - iterative round
-            System.out.println("Initializing Iterative round...");
+            //System.out.println("Initializing Iterative round...");
 
             // Amount of iterative rounds
             int iterativeRounds = 0;
 
-            while(iterativeRounds < solution.netDatabase.size()){
+            while (iterativeRounds < solution.netDatabase.size()) {
                 solution = optimizeSolution(solution);
-                    if(solution.score + solution.netDatabase.size() <= minimumScore) {
-                        bestScore = solution.score + solution.netDatabase.size();
-                        break;
+                if (solution.score + solution.netDatabase.size() <= minimumScore) {
+                    bestScore = solution.score + solution.netDatabase.size();
+                    break;
                 }
                 bestScore = solution.score + solution.netDatabase.size();
                 iterativeRounds++;
             }
 
-            System.out.println("Rounds completed!");
-            System.out.println("Final Score: "+ bestScore);
+            //System.out.println("Rounds completed!");
 
-            System.out.println("Final Grid:");
-            solution.grid.printGrid();
+            anArray[0] = originalScore;
+            anArray[1] = bestScore;
 
-            }
 
-        long time2 = System.currentTimeMillis();
-        System.out.println("It took " + (time2 - time1) + " miliseconds.");
+
+        }
+        return anArray;
     }
 
 
-    public static ArrayList<Gate> makeGateDatabase() {
+            public static ArrayList<Gate> makeGateDatabase(String gateFileName) {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader(gateFileName));
             //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
             String line;
             while (true) {
@@ -92,15 +136,10 @@ public class Main {
     }
 
     // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String netFileName) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print3Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print5Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print6Lines.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader(netFileName));
             String line;
             while (true) {
                 line = rd.readLine();
@@ -158,7 +197,7 @@ public class Main {
                 if (!existInMemory) {
                     // if estimate <= 1, goal reached, return solution
                     if (childGrid.estimate <= 1) {
-                        return new GridScore(childGrid.grid, childGrid.steps+trialGrid.score, trialGrid.netDatabase);
+                        return new GridScore(childGrid.grid, childGrid.steps + trialGrid.score, trialGrid.netDatabase);
                     } else {
                         gridQueue.add(childGrid);
                         memory.add(childGrid);
@@ -173,7 +212,7 @@ public class Main {
 
     // counts the occurrence of each gate in the netlist
     private static int[] countGateOccurrence(ArrayList<Net> nets, ArrayList<Gate> gates) {
-        int[] gateOccurrence = new int[gates.size()+1];
+        int[] gateOccurrence = new int[gates.size() + 1];
 
         for (Net net : nets) {
             int gate1 = net.gate1.number;
@@ -232,7 +271,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("Succesfully placed poles.");
+        // System.out.println("Succesfully placed poles.");
         // poles are placed, draw line between poles
         GridScore trialGrid = currentGrid;
         int lineNumber = 0;
@@ -259,7 +298,7 @@ public class Main {
             totalALineLength += trialGrid.score;
         }
         // return solution
-        System.out.println("Succesfully placed lines.");
+        // System.out.println("Succesfully placed lines.");
         return new GridScore(trialGrid.grid, (totalALineLength + totalPole), trialGrid.netDatabase);
     }
 
@@ -267,7 +306,7 @@ public class Main {
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
         //solution.grid.printGrid();
-        for(int lineNum = solution.netDatabase.size()-1; lineNum >= 0; lineNum--){
+        for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
             GridScore solutionRemove = removeLine(solution, lineNum);
             //System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
@@ -275,23 +314,23 @@ public class Main {
             solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
             //System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
 
-            if(solution == null) {
+            if (solution == null) {
                 //System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
                 solutionRemove.grid.printGrid();
-            } else if(solution.score <= minimumScore) break;
+            } else if (solution.score <= minimumScore) break;
         }
         return solution;
     }
 
 
     // removes a line
-    private static GridScore removeLine(GridScore solution, int lineNum){
+    private static GridScore removeLine(GridScore solution, int lineNum) {
         int removeCount = 0;
-        for (int i = 0; i <  solution.grid.grid[0][0].length; i++) {
+        for (int i = 0; i < solution.grid.grid[0][0].length; i++) {
             for (int k = 0; k < solution.grid.grid[0].length; k++) {
                 for (int n = 0; n < solution.grid.grid.length; n++) {
-                    String line = "L"+ lineNum;
-                    if(solution.grid.grid[n][k][i] != null && solution.grid.grid[n][k][i].equals(line)){
+                    String line = "L" + lineNum;
+                    if (solution.grid.grid[n][k][i] != null && solution.grid.grid[n][k][i].equals(line)) {
                         solution.grid.grid[n][k][i] = null;
                         removeCount++;
                     }
@@ -316,7 +355,9 @@ public class Main {
                 return false;
             }
         }
-        System.out.println("Calculating solution...");
+        //System.out.println("Calculating solution...");
         return true;
     }
+
+
 }
