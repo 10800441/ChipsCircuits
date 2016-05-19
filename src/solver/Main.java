@@ -37,13 +37,13 @@ public class Main {
 
             // Amount of iterative rounds
             int iterativeRounds = 0;
-            while(iterativeRounds < grid.netDatabase.size()*5){
+            while(iterativeRounds < solution.netDatabase.size()*3){
                 solution = optimizeSolution(solution);
-                // if solution score is best score, done.
-                if(solution.score <= bestScore) {
-                    bestScore = solution.score;
-                    break;
+                    if(solution.score + solution.netDatabase.size() <= minimumScore) {
+                        bestScore = solution.score + solution.netDatabase.size();
+                        break;
                 }
+                bestScore = solution.score + solution.netDatabase.size();
                 iterativeRounds++;
             }
 
@@ -74,9 +74,8 @@ public class Main {
                 x2, y2, z1, z2)));
 
         // counts the amount of grids that pass through the queue, that are not (yet) a solution
-        int counter = 0;
         // while gridqueue is not empty and counter < state space, continue astar
-        while (!gridQueue.isEmpty() && counter < Y_SIZE * X_SIZE * Z_SIZE) {
+        while (!gridQueue.isEmpty()) {
             ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
             for (ExpandGrid childGrid : allChildren) {
 
@@ -86,10 +85,7 @@ public class Main {
                     int memory_x = aMemory.x;
                     int memory_y = aMemory.y;
                     int memory_z = aMemory.z;
-                    int memory_steps = aMemory.steps;
-                    int memory_estimate = aMemory.estimate;
-                    if (childGrid.x == memory_x && childGrid.y == memory_y && childGrid.z == memory_z &&
-                            childGrid.steps == memory_steps && childGrid.estimate == memory_estimate) {
+                    if (childGrid.x == memory_x && childGrid.y == memory_y && childGrid.z == memory_z) {
                         existInMemory = true;
                         break;
                     }
@@ -101,7 +97,6 @@ public class Main {
                     if (childGrid.estimate <= 1) {
                         return new GridScore(childGrid.grid, childGrid.steps+trialGrid.score, trialGrid.netDatabase);
                     } else {
-                        counter++;
                         gridQueue.add(childGrid);
                         memory.add(childGrid);
                     }
@@ -192,7 +187,7 @@ public class Main {
                     Collections.shuffle(poolCoordinates);
                     counter++;
                     totalScore += currentGrid.score;
-                    if (counter > nets.size() / 4) return null;
+                    if (counter > nets.size() / 6) return null;
                     totalALineLength = 0;
                 }// else {
                 //    System.out.println("Succesfully placed line " + lineNumber);
@@ -208,18 +203,21 @@ public class Main {
 
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
-
+        //solution.grid.printGrid();
         for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
             GridScore solutionRemove = removeLine(solution, lineNum);
+            //System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
             Net net = solution.netDatabase.get(lineNum);
             solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
+            //System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
+
             if(solution == null) {
-                System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
+                //System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
                 solutionRemove.grid.printGrid();
             } else if(solution.score <= minimumScore) break;
         }
-        return solution; 
+        return solution;
     }
 
 

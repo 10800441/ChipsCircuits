@@ -139,10 +139,10 @@ public class Grid {
         if (y - 1 > 0 && y - 1 < grid[0].length && grid[x][y - 1][z] == null) {
             list.add(addLine(inputGrid, number, x, y - 1, z, steps, x2, y2, z2));
         }
-        if (z + 1 > 0 && z + 1 < grid[0][0].length && grid[x][y][z + 1] == null) {
+        if (z + 1 >= 0 && z + 1 < grid[0][0].length && grid[x][y][z + 1] == null) {
             list.add(addLine(inputGrid, number, x, y, z + 1, steps, x2, y2, z2));
         }
-        if (z - 1 > 0 && z - 1 < grid[0][0].length && grid[x][y][z - 1] == null) {
+        if (z - 1 >= 0 && z - 1 < grid[0][0].length && grid[x][y][z - 1] == null) {
             list.add(addLine(inputGrid, number, x, y, z - 1, steps, x2, y2, z2));
         }
         return list;
