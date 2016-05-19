@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Grid {
     String[][][] grid;
-    ArrayList<Gate> gateDatabase = makeGateDatabase();
-    ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase);
+    ArrayList<Gate> gateDatabase;
+    ArrayList<Net> netDatabase;
 
     // super constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {

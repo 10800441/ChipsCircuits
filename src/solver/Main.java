@@ -1,5 +1,8 @@
 package solver;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +17,10 @@ public class Main {
 
     public static void main(String[] args) {
         // initializing grid to work with
-        Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE);
+        ArrayList<Gate> gateDatabase = makeGateDatabase();
+        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase);
+        Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
+
         long time1 = System.currentTimeMillis();
 
 
@@ -37,7 +43,8 @@ public class Main {
 
             // Amount of iterative rounds
             int iterativeRounds = 0;
-            while(iterativeRounds < solution.netDatabase.size()*3){
+
+            while(iterativeRounds < solution.netDatabase.size()){
                 solution = optimizeSolution(solution);
                     if(solution.score + solution.netDatabase.size() <= minimumScore) {
                         bestScore = solution.score + solution.netDatabase.size();
@@ -59,6 +66,62 @@ public class Main {
         System.out.println("It took " + (time2 - time1) + " miliseconds.");
     }
 
+
+    public static ArrayList<Gate> makeGateDatabase() {
+        ArrayList<Gate> gateDatabase = new ArrayList<>();
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
+            String line;
+            while (true) {
+                line = rd.readLine();
+                if (line == null) break;
+                String[] words = line.split(",");
+
+                int lineNumber = Integer.valueOf(words[0]);
+                int x = Integer.valueOf(words[1]);
+                int y = Integer.valueOf(words[2]);
+
+                gateDatabase.add(new Gate(lineNumber, x, y, 0));
+            }
+            rd.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex);
+        }
+        return gateDatabase;
+    }
+
+    // Read in the net database from the file "print1Lines.txt"
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
+        ArrayList<Net> netDatabase = new ArrayList<>();
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print3Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print5Lines.txt"));
+            //BufferedReader rd = new BufferedReader(new FileReader("src/print6Lines.txt"));
+            String line;
+            while (true) {
+                line = rd.readLine();
+                if (line == null) break;
+                String[] words = line.split(",");
+
+                int gateNumber1 = Integer.valueOf(words[0]);
+                int gateNumber2 = Integer.valueOf(words[1]);
+
+                Gate gate1 = gates.get(gateNumber1);
+                Gate gate2 = gates.get(gateNumber2);
+
+                Net net = new Net(gate1, gate2);
+                netDatabase.add(net);
+            }
+            rd.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex);
+        }
+        return netDatabase;
+    }
 
     // astar search
     private static GridScore astar(int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
@@ -204,7 +267,7 @@ public class Main {
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
         //solution.grid.printGrid();
-        for(int lineNum = 0; lineNum < solution.netDatabase.size(); lineNum++){
+        for(int lineNum = solution.netDatabase.size()-1; lineNum >= 0; lineNum--){
             GridScore solutionRemove = removeLine(solution, lineNum);
             //System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
