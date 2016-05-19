@@ -70,7 +70,8 @@ public class Main {
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
         // adds the first line piece to the queue
-        gridQueue.add(new ExpandGrid(trialGrid.grid, lineNumber, x1, y1, z1, 0, 0));
+        gridQueue.add(new ExpandGrid(trialGrid.grid, lineNumber, x1, y1, z1, 0, trialGrid.grid.manhattanDistance(x1, y1,
+                x2, y2, z1, z2)));
 
         // counts the amount of grids that pass through the queue, that are not (yet) a solution
         int counter = 0;
