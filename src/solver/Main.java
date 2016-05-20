@@ -21,21 +21,18 @@ public class Main {
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
 
 
-        System.out.println("Calculating....."); 
+        System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
             FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
-            writer.append("Theoretical minimum: ");
-            writer.append("" + minimumScore);
-            writer.append('\n');
-
-
+            writer.append("Theoretical minimum:");
+            writer.append(',');
             writer.append("unoptimalised score:");
             writer.append(',');
             writer.append("optimalised score:");
-
+            writer.append(',');
             writer.append("time:");
             writer.append('\n');
 
@@ -43,7 +40,11 @@ public class Main {
                 long time1 = System.currentTimeMillis();
                 int[] finalList = makeOptimalSolution(grid);
                 long time2 = System.currentTimeMillis();
+                writer.append("" + minimumScore);
+
+                writer.append(',');
                 writer.append("" + finalList[0]);
+
                 writer.append(',');
                 writer.append("" + finalList[1]);
                 writer.append(',');
