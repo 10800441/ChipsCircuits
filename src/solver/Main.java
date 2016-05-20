@@ -24,7 +24,7 @@ public class Main {
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\csvFiles\\test.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum: ");
@@ -34,7 +34,7 @@ public class Main {
 
             writer.append("unoptimalised score:");
             writer.append(',');
-            writer.append("optimised score:");
+            writer.append("optimalised score:");
 
             writer.append("time:");
             writer.append('\n');
