@@ -9,22 +9,22 @@ import java.util.PriorityQueue;
 
 public class Main {
     final static int X_SIZE = 19;
-    final static int Y_SIZE = 14;
+    final static int Y_SIZE = 18;
     final static int Z_SIZE = 7;
 
     static int minimumScore;
 
     public static void main(String[] args) {
         // initializing grid to work with
-        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print1Gates.txt");
-        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print1Lines.txt");
+        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print2Gates.txt");
+        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print4Lines.txt");
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
 
 
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print2_4lines_100rep.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
