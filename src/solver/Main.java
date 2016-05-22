@@ -16,15 +16,15 @@ public class Main {
 
     public static void main(String[] args) {
         // initializing grid to work with
-        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print2Gates.txt");
+        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print1Gates.txt");
         ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print4Lines.txt");
-        Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
+        Grid grid = new Grid( X_SIZE, Y_SIZE,  Z_SIZE, gateDatabase, netDatabase);
 
 
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print2_4lines_100rep.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
@@ -37,6 +37,8 @@ public class Main {
             writer.append('\n');
 
             for(int i = 0; i < 100; i ++) {
+
+                System.out.println("ch!");
                 long time1 = System.currentTimeMillis();
                 int[] finalList = makeOptimalSolution(grid);
                 long time2 = System.currentTimeMillis();
@@ -53,6 +55,7 @@ public class Main {
                 writer.append('\n');
             }
             System.out.println("Done!");
+
             writer.flush();
             writer.close();
         }
@@ -102,7 +105,7 @@ public class Main {
             }
 
             //System.out.println("Rounds completed!");
-
+            solution.grid.printGrid();
             anArray[0] = originalScore;
             anArray[1] = bestScore;
 
@@ -117,7 +120,6 @@ public class Main {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
             BufferedReader rd = new BufferedReader(new FileReader(gateFileName));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
             String line;
             while (true) {
                 line = rd.readLine();
