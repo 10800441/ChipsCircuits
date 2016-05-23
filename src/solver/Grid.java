@@ -212,7 +212,7 @@ public class Grid {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
             //BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
-            BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
             String line;
             while (true) {
                 line = rd.readLine();
@@ -236,7 +236,7 @@ public class Grid {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
 
-            BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("src/print2Lines.txt"));
 
             String line;
             while (true) {

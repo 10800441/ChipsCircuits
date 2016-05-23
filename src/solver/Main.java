@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
         // initializing grid to work with
         ArrayList<Gate> gateDatabase = makeGateDatabase("src/print1Gates.txt");
-        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print4Lines.txt");
+        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print2Lines.txt");
         Grid grid = new Grid( X_SIZE, Y_SIZE,  Z_SIZE, gateDatabase, netDatabase);
 
 
@@ -94,7 +94,7 @@ public class Main {
             // Amount of iterative rounds
             int iterativeRounds = 0;
 
-            while (iterativeRounds < solution.netDatabase.size()) {
+            while (iterativeRounds < 10()) {
                 solution = optimizeSolution(solution);
                 if (solution.score + solution.netDatabase.size() <= minimumScore) {
                     bestScore = solution.score + solution.netDatabase.size();
@@ -105,7 +105,7 @@ public class Main {
             }
 
             //System.out.println("Rounds completed!");
-            solution.grid.printGrid();
+solution.grid.printGrid();
             anArray[0] = originalScore;
             anArray[1] = bestScore;
 
