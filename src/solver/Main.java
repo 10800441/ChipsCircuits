@@ -16,15 +16,15 @@ public class Main {
 
     public static void main(String[] args) {
         // initializing grid to work with
-        ArrayList<Gate> gateDatabase = makeGateDatabase("src/print2Gates.txt");
-        ArrayList<Net> netDatabase = makeNetDatabase(gateDatabase, "src/print4Lines.txt");
+        ArrayList<Gate> gateDatabase = Grid.makeGateDatabase("src/print1Gates.txt");
+        ArrayList<Net> netDatabase = Grid.makeNetDatabase(gateDatabase, "src/print1Lines.txt");
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
 
 
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print2_4lines_1hour4.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_1lines_1hour_4.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
@@ -117,56 +117,6 @@ public class Main {
     }
 
 
-            public static ArrayList<Gate> makeGateDatabase(String gateFileName) {
-        ArrayList<Gate> gateDatabase = new ArrayList<>();
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader(gateFileName));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
-            String line;
-            while (true) {
-                line = rd.readLine();
-                if (line == null) break;
-                String[] words = line.split(",");
-
-                int lineNumber = Integer.valueOf(words[0]);
-                int x = Integer.valueOf(words[1]);
-                int y = Integer.valueOf(words[2]);
-
-                gateDatabase.add(new Gate(lineNumber, x, y, 0));
-            }
-            rd.close();
-        } catch (IOException ex) {
-            System.err.println("Error: " + ex);
-        }
-        return gateDatabase;
-    }
-
-    // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String netFileName) {
-        ArrayList<Net> netDatabase = new ArrayList<>();
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader(netFileName));
-            String line;
-            while (true) {
-                line = rd.readLine();
-                if (line == null) break;
-                String[] words = line.split(",");
-
-                int gateNumber1 = Integer.valueOf(words[0]);
-                int gateNumber2 = Integer.valueOf(words[1]);
-
-                Gate gate1 = gates.get(gateNumber1);
-                Gate gate2 = gates.get(gateNumber2);
-
-                Net net = new Net(gate1, gate2);
-                netDatabase.add(net);
-            }
-            rd.close();
-        } catch (IOException ex) {
-            System.err.println("Error: " + ex);
-        }
-        return netDatabase;
-    }
 
     // astar search
     private static GridScore astar(int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
@@ -252,7 +202,7 @@ public class Main {
         // while poles could not be placed, try again in random order until poles are placed
         while (error) {
             poolCoordinates = new ArrayList<>();
-            grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE);
+            grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, grid.gateDatabase, grid.netDatabase);
             Collections.shuffle(nets);
             currentGrid = new GridScore(grid, 0, nets);
             int layerNumber = Z_SIZE;
@@ -295,7 +245,7 @@ public class Main {
                     Collections.shuffle(poolCoordinates);
                     counter++;
                     totalScore += currentGrid.score;
-                    if (counter > nets.size() / 6) return null;
+                    if (counter > nets.size() / 4) return null;
                     totalALineLength = 0;
                 }// else {
                 //    System.out.println("Succesfully placed line " + lineNumber);

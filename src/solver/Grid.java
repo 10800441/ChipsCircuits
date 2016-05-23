@@ -10,7 +10,7 @@ public class Grid {
     ArrayList<Gate> gateDatabase;
     ArrayList<Net> netDatabase;
 
-    // super constructor
+    // supertype constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
         grid = new String[width][height][depth];
         this.gateDatabase = gateDatabase;
@@ -19,11 +19,6 @@ public class Grid {
         for (int i = 0; i < gateDatabase.size(); i++) {
             addGate(i, gateDatabase.get(i).y, gateDatabase.get(i).x);
         }
-    }
-
-    // constructor (waarom makeGateDatabase() & makeNetDatabase()?)
-    public Grid(int width, int height, int depth) {
-        this(width, height, depth, makeGateDatabase(), makeNetDatabase(makeGateDatabase()));
     }
 
 
@@ -43,6 +38,8 @@ public class Grid {
             }
         }
     }
+
+
 
     // prints a given grid
     public void printGrid() {
@@ -206,11 +203,10 @@ public class Grid {
     }
 
     // Read in the net database from the file "printGates.txt"
-    public static ArrayList<Gate> makeGateDatabase() {
+    public static ArrayList<Gate> makeGateDatabase(String name) {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print1Gates.txt"));
-            BufferedReader rd = new BufferedReader(new FileReader("src/print2Gates.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader(name));
             String line;
             while (true) {
                 line = rd.readLine();
@@ -231,15 +227,10 @@ public class Grid {
     }
 
     // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates) {
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String name) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print1Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print2Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print3Lines.txt"));
-            BufferedReader rd = new BufferedReader(new FileReader("src/print4Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print5Lines.txt"));
-            //BufferedReader rd = new BufferedReader(new FileReader("src/print6Lines.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader(name));
             String line;
             while (true) {
                 line = rd.readLine();
