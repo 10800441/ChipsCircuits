@@ -12,7 +12,7 @@ public class Grid {
 
     // supertype constructor
     public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
-        grid = new String[width][height][depth];
+        grid = new String[height][width][depth];
         this.gateDatabase = gateDatabase;
         this.netDatabase = netDatabase;
 
@@ -38,7 +38,6 @@ public class Grid {
             }
         }
     }
-
 
 
     // prints a given grid
@@ -96,7 +95,7 @@ public class Grid {
 
     // adds a gate to the grid
     public void addGate(int number, int y_coordinate, int x_coordinate) {
-        grid[x_coordinate][y_coordinate][0] = "G" + number;
+        grid[x_coordinate][y_coordinate][0] = "G" + (number + 1);
     }
 
     // adds a line piece to the grid

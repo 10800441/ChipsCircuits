@@ -6,24 +6,38 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 
 public class Main {
-    final static int X_SIZE = 19;
-    final static int Y_SIZE = 18;
+    final static int X_SIZE = 14;
+    final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;
 
     static int minimumScore;
 
     public static void main(String[] args) {
         // initializing grid to work with
-        ArrayList<Gate> gateDatabase = Grid.makeGateDatabase("src/print1Gates.txt");
-        ArrayList<Net> netDatabase = Grid.makeNetDatabase(gateDatabase, "src/print1Lines.txt");
-        Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
+
+        Grid grid = initializeGrid("src/print1Gates.txt", "src/print1Lines.txt");
+        int minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
         System.out.println("Calculating.....");
+
+        //fileWriter
+        fileWriter(grid, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_1lines_1hour_45.csv", 100, 60);
+    }
+
+    // initialize grid to work with
+    public static Grid initializeGrid(String gates, String lines) {
+        ArrayList<Gate> gateDatabase = Grid.makeGateDatabase(gates);
+        ArrayList<Net> netDatabase = Grid.makeNetDatabase(gateDatabase, lines);
+        return new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
+    }
+
+
+    // writes the results to csv file
+    public static void fileWriter(Grid grid, String adress, int rounds, int minutes) {
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_1lines_1hour_4.csv");
+            FileWriter writer = new FileWriter(adress);
 
-            minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
             writer.append(',');
             writer.append("unoptimalised score:");
@@ -35,7 +49,7 @@ public class Main {
 
             long time = System.currentTimeMillis();
 
-            for(int i = 0; i < 100; i ++) {
+            for(int i = 0; i < rounds; i ++) {
                 System.out.println("Solution no " + i);
                 long time1 = System.currentTimeMillis();
                 int[] finalList = makeOptimalSolution(grid);
@@ -51,7 +65,8 @@ public class Main {
                 writer.append("" + (time2 - time1) );
 
                 writer.append('\n');
-                if(time2 - time > 3600000) break;
+
+                if(time2 - time > minutes*60000) break;
             }
             System.out.println("Done!");
             writer.flush();
@@ -59,12 +74,10 @@ public class Main {
         }
 
 
-    catch(IOException e){
-        e.printStackTrace();
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
-
-}
-
 
 
     private static int[] makeOptimalSolution(Grid grid){
@@ -81,6 +94,7 @@ public class Main {
             while (solution == null) {
                 solution = generateSolution(grid);
             }
+            solution.grid.printGrid();
 
             //System.out.println("Total grid score " + solution.score);
             // Setting the best score
