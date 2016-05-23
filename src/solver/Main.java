@@ -24,7 +24,7 @@ public class Main {
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print2_4lines_100rep.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print2_4lines_1hour4.csv");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
@@ -36,7 +36,10 @@ public class Main {
             writer.append("time:");
             writer.append('\n');
 
+            long time = System.currentTimeMillis();
+
             for(int i = 0; i < 100; i ++) {
+                System.out.println("Solution no " + i);
                 long time1 = System.currentTimeMillis();
                 int[] finalList = makeOptimalSolution(grid);
                 long time2 = System.currentTimeMillis();
@@ -51,6 +54,7 @@ public class Main {
                 writer.append("" + (time2 - time1) );
 
                 writer.append('\n');
+                if(time2 - time > 3600000) break;
             }
             System.out.println("Done!");
             writer.flush();
