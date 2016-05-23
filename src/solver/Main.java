@@ -11,6 +11,8 @@ public class Main {
     final static int Z_SIZE = 7;
 
     static int minimumScore;
+    static long time1;
+    static long time2;
 
     public static void main(String[] args) {
         // initializing grid to work with
@@ -19,9 +21,17 @@ public class Main {
         int minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
         System.out.println("Calculating.....");
+        ArrayList<int[]> allScores  = new ArrayList<>();
 
-        //fileWriter
-        fileWriter(grid, "C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv", 100, 60);
+        for(int i = 0; i < 50; i++) {
+            time1 = System.currentTimeMillis();
+            allScores.add(makeOptimalSolution(grid));
+            time2 = System.currentTimeMillis();
+            System.out.println("Solution no " + i + " completed.");
+        }
+
+        // Vul hier het pad naar de bestandslocatie in !
+        fileWriter(allScores, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\src\\test.csv");
     }
 
     // initialize grid to work with
@@ -33,12 +43,10 @@ public class Main {
 
 
     // writes the results to csv file
-    public static void fileWriter(Grid grid, String adress, int rounds, int minutes) {
+    public static void fileWriter(ArrayList<int[]> allScores, String adress) {
         try {
-            // Vul hier het pad naar de bestandslocatie in !
             FileWriter writer = new FileWriter(adress);
 
-            minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
             writer.append(',');
             writer.append("unoptimalised score:");
@@ -48,13 +56,8 @@ public class Main {
             writer.append("time:");
             writer.append('\n');
 
-            long time = System.currentTimeMillis();
-
-            for(int i = 0; i < rounds; i ++) {
-                System.out.println("Solution no " + i);
-                long time1 = System.currentTimeMillis();
-                int[] finalList = makeOptimalSolution(grid);
-                long time2 = System.currentTimeMillis();
+            for(int i = 0; i < allScores.size(); i++) {
+                int[] finalList = allScores.get(i);
                 writer.append("" + minimumScore);
 
                 writer.append(',');
@@ -63,13 +66,11 @@ public class Main {
                 writer.append(',');
                 writer.append("" + finalList[1]);
                 writer.append(',');
-                writer.append("" + (time2 - time1) );
+                writer.append("" + (time2 - time1));
 
                 writer.append('\n');
-
-                if(time2 - time > minutes*60000) break;
             }
-            System.out.println("Done!");
+            System.out.println("Output file complete!");
             writer.flush();
             writer.close();
         }
@@ -86,26 +87,19 @@ public class Main {
         int[] anArray = new int[3];
 
         if (isSolutionPossible(grid)) {
-            // shows the theoretical minimumscore
-            minimumScore = grid.totalMinimumScore(grid.netDatabase);
-            //System.out.println("Theoretical minimum score: " + minimumScore);
-
             // generate a solution
             GridScore solution = generateSolution(grid);
             while (solution == null) {
                 solution = generateSolution(grid);
             }
 
-            //System.out.println("Total grid score " + solution.score);
             // Setting the best score
             int bestScore = solution.score;
             int originalScore = solution.score;
-            // Shoelace - iterative round
-            //System.out.println("Initializing Iterative round...");
 
+            // Shoelace - iterative round
             // Amount of iterative rounds
             int iterativeRounds = 0;
-
             while (iterativeRounds <= 10){
                 solution = optimizeSolution(solution);
                 iterativeRounds++;
@@ -113,8 +107,6 @@ public class Main {
                     bestScore = solution.score + solution.netDatabase.size();
                     iterativeRounds = 0;
                 }
-
-
             }
             //System.out.println("Rounds completed!");
             anArray[0] = originalScore;
