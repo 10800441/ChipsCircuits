@@ -21,7 +21,7 @@ public class Main {
         System.out.println("Calculating.....");
 
         //fileWriter
-        fileWriter(grid, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_1lines_1hour_45.csv", 100, 60);
+        fileWriter(grid, "C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep.csv", 100, 60);
     }
 
     // initialize grid to work with
@@ -95,7 +95,6 @@ public class Main {
             while (solution == null) {
                 solution = generateSolution(grid);
             }
-            solution.grid.printGrid();
 
             //System.out.println("Total grid score " + solution.score);
             // Setting the best score
@@ -109,7 +108,6 @@ public class Main {
 
             while (iterativeRounds <= 10){
                 solution = optimizeSolution(solution);
-System.out.println("it " + iterativeRounds);
                 iterativeRounds++;
                 if (solution.score + solution.netDatabase.size() < bestScore) {
                     bestScore = solution.score + solution.netDatabase.size();
