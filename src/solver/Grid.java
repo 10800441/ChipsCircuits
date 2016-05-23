@@ -44,46 +44,48 @@ public class Grid {
     // prints a given grid
     public void printGrid() {
         // creation of layers Z
-        for (int j = 0; j < grid[0][0].length; j++) {
+        for (int d = 0; d < grid[0][0].length; d++) {
             System.out.println("");
-            int layer = j + 1;
+            int layer = d + 1;
 
             System.out.println("");
             System.out.println("Grid layer: " + layer);
-            for (int i = 1; i < grid.length; i++) {   //creation of height Y
+            //creation of height Y
+            for (int h = 1; h < grid.length; h++) {
                 System.out.println("");
-                for (int k = 1; k < grid[0].length; k++) {    //creation of width X
-                    if (grid[i][k][j] == null) {
+                //creation of width X
+                for (int w = 1; w < grid[0].length; w++) {
+                    if (grid[h][w][d] == null) {
                         System.out.print(" . ");
                     } else {
-                        String gridContent = grid[i][k][j];
+                        String gridContent = grid[h][w][d];
                         char identifier = gridContent.charAt(0);
 
                         int n = 0;
-                        if(grid[i][k][j].length() == 3) {
-                            n = grid[i][k][j].charAt(2) % 5;
-                        } else if (grid[i][k][j].length() == 2) {
-                            n = grid[i][k][j].charAt(1)%5;
+                        if(grid[h][w][d].length() == 3) {
+                            n = grid[h][w][d].charAt(2) % 5;
+                        } else if (grid[h][w][d].length() == 2) {
+                            n = grid[h][w][d].charAt(1)%5;
                         }
                         if(n == 0) n = 6;
 
                         // Labeling bij het printen
-                        if (identifier == 'G' && grid[i][k][j].length() == 3) {
+                        if (identifier == 'G' && grid[h][w][d].length() == 3) {
                             System.out.print("\033[47m");
-                            System.out.print(grid[i][k][j]);
+                            System.out.print(grid[h][w][d]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'G') {
                             System.out.print("\033[47m");
-                            System.out.print(grid[i][k][j]);
+                            System.out.print(grid[h][w][d]);
                             System.out.print("\033[0m");
                             System.out.print(" ");
-                        } else if (identifier == 'L' && grid[i][k][j].length() == 3) {
+                        } else if (identifier == 'L' && grid[h][w][d].length() == 3) {
                             System.out.print("\033[3"+ n + "m");
-                            System.out.print(grid[i][k][j]);
+                            System.out.print(grid[h][w][d]);
                             System.out.print("\033[0m");
                         } else if (identifier == 'L') {
                             System.out.print("\033[3"+ n + "m");
-                            System.out.print(grid[i][k][j]);
+                            System.out.print(grid[h][w][d]);
                             System.out.print("\033[0m");
                             System.out.print(" ");
                         }
@@ -93,7 +95,6 @@ public class Grid {
         }
         System.out.println("");
     }
-
     // adds a gate to the grid
     public void addGate(int number, int y_coordinate, int x_coordinate) {
         grid[x_coordinate][y_coordinate][0] = "G" + number;

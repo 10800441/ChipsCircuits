@@ -21,7 +21,7 @@ public class Main {
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
-            FileWriter writer = new FileWriter("C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_1lines_1hour_4.csv");
+            FileWriter writer = new FileWriter("C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print1_3lines_100rep");
 
             minimumScore = grid.totalMinimumScore(grid.netDatabase);
             writer.append("Theoretical minimum:");
@@ -92,14 +92,16 @@ public class Main {
             // Amount of iterative rounds
             int iterativeRounds = 0;
 
-            while (iterativeRounds < solution.netDatabase.size()) {
+            while (iterativeRounds <= 10){
                 solution = optimizeSolution(solution);
-                if (solution.score + solution.netDatabase.size() <= minimumScore) {
-                    bestScore = solution.score + solution.netDatabase.size();
-                    break;
-                }
-                bestScore = solution.score + solution.netDatabase.size();
+System.out.println("it " + iterativeRounds);
                 iterativeRounds++;
+                if (solution.score + solution.netDatabase.size() < bestScore) {
+                    bestScore = solution.score + solution.netDatabase.size();
+                    iterativeRounds = 0;
+                }
+
+
             }
             //System.out.println("Rounds completed!");
             anArray[0] = originalScore;
