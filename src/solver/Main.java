@@ -18,7 +18,6 @@ public class Main {
         ArrayList<Net> netDatabase = Grid.makeNetDatabase(gateDatabase, "src/print1Lines.txt");
         Grid grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
 
-
         System.out.println("Calculating.....");
         try {
             // Vul hier het pad naar de bestandslocatie in !
@@ -102,14 +101,9 @@ public class Main {
                 bestScore = solution.score + solution.netDatabase.size();
                 iterativeRounds++;
             }
-
             //System.out.println("Rounds completed!");
-
             anArray[0] = originalScore;
             anArray[1] = bestScore;
-
-
-
         }
         return anArray;
     }
