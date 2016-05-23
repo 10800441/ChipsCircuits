@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 
 public class Main {
-    final static int X_SIZE = 14;
+    final static int X_SIZE = 18;
     final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;
 
@@ -15,21 +15,22 @@ public class Main {
     static long time2;
 
     public static void main(String[] args) {
-        // initializing grid to work with
+        // Initializing grid to work with
 
-        Grid grid = initializeGrid("src/print1Gates.txt", "src/print1Lines.txt");
+        Grid grid = initializeGrid("src/print2Gates.txt", "src/print4Lines.txt");
         minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
         System.out.println("Calculating.....");
         ArrayList<int[]> allScores  = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++) {
+        //
+        for(int repeats = 0; repeats < 5; repeats++) {
             allScores.add(makeOptimalSolution(grid));
-            System.out.println("Solution no " + i + " completed.");
+            System.out.println("Solution no " + repeats + " completed.");
         }
 
-        // Vul hier het pad naar de bestandslocatie in !
-        fileWriter(allScores, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_lines111.csv");
+        // Fill in the directory to the safe location of the .csv file
+        fileWriter(allScores, "C:\\Users\\marty_000\\IdeaProjects\\ChipsCircuits\\src\\print2_lines4.csv");
     }
 
     // initialize grid to work with
@@ -50,7 +51,7 @@ public class Main {
             while (solution == null) {
                 solution = generateSolution(grid);
             }
-
+solution.grid.printGrid();
             // Setting the best score
             int bestScore = solution.score;
             int originalScore = solution.score;
@@ -82,17 +83,17 @@ public class Main {
     // astar search
     private static GridScore astar(int lineNumber, int x1, int y1, int z1, int x2, int y2, int z2, GridScore trialGrid) {
 
-        // save the visited nodes
+        // Save the visited nodes
         ArrayList<ExpandGrid> memory = new ArrayList<>();
 
-        // priority queue
+        // Priority queue
         PriorityQueue<ExpandGrid> gridQueue = new PriorityQueue<>();
 
-        // adds the first line piece to the queue
+        // Adds the first line piece to the queue
         gridQueue.add(new ExpandGrid(trialGrid.grid, lineNumber, x1, y1, z1, 0, trialGrid.grid.manhattanDistance(x1, y1,
                 x2, y2, z1, z2)));
 
-        // counts the amount of grids that pass through the queue, that are not (yet) a solution
+        // Counts the amount of grids that pass through the queue, that are not (yet) a solution
         // while gridqueue is not empty and counter < state space, continue astar
         while (!gridQueue.isEmpty()) {
             ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
@@ -110,9 +111,9 @@ public class Main {
                     }
                 }
 
-                // if node doesn't already exist in queue, add child to memory and queue
+                // If node doesn't already exist in queue, add child to memory and queue
                 if (!existInMemory) {
-                    // if estimate <= 1, goal reached, return solution
+                    // If estimate <= 1, goal reached, return solution
                     if (childGrid.estimate <= 1) {
                         return new GridScore(childGrid.grid, childGrid.steps + trialGrid.score, trialGrid.netDatabase);
                     } else {
@@ -123,12 +124,11 @@ public class Main {
             }
         }
         // If a line cannot be placed, return null;
-        //System.out.println("Error: could not generate line " + lineNumber + ", " + net);
         return null;
     }
 
 
-    // counts the occurrence of each gate in the netlist
+    // Counts the occurrence of each gate in the netlist
     private static int[] countGateOccurrence(ArrayList<Net> nets, ArrayList<Gate> gates) {
         int[] gateOccurrence = new int[gates.size() + 1];
 
@@ -142,26 +142,23 @@ public class Main {
     }
 
 
-    // generates a solution
+    // Generates a solution
     private static GridScore generateSolution(Grid grid) {
         ArrayList<Net> nets = grid.netDatabase;
 
-        // shuffle order of nets
+        // Shuffle order of nets
         Collections.shuffle(nets);
-
-
-        int totalScore = 0;
-        GridScore currentGrid; // = new GridScore(grid, 0, nets);
+        GridScore currentGrid;
 
         ArrayList<PoleCoordinates> poolCoordinates = null;
 
-        // checks if an line could not be placed
+        // Checks if an line could not be placed
         boolean error = true;
 
         currentGrid = new GridScore(grid, 0, nets);
         int totalPole = 0;
 
-        // while poles could not be placed, try again in random order until poles are placed
+        // While poles could not be placed, try again in random order until poles are placed
         while (error) {
             poolCoordinates = new ArrayList<>();
             grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, grid.gateDatabase, grid.netDatabase);
@@ -189,8 +186,8 @@ public class Main {
                 }
             }
         }
-        // System.out.println("Succesfully placed poles.");
-        // poles are placed, draw line between poles
+
+        // Poles are placed, draw line between poles
         GridScore trialGrid = currentGrid;
         int lineNumber = 0;
         int counter = 0;
@@ -206,42 +203,36 @@ public class Main {
                     trialGrid = currentGrid;
                     Collections.shuffle(poolCoordinates);
                     counter++;
-                    totalScore += currentGrid.score;
+
                     if (counter > nets.size() / 4) return null;
                     totalALineLength = 0;
-                }// else {
-                //    System.out.println("Succesfully placed line " + lineNumber);
-                //}
+                }
             }
             totalALineLength += trialGrid.score;
         }
-        // return solution
         // System.out.println("Succesfully placed lines.");
         return new GridScore(trialGrid.grid, (totalALineLength + totalPole), trialGrid.netDatabase);
     }
 
 
-    // iterative shoelace method that erases a line and places it again with astar
+    // Iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
-        //solution.grid.printGrid();
+
         for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
             GridScore solutionRemove = removeLine(solution, lineNum);
-            //System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
             Net net = solution.netDatabase.get(lineNum);
             solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
-            //System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
 
             if (solution == null) {
-                //System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
-                solutionRemove.grid.printGrid();
+                 solutionRemove.grid.printGrid();
             } else if (solution.score <= minimumScore) break;
         }
         return solution;
     }
 
 
-    // removes a line
+    // Removes a line
     private static GridScore removeLine(GridScore solution, int lineNum) {
         int removeCount = 0;
         for (int i = 0; i < solution.grid.grid[0][0].length; i++) {
@@ -255,30 +246,28 @@ public class Main {
                 }
             }
         }
-        //System.out.println("Removed: L" + lineNum);
         return new GridScore(solution.grid, (solution.score - removeCount), solution.netDatabase);
     }
 
 
-    // calculates if solution is possible
+    // Calculates if solution is possible
     private static boolean isSolutionPossible(Grid grid) {
         ArrayList<Gate> gates = grid.gateDatabase;
         ArrayList<Net> nets = grid.netDatabase;
 
         int[] occ = countGateOccurrence(nets, gates);
-        // when an gate occurs > 5 in the netlist, there is no solution
+        // When an gate occurs > 5 in the netlist, there is no solution
         for (int anOcc : occ) {
             if (anOcc > 5) {
                 System.out.println("There is no solution.");
                 return false;
             }
         }
-        //System.out.println("Calculating solution...");
-        return true;
+           return true;
     }
 
 
-    // writes the results to csv file
+    // Writes the results to csv file
     public static void fileWriter(ArrayList<int[]> allScores, String adress) {
         try {
             FileWriter writer = new FileWriter(adress);
