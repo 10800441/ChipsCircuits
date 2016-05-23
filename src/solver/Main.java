@@ -18,20 +18,18 @@ public class Main {
         // initializing grid to work with
 
         Grid grid = initializeGrid("src/print1Gates.txt", "src/print1Lines.txt");
-        int minimumScore = grid.totalMinimumScore(grid.netDatabase);
+        minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
         System.out.println("Calculating.....");
         ArrayList<int[]> allScores  = new ArrayList<>();
 
-        for(int i = 0; i < 50; i++) {
-            time1 = System.currentTimeMillis();
+        for(int i = 0; i < 10; i++) {
             allScores.add(makeOptimalSolution(grid));
-            time2 = System.currentTimeMillis();
             System.out.println("Solution no " + i + " completed.");
         }
 
         // Vul hier het pad naar de bestandslocatie in !
-        fileWriter(allScores, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\src\\test.csv");
+        fileWriter(allScores, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_lines111.csv");
     }
 
     // initialize grid to work with
@@ -42,52 +40,12 @@ public class Main {
     }
 
 
-    // writes the results to csv file
-    public static void fileWriter(ArrayList<int[]> allScores, String adress) {
-        try {
-            FileWriter writer = new FileWriter(adress);
-
-            writer.append("Theoretical minimum:");
-            writer.append(',');
-            writer.append("unoptimalised score:");
-            writer.append(',');
-            writer.append("optimalised score:");
-            writer.append(',');
-            writer.append("time:");
-            writer.append('\n');
-
-            for(int i = 0; i < allScores.size(); i++) {
-                int[] finalList = allScores.get(i);
-                writer.append("" + minimumScore);
-
-                writer.append(',');
-                writer.append("" + finalList[0]);
-
-                writer.append(',');
-                writer.append("" + finalList[1]);
-                writer.append(',');
-                writer.append("" + (time2 - time1));
-
-                writer.append('\n');
-            }
-            System.out.println("Output file complete!");
-            writer.flush();
-            writer.close();
-        }
-
-
-        catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-
-
     private static int[] makeOptimalSolution(Grid grid){
-
         int[] anArray = new int[3];
 
         if (isSolutionPossible(grid)) {
             // generate a solution
+            time1 = System.currentTimeMillis();
             GridScore solution = generateSolution(grid);
             while (solution == null) {
                 solution = generateSolution(grid);
@@ -97,7 +55,7 @@ public class Main {
             int bestScore = solution.score;
             int originalScore = solution.score;
 
-            // Shoelace - iterative round
+            // Shoelace - iterative round: Hillclimber
             // Amount of iterative rounds
             int iterativeRounds = 0;
             while (iterativeRounds <= 10){
@@ -108,9 +66,13 @@ public class Main {
                     iterativeRounds = 0;
                 }
             }
+            time2 = System.currentTimeMillis();
             //System.out.println("Rounds completed!");
             anArray[0] = originalScore;
             anArray[1] = bestScore;
+            anArray[2] = (int)(time2-time1);
+        } else {
+            return null;
         }
         return anArray;
     }
@@ -164,6 +126,7 @@ public class Main {
         //System.out.println("Error: could not generate line " + lineNumber + ", " + net);
         return null;
     }
+
 
     // counts the occurrence of each gate in the netlist
     private static int[] countGateOccurrence(ArrayList<Net> nets, ArrayList<Gate> gates) {
@@ -315,4 +278,42 @@ public class Main {
     }
 
 
+    // writes the results to csv file
+    public static void fileWriter(ArrayList<int[]> allScores, String adress) {
+        try {
+            FileWriter writer = new FileWriter(adress);
+
+            writer.append("Theoretical minimum:");
+            writer.append(',');
+            writer.append("unoptimalised score:");
+            writer.append(',');
+            writer.append("optimalised score:");
+            writer.append(',');
+            writer.append("time:");
+            writer.append('\n');
+
+            for(int i = 0; i < allScores.size(); i++) {
+                int[] finalList = allScores.get(i);
+                writer.append("" + minimumScore);
+
+                writer.append(',');
+                writer.append("" + finalList[0]);
+
+                writer.append(',');
+                writer.append("" + finalList[1]);
+                writer.append(',');
+                writer.append("" + finalList[2]);
+
+                writer.append('\n');
+            }
+            System.out.println("Output file complete!");
+            writer.flush();
+            writer.close();
+        }
+
+
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 }
