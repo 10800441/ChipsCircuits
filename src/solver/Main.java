@@ -1,3 +1,13 @@
+/*
+This code is an assignment of the course Heuristieken of the University of Amsterdam. It partly solves the case "Chips
+'n Circuits" and is made by Marijn van Ham, Martijn Heijstek & Michelle Appel in 2016. The main goal of this program is
+placing certain given connections between logical gates, as would be on a chip.
+
+<Bladiebladiebla insert lulverhaal hier>
+
+ */
+
+
 package solver;
 
 import java.util.ArrayList;
@@ -140,32 +150,32 @@ public class Main {
             }
         }
 
-
         // Poles are placed, place line between poles
-        GridScore trialGrid = currentGrid;
+        GridScore gridWithPoles = currentGrid;
         int lineNumber = 0;
         int counter = 0;
-        int totalALineLength = 0;
+        int totalLineLength = 0;
         while (lineNumber < grid.netDatabase.size()) {
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
                 PoleCoordinates pole = poleCoordinatesList.get(lineNumber);
-                trialGrid = astar(pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2,
-                        trialGrid);
-                // line could not be placed
-                if (trialGrid == null) {
+                gridWithPoles = astar(pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2,
+                        gridWithPoles);
+                // If line could not be placed
+                if (gridWithPoles == null) {
                     lineNumber = -1;
-                    trialGrid = currentGrid;
+                    gridWithPoles = currentGrid;
                     Collections.shuffle(poleCoordinatesList);
                     counter++;
                     totalScore += currentGrid.score;
+                    // If counter limit is reached, return null
                     if (counter > nets.size() / 4) return null;
-                    totalALineLength = 0;
+                    totalLineLength = 0;
                 }
             }
-            totalALineLength += trialGrid.score;
+            totalLineLength += gridWithPoles.score;
         }
         // Return solution
-        return new GridScore(trialGrid.grid, (totalALineLength + totalPoleLength), trialGrid.netDatabase);
+        return new GridScore(gridWithPoles.grid, (totalLineLength + totalPoleLength), gridWithPoles.netDatabase);
     }
 
 
