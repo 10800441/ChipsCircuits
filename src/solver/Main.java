@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 
 public class Main {
+    // Set dimension sizes of the grid
     final static int X_SIZE = 14;
     final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;
@@ -16,20 +17,16 @@ public class Main {
 
     public static void main(String[] args) {
         // initializing grid to work with
-
         Grid grid = initializeGrid("src/print1Gates.txt", "src/print1Lines.txt");
         minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
-        System.out.println("Calculating.....");
-        ArrayList<int[]> allScores  = new ArrayList<>();
+        // make a optimized solution
+        GridScore optimizedSolution = makeOptimizedSolution(grid);
 
-        for(int i = 0; i < 10; i++) {
-            allScores.add(makeOptimalSolution(grid));
-            System.out.println("Solution no " + i + " completed.");
-        }
-
-        // Vul hier het pad naar de bestandslocatie in !
-        fileWriter(allScores, "C:\\Users\\michelle\\IdeaProjects\\ChipsCircuits\\print1_lines111.csv");
+        // print messages for total line length and time of solution
+        optimizedSolution.grid.printGrid();
+        System.out.println("This solution has a total line length of " + optimizedSolution.score + ".");
+        System.out.println("It took " + (time2 - time1) + " milliseconds to calculate this solution.");
     }
 
     // initialize grid to work with
@@ -40,41 +37,35 @@ public class Main {
     }
 
 
-    private static int[] makeOptimalSolution(Grid grid){
-        int[] anArray = new int[3];
-
+    private static GridScore makeOptimizedSolution(Grid grid){
+        GridScore solution = null;
         if (isSolutionPossible(grid)) {
-            // generate a solution
             time1 = System.currentTimeMillis();
-            GridScore solution = generateSolution(grid);
+
+            // generate a solution
+            solution = generateSolution(grid);
+            // while no solution is found, keep trying
             while (solution == null) {
                 solution = generateSolution(grid);
             }
 
-            // Setting the best score
-            int bestScore = solution.score;
-            int originalScore = solution.score;
+            // setting the current best score
+            int currentBestScore = solution.score;
 
-            // Shoelace - iterative round: Hillclimber
-            // Amount of iterative rounds
-            int iterativeRounds = 0;
-            while (iterativeRounds <= 10){
+            // applying the shoelace method
+            // one shoelace round applies the shoelace method to the whole netlist
+            int shoelaceRound = 0;
+            while (shoelaceRound <= 10){
                 solution = optimizeSolution(solution);
-                iterativeRounds++;
-                if (solution.score + solution.netDatabase.size() < bestScore) {
-                    bestScore = solution.score + solution.netDatabase.size();
-                    iterativeRounds = 0;
+                shoelaceRound++;
+                if (solution.score + solution.netDatabase.size() < currentBestScore) {
+                    currentBestScore = solution.score + solution.netDatabase.size();
+                    shoelaceRound = 0;
                 }
             }
             time2 = System.currentTimeMillis();
-            //System.out.println("Rounds completed!");
-            anArray[0] = originalScore;
-            anArray[1] = bestScore;
-            anArray[2] = (int)(time2-time1);
-        } else {
-            return null;
         }
-        return anArray;
+        return solution;
     }
 
 
@@ -223,17 +214,13 @@ public class Main {
 
     // iterative shoelace method that erases a line and places it again with astar
     private static GridScore optimizeSolution(GridScore solution) {
-        //solution.grid.printGrid();
         for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
             GridScore solutionRemove = removeLine(solution, lineNum);
-            //System.out.println("Score after removing line L: " + lineNum + ": " + solutionRemove.score);
 
             Net net = solution.netDatabase.get(lineNum);
             solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
-            //System.out.println("Score after placing line L: " + lineNum + ": " + (solution != null ? solution.score : 0));
 
             if (solution == null) {
-                //System.out.println("Gate1: " + net.gate1 + ", Gate2: " + net.gate2);
                 solutionRemove.grid.printGrid();
             } else if (solution.score <= minimumScore) break;
         }
@@ -273,7 +260,7 @@ public class Main {
                 return false;
             }
         }
-        //System.out.println("Calculating solution...");
+        System.out.println("Calculating solution...");
         return true;
     }
 
@@ -292,8 +279,7 @@ public class Main {
             writer.append("time:");
             writer.append('\n');
 
-            for(int i = 0; i < allScores.size(); i++) {
-                int[] finalList = allScores.get(i);
+            for (int[] finalList : allScores) {
                 writer.append("" + minimumScore);
 
                 writer.append(',');
