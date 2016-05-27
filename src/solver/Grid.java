@@ -5,14 +5,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Grid {
-    String[][][] grid;
-    ArrayList<Gate> gateDatabase;
-    ArrayList<Net> netDatabase;
+class Grid {
+    final String[][][] grid;
+    final ArrayList<Gate> gateDatabase;
+    final ArrayList<Net> netDatabase;
 
     // supertype constructor
-    public Grid(int width, int height, int depth, ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
-        grid = new String[height][width][depth];
+    public Grid(ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
+        grid = new String[Main.Y_SIZE][Main.X_SIZE][Main.Z_SIZE];
         this.gateDatabase = gateDatabase;
         this.netDatabase = netDatabase;
 
@@ -23,7 +23,7 @@ public class Grid {
 
 
     // Copy constructor to make copies of the current grid
-    public Grid(Grid oldGrid) {
+    private Grid(Grid oldGrid) {
 
         grid = new String[oldGrid.grid.length][oldGrid.grid[0].length][oldGrid.grid[0][0].length];
         this.gateDatabase = oldGrid.gateDatabase;
@@ -54,7 +54,7 @@ public class Grid {
                 int x = Integer.valueOf(words[1]);
                 int y = Integer.valueOf(words[2]);
 
-                gateDatabase.add(new Gate(lineNumber, x, y, 0));
+                gateDatabase.add(new Gate(lineNumber, x, y));
             }
             rd.close();
         } catch (IOException ex) {
@@ -146,17 +146,17 @@ public class Grid {
     }
 
     // Adds a gate to the grid
-    public void addGate(int number, int y_coordinate, int x_coordinate) {
+    private void addGate(int number, int y_coordinate, int x_coordinate) {
         grid[x_coordinate][y_coordinate][0] = "G" + (number + 1);
     }
 
     // Adds a line piece to the grid
-    public void addLine(int number, int x, int y, int z) {
+    private void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
     }
 
     // Provides an expandgrid for the create_possible_lines method
-    public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
+    private ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
         int estimate = manhattanDistance(x, y, x2, y2, z, z2);
