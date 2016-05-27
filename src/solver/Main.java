@@ -16,7 +16,6 @@ class Main {
     // Set dimension sizes of the grid
     // For Print1 the values are: X_SIZE = 14, Y_SIZE = 19, Z_SIZE = 7;
     // For Print2 the values are: X_SIZE = 18, Y_SIZE = 19, Z_SIZE = 7;
-
     final static int X_SIZE = 14;
     final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;

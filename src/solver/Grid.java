@@ -187,7 +187,6 @@ class Grid {
         int steps = inputExpandGrid.steps;
 
         ArrayList<ExpandGrid> list = new ArrayList<>();
-
         if (x + 1 > 0 && x + 1 < grid.length && grid[x + 1][y][z] == null) {
             list.add(addLine(inputGrid, number, x + 1, y, z, steps, x2, y2, z2));
         }
@@ -284,7 +283,7 @@ class Grid {
         return score;
     }
 
-    // Calculates the manhattanDistance between 2 coordinates
+    // Calculates the manhattan Distance between 2 coordinates
     public int manhattanDistance(int x1, int y1, int x2, int y2, int z1, int z2) {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
