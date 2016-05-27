@@ -180,6 +180,7 @@ public class Main {
 
 
     // Iterative shoelace method that erases a line and places it again with A*
+    // Lines are
     private static GridScore optimizeSolution(GridScore solution) {
         for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
             GridScore solutionRemove = removeLine(solution, lineNum);
