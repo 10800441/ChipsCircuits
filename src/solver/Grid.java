@@ -39,6 +39,56 @@ public class Grid {
         }
     }
 
+    // Read in the net database from the file "printGates.txt"
+    public static ArrayList<Gate> makeGateDatabase(String name) {
+        ArrayList<Gate> gateDatabase = new ArrayList<>();
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader(name));
+            String line;
+            while (true) {
+                line = rd.readLine();
+                if (line == null) break;
+                String[] words = line.split(",");
+
+                int lineNumber = Integer.valueOf(words[0]);
+                int x = Integer.valueOf(words[1]);
+                int y = Integer.valueOf(words[2]);
+
+                gateDatabase.add(new Gate(lineNumber, x, y, 0));
+            }
+            rd.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex);
+        }
+        return gateDatabase;
+    }
+
+    // Read in the net database from the file "print1Lines.txt"
+    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String name) {
+        ArrayList<Net> netDatabase = new ArrayList<>();
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader(name));
+            String line;
+            while (true) {
+                line = rd.readLine();
+                if (line == null) break;
+                String[] words = line.split(",");
+
+                int gateNumber1 = Integer.valueOf(words[0]);
+                int gateNumber2 = Integer.valueOf(words[1]);
+
+                Gate gate1 = gates.get(gateNumber1);
+                Gate gate2 = gates.get(gateNumber2);
+
+                Net net = new Net(gate1, gate2);
+                netDatabase.add(net);
+            }
+            rd.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex);
+        }
+        return netDatabase;
+    }
 
     // Prints a given grid
     public void printGrid() {
@@ -94,6 +144,7 @@ public class Grid {
         }
         System.out.println("");
     }
+
     // Adds a gate to the grid
     public void addGate(int number, int y_coordinate, int x_coordinate) {
         grid[x_coordinate][y_coordinate][0] = "G" + (number + 1);
@@ -103,7 +154,6 @@ public class Grid {
     public void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
     }
-
 
     // Provides an expandgrid for the create_possible_lines method
     public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
@@ -200,57 +250,6 @@ public class Grid {
         }
 
         return new int[]{gate1X, gate1Y, gate2X, gate2Y, z-1, (lineLength1+lineLength2)};
-    }
-
-    // Read in the net database from the file "printGates.txt"
-    public static ArrayList<Gate> makeGateDatabase(String name) {
-        ArrayList<Gate> gateDatabase = new ArrayList<>();
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader(name));
-            String line;
-            while (true) {
-                line = rd.readLine();
-                if (line == null) break;
-                String[] words = line.split(",");
-
-                int lineNumber = Integer.valueOf(words[0]);
-                int x = Integer.valueOf(words[1]);
-                int y = Integer.valueOf(words[2]);
-
-                gateDatabase.add(new Gate(lineNumber, x, y, 0));
-            }
-            rd.close();
-        } catch (IOException ex) {
-            System.err.println("Error: " + ex);
-        }
-        return gateDatabase;
-    }
-
-    // Read in the net database from the file "print1Lines.txt"
-    public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String name) {
-        ArrayList<Net> netDatabase = new ArrayList<>();
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader(name));
-            String line;
-            while (true) {
-                line = rd.readLine();
-                if (line == null) break;
-                String[] words = line.split(",");
-
-                int gateNumber1 = Integer.valueOf(words[0]);
-                int gateNumber2 = Integer.valueOf(words[1]);
-
-                Gate gate1 = gates.get(gateNumber1);
-                Gate gate2 = gates.get(gateNumber2);
-
-                Net net = new Net(gate1, gate2);
-                netDatabase.add(net);
-            }
-            rd.close();
-        } catch (IOException ex) {
-            System.err.println("Error: " + ex);
-        }
-        return netDatabase;
     }
 
     // Calculates a minimumscore given a netDatabase
