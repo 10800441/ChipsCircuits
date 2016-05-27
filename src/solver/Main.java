@@ -102,35 +102,44 @@ public class Main {
         int totalScore = 0;
         int totalPoleLength = 0;
 
-        // Checks if an line could not be placed
+        // Start with placing poles
+        // Checks if an pole could not be placed
         boolean error = true;
         // While poles could not be placed, try again in random order until poles are placed
         while (error) {
-            poleCoordinatesList = new ArrayList<>();
+            // Begin with empty grid
             grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, grid.gateDatabase, grid.netDatabase);
+            currentGrid = new GridScore(grid, 0, nets);
+
+            // The pole coordinates will be stored here
+            poleCoordinatesList = new ArrayList<>();
+
             // Shuffle netlist order
             Collections.shuffle(nets);
-            currentGrid = new GridScore(grid, 0, nets);
-            int layerNumber = Z_SIZE;
+
             error = false;
             totalPoleLength = 0;
-
+            int layerNumber = Z_SIZE;
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net = nets.get(lineNumber);
                 int[] coordinates = currentGrid.grid.create_poles(net, layerNumber, lineNumber);
+                // If line could not be placed, there is an error
                 if (coordinates[0] == -1) {
                     error = true;
+                // If line could be placed, go on
                 } else {
+                    // Length of poles is added
                     totalPoleLength += coordinates[5];
-                    PoleCoordinates poleCoordinates = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1],
-                            coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
-                    poleCoordinatesList.add(poleCoordinates);
-                    int divisionNumber = (nets.size() / Z_SIZE) + 1;
-                    if (lineNumber % divisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
+                    // Pole coordinates are added to the storage
+                    poleCoordinatesList.add(new PoleCoordinates(lineNumber, coordinates[0], coordinates[1],
+                            coordinates[4], coordinates[2], coordinates[3], coordinates[4]));
+                    // Equally distribute pole heights on grid
+                    if (lineNumber % (nets.size() / Z_SIZE) + 1 == 0 && layerNumber > 0 && lineNumber > 0)
                         layerNumber--;
                 }
             }
         }
+
 
         // Poles are placed, place line between poles
         GridScore trialGrid = currentGrid;
@@ -159,6 +168,7 @@ public class Main {
         return new GridScore(trialGrid.grid, (totalALineLength + totalPoleLength), trialGrid.netDatabase);
     }
 
+
     // Iterative shoelace method that erases a line and places it again with A*
     private static GridScore optimizeSolution(GridScore solution) {
         for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
@@ -174,7 +184,9 @@ public class Main {
         return solution;
     }
 
+
     // Removes a line
+    // Sets all cells containing the line to null
     private static GridScore removeLine(GridScore solution, int lineNum) {
         int removeCount = 0;
         for (int i = 0; i < solution.grid.grid[0][0].length; i++) {
