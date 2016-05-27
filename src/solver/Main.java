@@ -56,7 +56,7 @@ class Main {
         if (isSolutionPossible(grid)) {
             time1 = System.currentTimeMillis();
 
-            // Generate a solution
+            // Generate a solution 
             solution = generateSolution(grid);
             // While no solution is found, keep trying
             while (solution == null) {
