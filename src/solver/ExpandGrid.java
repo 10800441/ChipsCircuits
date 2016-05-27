@@ -1,7 +1,7 @@
 package solver;
 
-public class ExpandGrid implements Comparable{
-    Grid grid;
+class ExpandGrid implements Comparable{
+    final Grid grid;
     final int number;
     final int x;
     final int y;

@@ -14,15 +14,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
 
-public class Main {
+class Main {
     // Set dimension sizes of the grid
     final static int X_SIZE = 14;
     final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;
 
-    static int minimumScore;
-    static long time1;
-    static long time2;
+    private static int minimumScore;
+    private static long time1;
+    private static long time2;
 
     public static void main(String[] args) {
         // Initializing grid to work with
@@ -41,10 +41,10 @@ public class Main {
 
     // Initialize grid to work with
     // Makes the gatedatabase, netdatabase and makes the grid with gates added
-    public static Grid initializeGrid(String gates, String lines) {
+    private static Grid initializeGrid(String gates, String lines) {
         ArrayList<Gate> gateDatabase = Grid.makeGateDatabase(gates);
         ArrayList<Net> netDatabase = Grid.makeNetDatabase(gateDatabase, lines);
-        return new Grid(X_SIZE, Y_SIZE, Z_SIZE, gateDatabase, netDatabase);
+        return new Grid(gateDatabase, netDatabase);
     }
 
 
@@ -92,7 +92,7 @@ public class Main {
         ArrayList<Net> nets = grid.netDatabase;
 
         int[] occ = countGateOccurrence(nets, gates);
-        // when an gate occurs > 5 in the netlist, there is no solution
+        // hen an gate occurs > 5 in the netlist, there is no solution
         for (int anOcc : occ) {
             if (anOcc > 5) {
                 System.out.println("There is no solution.");
@@ -118,7 +118,7 @@ public class Main {
         // While poles could not be placed, try again in random order until poles are placed
         while (error) {
             // Begin with empty grid
-            grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, grid.gateDatabase, grid.netDatabase);
+            grid = new Grid(grid.gateDatabase, grid.netDatabase);
             currentGrid = new GridScore(grid, 0, nets);
 
             // The pole coordinates will be stored here
@@ -132,7 +132,7 @@ public class Main {
             int layerNumber = Z_SIZE;
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net = nets.get(lineNumber);
-                int[] coordinates = currentGrid.grid.create_poles(net, layerNumber, lineNumber);
+                int[] coordinates = currentGrid.grid.createPoles(net, layerNumber, lineNumber);
                 // If line could not be placed, there is an error
                 if (coordinates[0] == -1) {
                     error = true;
@@ -144,7 +144,7 @@ public class Main {
                     poleCoordinatesList.add(new PoleCoordinates(lineNumber, coordinates[0], coordinates[1],
                             coordinates[4], coordinates[2], coordinates[3], coordinates[4]));
                     // Equally distribute pole heights on grid
-                    if (lineNumber % (nets.size() / Z_SIZE) + 1 == 0 && layerNumber > 0 && lineNumber > 0)
+                    if (lineNumber % ((nets.size() / Z_SIZE) + 1) == 0 && layerNumber > 0 && lineNumber > 0)
                         layerNumber--;
                 }
             }
@@ -185,8 +185,9 @@ public class Main {
         for (int lineNum = solution.netDatabase.size() - 1; lineNum >= 0; lineNum--) {
             GridScore solutionRemove = removeLine(solution, lineNum);
 
-            Net net = solution.netDatabase.get(lineNum);
-            solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
+            Net net = solution != null ? solution.netDatabase.get(lineNum) : null;
+            solution = astar(lineNum, net != null ? net.gate1.x : 0, net != null ? net.gate1.y :
+                    0, 0, net != null ? net.gate2.x : 0, net != null ? net.gate2.y : 0, 0, solutionRemove);
 
             if (solution == null) {
                 solutionRemove.grid.printGrid();
@@ -231,7 +232,7 @@ public class Main {
         // Counts the amount of grids that pass through the queue, that are not (yet) a solution
         // While gridqueue is not empty, continue astar search
         while (!gridQueue.isEmpty()) {
-            ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
+            ArrayList<ExpandGrid> allChildren = trialGrid.grid.createPossibleLines(gridQueue.remove(), x2, y2, z2);
             for (ExpandGrid childGrid : allChildren) {
 
                 // Checks if generated node already exist in memory

@@ -1,6 +1,6 @@
 package solver;
 
-public class Net {
+class Net {
     final Gate gate1;
     final Gate gate2;
 
