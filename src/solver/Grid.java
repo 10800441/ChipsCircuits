@@ -22,7 +22,7 @@ public class Grid {
     }
 
 
-    // copy constructor to make copies of the current grid
+    // Copy constructor to make copies of the current grid
     public Grid(Grid oldGrid) {
 
         grid = new String[oldGrid.grid.length][oldGrid.grid[0].length][oldGrid.grid[0][0].length];
@@ -40,19 +40,19 @@ public class Grid {
     }
 
 
-    // prints a given grid
+    // Prints a given grid
     public void printGrid() {
-        // creation of layers Z
+        // Creation of layers (Z)
         for (int d = 0; d < grid[0][0].length; d++) {
             System.out.println("");
             int layer = d + 1;
 
             System.out.println("");
             System.out.println("Grid layer: " + layer);
-            //creation of height Y
+            // Creation of height Y
             for (int h = 1; h < grid.length; h++) {
                 System.out.println("");
-                //creation of width X
+                // Creation of width X
                 for (int w = 1; w < grid[0].length; w++) {
                     if (grid[h][w][d] == null) {
                         System.out.print(" . ");
@@ -94,18 +94,18 @@ public class Grid {
         }
         System.out.println("");
     }
-    // adds a gate to the grid
+    // Adds a gate to the grid
     public void addGate(int number, int y_coordinate, int x_coordinate) {
         grid[x_coordinate][y_coordinate][0] = "G" + (number + 1);
     }
 
-    // adds a line piece to the grid
+    // Adds a line piece to the grid
     public void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
     }
 
 
-    // provides an expandgrid for the create_possible_lines method
+    // Provides an expandgrid for the create_possible_lines method
     public ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
@@ -113,7 +113,7 @@ public class Grid {
         return new ExpandGrid(copy_grid, number, x, y, z, (steps + 1), estimate);
     }
 
-    // creates all possible line pieces from given coordinates
+    // Creates all possible line pieces from given coordinates
     public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, int x2, int y2, int z2) {
         Grid inputGrid = inputExpandGrid.grid;
         int number = inputExpandGrid.number;
@@ -145,7 +145,7 @@ public class Grid {
         return list;
     }
 
-    // creates poles
+    // Creates poles
     public int[] create_poles(Net net, int layer, int lineNumber) {
         int lineLength1 = 0;
         int lineLength2 = 0;
@@ -253,7 +253,7 @@ public class Grid {
         return netDatabase;
     }
 
-    // calculates a minimumscore given a netDatabase
+    // Calculates a minimumscore given a netDatabase
     public int totalMinimumScore(ArrayList<Net> nets) {
         int score = 0;
         for(int i = 0; i < nets.size(); i++) {
@@ -269,7 +269,7 @@ public class Grid {
         return score;
     }
 
-    // calculates the manhattanDistance between 2 coordinates
+    // Calculates the manhattanDistance between 2 coordinates
     public int manhattanDistance(int x1, int y1, int x2, int y2, int z1, int z2) {
         return Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z1 - z2);
     }
