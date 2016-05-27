@@ -141,24 +141,21 @@ public class Main {
     // Generates a solution
     private static GridScore generateSolution(Grid grid) {
         ArrayList<Net> nets = grid.netDatabase;
-        GridScore currentGrid;
-
-        // Shuffle net order
+        // Shuffle netlist order
         Collections.shuffle(nets);
 
-        // Is going to contain coordinates of pole tips
-       ArrayList<PoleCoordinates> poolCoordinates = null;
+        ArrayList<PoleCoordinates> poleCoordinatesList = null;
 
-        // Initial gridscore, with the given grid, a score of 0 and the nets to be connected
-        currentGrid = new GridScore(grid, 0, nets);
+        GridScore currentGrid = new GridScore(grid, 0, nets);
+        int totalScore = 0;
 
-        // Checks if an line could not be placed
+        // checks if an line could not be placed
         boolean error = true;
-        int totalPole = 0;
 
-        // While poles could not be placed, try again in random order until poles are placed
+        int totalPole = 0;
+        // while poles could not be placed, try again in random order until poles are placed
         while (error) {
-            poolCoordinates = new ArrayList<>();
+            poleCoordinatesList = new ArrayList<>();
             grid = new Grid(X_SIZE, Y_SIZE, Z_SIZE, grid.gateDatabase, grid.netDatabase);
             Collections.shuffle(nets);
             currentGrid = new GridScore(grid, 0, nets);
@@ -177,29 +174,29 @@ public class Main {
                 } else {
                     PoleCoordinates poleCoordinates = new PoleCoordinates(lineNumber, coordinates[0], coordinates[1],
                             coordinates[4], coordinates[2], coordinates[3], coordinates[4]);
-                    poolCoordinates.add(poleCoordinates);
+                    poleCoordinatesList.add(poleCoordinates);
                     int devisionNumber = (nets.size() / Z_SIZE) + 1;
                     if (lineNumber % devisionNumber == 0 && layerNumber > 0 && lineNumber > 0)
                         layerNumber--;
                 }
             }
         }
-
-        // Poles are placed, place line between poles
+        // System.out.println("Succesfully placed poles.");
+        // poles are placed, draw line between poles
         GridScore trialGrid = currentGrid;
         int lineNumber = 0;
         int counter = 0;
         int totalALineLength = 0;
         while (lineNumber < grid.netDatabase.size()) {
             for (lineNumber = 0; lineNumber < grid.netDatabase.size(); lineNumber++) {
-                PoleCoordinates pole = poolCoordinates.get(lineNumber);
+                PoleCoordinates pole = poleCoordinatesList.get(lineNumber);
                 trialGrid = astar(pole.lineNum, pole.x1, pole.y1, pole.z1, pole.x2, pole.y2, pole.z2,
                         trialGrid);
                 if (trialGrid == null) {
                     //System.out.println("Error placing line " + lineNumber);
                     lineNumber = -1;
                     trialGrid = currentGrid;
-                    Collections.shuffle(poolCoordinates);
+                    Collections.shuffle(poleCoordinatesList);
                     counter++;
                     totalScore += currentGrid.score;
                     if (counter > nets.size() / 4) return null;
