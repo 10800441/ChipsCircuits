@@ -10,7 +10,7 @@ class Grid {
     final ArrayList<Gate> gateDatabase;
     final ArrayList<Net> netDatabase;
 
-    // supertype constructor
+    // Super type constructor
     public Grid(ArrayList<Gate> gateDatabase, ArrayList<Net> netDatabase) {
         grid = new String[Main.Y_SIZE][Main.X_SIZE][Main.Z_SIZE];
         this.gateDatabase = gateDatabase;
@@ -22,24 +22,24 @@ class Grid {
     }
 
 
-    // Copy constructor to make copies of the current grid
+    // Copy constructor to make a copy of a given grid
     private Grid(Grid oldGrid) {
 
-        grid = new String[oldGrid.grid.length][oldGrid.grid[0].length][oldGrid.grid[0][0].length];
+        grid = new String[Main.Y_SIZE][Main.X_SIZE][Main.Z_SIZE];
         this.gateDatabase = oldGrid.gateDatabase;
         this.netDatabase = oldGrid.netDatabase;
 
-        for (int i = 0; i < oldGrid.grid[0][0].length; i++) {
-            for (int k = 0; k < oldGrid.grid[0].length; k++) {
-                for (int n = 0; n < oldGrid.grid.length; n++) {
-
+        for (int i = 0; i < Main.Z_SIZE; i++) {
+            for (int k = 0; k < Main.X_SIZE; k++) {
+                for (int n = 0; n < Main.Y_SIZE; n++) {
                     grid[n][k][i] = oldGrid.grid[n][k][i];
                 }
             }
         }
     }
 
-    // Read in the net database from the file "printGates.txt"
+
+    // Reads in the net database from the file "print#Gates.txt" to the gate database
     public static ArrayList<Gate> makeGateDatabase(String name) {
         ArrayList<Gate> gateDatabase = new ArrayList<>();
         try {
@@ -63,7 +63,8 @@ class Grid {
         return gateDatabase;
     }
 
-    // Read in the net database from the file "print1Lines.txt"
+
+    // Reads in the net database from the file "print#Lines.txt" to the net database
     public static ArrayList<Net> makeNetDatabase(ArrayList<Gate> gates, String name) {
         ArrayList<Net> netDatabase = new ArrayList<>();
         try {
@@ -90,13 +91,13 @@ class Grid {
         return netDatabase;
     }
 
+
     // Prints a given grid
     public void printGrid() {
-        // Creation of layers (Z)
+        // Creation of depth Z
         for (int d = 0; d < grid[0][0].length; d++) {
             System.out.println("");
             int layer = d + 1;
-
             System.out.println("");
             System.out.println("Grid layer: " + layer);
             // Creation of height Y
@@ -118,7 +119,7 @@ class Grid {
                         }
                         if(n == 0) n = 6;
 
-                        // Labeling bij het printen
+                        // Labelling
                         if (identifier == 'G' && grid[h][w][d].length() == 3) {
                             System.out.print("\033[47m");
                             System.out.print(grid[h][w][d]);
@@ -145,17 +146,20 @@ class Grid {
         System.out.println("");
     }
 
+
     // Adds a gate to the grid
     private void addGate(int number, int y_coordinate, int x_coordinate) {
         grid[x_coordinate][y_coordinate][0] = "G" + (number + 1);
     }
+
 
     // Adds a line piece to the grid
     private void addLine(int number, int x, int y, int z) {
         grid[x][y][z] = "L" + number;
     }
 
-    // Provides an expandgrid for the create_possible_lines method
+
+    // Provides an expand grid for the create_possible_lines method
     private ExpandGrid addLine(Grid input_grid, int number, int x, int y, int z, int steps, int x2, int y2, int z2) {
         Grid copy_grid = new Grid(input_grid);
         copy_grid.addLine(number, x, y, z);
@@ -163,8 +167,9 @@ class Grid {
         return new ExpandGrid(copy_grid, number, x, y, z, (steps + 1), estimate);
     }
 
+
     // Creates all possible line pieces from given coordinates
-    public ArrayList create_possible_lines(ExpandGrid inputExpandGrid, int x2, int y2, int z2) {
+    public ArrayList<ExpandGrid> createPossibleLines(ExpandGrid inputExpandGrid, int x2, int y2, int z2) {
         Grid inputGrid = inputExpandGrid.grid;
         int number = inputExpandGrid.number;
         int x = inputExpandGrid.x;
@@ -195,8 +200,9 @@ class Grid {
         return list;
     }
 
+
     // Creates poles
-    public int[] create_poles(Net net, int layer, int lineNumber) {
+    public int[] createPoles(Net net, int layer, int lineNumber) {
         int lineLength1 = 0;
         int lineLength2 = 0;
 
@@ -218,6 +224,7 @@ class Grid {
             } else if (this.grid[gate1X][gate1Y - 1][0] == null) {
                 gate1Y = gate1Y - 1;
             } else {
+                // Error
                 return new int[]{-1, -1, -1, -1, -1};
             }
         }
@@ -234,6 +241,7 @@ class Grid {
             } else if (this.grid[gate2X][gate2Y - 1][0] == null) {
                 gate2Y = gate2Y - 1;
             } else {
+                // Error
                 return new int[]{-1, -1, -1, -1, -1};
             }
         }
@@ -251,7 +259,7 @@ class Grid {
         return new int[]{gate1X, gate1Y, gate2X, gate2Y, z-1, (lineLength1+lineLength2)};
     }
 
-    // Calculates a minimumscore given a netDatabase
+    // Calculates a minimum score given a net database
     public int totalMinimumScore(ArrayList<Net> nets) {
         int score = 0;
         for(int i = 0; i < nets.size(); i++) {

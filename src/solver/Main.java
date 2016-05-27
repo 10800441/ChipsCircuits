@@ -92,7 +92,7 @@ class Main {
         ArrayList<Net> nets = grid.netDatabase;
 
         int[] occ = countGateOccurrence(nets, gates);
-        // when an gate occurs > 5 in the netlist, there is no solution
+        // hen an gate occurs > 5 in the netlist, there is no solution
         for (int anOcc : occ) {
             if (anOcc > 5) {
                 System.out.println("There is no solution.");
@@ -132,7 +132,7 @@ class Main {
             int layerNumber = Z_SIZE;
             for (int lineNumber = 0; lineNumber < nets.size(); lineNumber++) {
                 Net net = nets.get(lineNumber);
-                int[] coordinates = currentGrid.grid.create_poles(net, layerNumber, lineNumber);
+                int[] coordinates = currentGrid.grid.createPoles(net, layerNumber, lineNumber);
                 // If line could not be placed, there is an error
                 if (coordinates[0] == -1) {
                     error = true;
@@ -185,7 +185,8 @@ class Main {
             GridScore solutionRemove = removeLine(solution, lineNum);
 
             Net net = solution != null ? solution.netDatabase.get(lineNum) : null;
-            solution = astar(lineNum, net.gate1.x, net.gate1.y, 0, net.gate2.x, net.gate2.y, 0, solutionRemove);
+            solution = astar(lineNum, net != null ? net.gate1.x : 0, net != null ? net.gate1.y :
+                    0, 0, net != null ? net.gate2.x : 0, net != null ? net.gate2.y : 0, 0, solutionRemove);
 
             if (solution == null) {
                 solutionRemove.grid.printGrid();
@@ -230,7 +231,7 @@ class Main {
         // Counts the amount of grids that pass through the queue, that are not (yet) a solution
         // While gridqueue is not empty, continue astar search
         while (!gridQueue.isEmpty()) {
-            ArrayList<ExpandGrid> allChildren = trialGrid.grid.create_possible_lines(gridQueue.remove(), x2, y2, z2);
+            ArrayList<ExpandGrid> allChildren = trialGrid.grid.createPossibleLines(gridQueue.remove(), x2, y2, z2);
             for (ExpandGrid childGrid : allChildren) {
 
                 // Checks if generated node already exist in memory
