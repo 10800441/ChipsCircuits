@@ -1,3 +1,13 @@
+/*
+    Chips 'n Circuits
+    Marijn van Ham, Martijn Heijstek, Michelle Appel
+    University of Amsterdam
+    27/05/2016
+
+    Class ExpandGrid.java
+    This class is used inside A* for the expansion of lines.
+ */
+
 package solver;
 
 class ExpandGrid implements Comparable{
@@ -20,7 +30,8 @@ class ExpandGrid implements Comparable{
         this.estimate = estimate;
     }
     public String toString(){
-        return "CurrentGrid: " + number + " x: " + z + " y: " + y + " z: " + z;
+        return "Expand line: " + number + " from points x: " + x + " y: " + y + " z: " + z +
+                ", with total estimate: " + (estimate+steps);
 
     }
 

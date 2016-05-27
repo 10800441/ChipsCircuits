@@ -1,10 +1,8 @@
 /*
-This code is an assignment of the course Heuristieken of the University of Amsterdam. It partly solves the case "Chips
-'n Circuits" and is made by Marijn van Ham, Martijn Heijstek & Michelle Appel in 2016. The main goal of this program is
-placing certain given connections between logical gates, as would be on a chip.
-
-<Bladiebladiebla insert lulverhaal hier>
-
+    This code is an assignment of the course Heuristieken of the University of Amsterdam.
+    It partly solves the case "Chips 'n Circuits" and is made by Marijn van Ham,
+    Martijn Heijstek & Michelle Appel in 2016. The main goal of this program is
+    placing certain given connections between logical gates, as would be on a chip.
  */
 
 
@@ -16,6 +14,9 @@ import java.util.PriorityQueue;
 
 class Main {
     // Set dimension sizes of the grid
+    // For Print1 the values are: X_SIZE = 14, Y_SIZE = 19, Z_SIZE = 7;
+    // For Print2 the values are: X_SIZE = 18, Y_SIZE = 19, Z_SIZE = 7;
+
     final static int X_SIZE = 14;
     final static int Y_SIZE = 19;
     final static int Z_SIZE = 7;
@@ -56,7 +57,7 @@ class Main {
         if (isSolutionPossible(grid)) {
             time1 = System.currentTimeMillis();
 
-            // Generate a solution 
+            // Generate a solution
             solution = generateSolution(grid);
             // While no solution is found, keep trying
             while (solution == null) {

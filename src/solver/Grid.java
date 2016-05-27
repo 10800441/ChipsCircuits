@@ -1,3 +1,12 @@
+/*
+    Chips 'n Circuits
+    Marijn van Ham, Martijn Heijstek, Michelle Appel
+    University of Amsterdam
+    27/05/2016
+
+    Class Grid.java
+    This class supports the class Main.java and has copy constructors for the Grid.
+ */
 package solver;
 
 import java.io.BufferedReader;
@@ -212,9 +221,9 @@ class Grid {
         int gate2X = net.gate2.x;
         int gate2Y = net.gate2.y;
 
-        int p1 = 1;
+        int pole1 = 1;
         if (this.grid[gate1X][gate1Y][1] != null) {
-            p1 = 0;
+            pole1 = 0;
             if (this.grid[gate1X + 1][gate1Y][0] == null) {
                 gate1X = gate1X + 1;
             } else if (this.grid[gate1X - 1][gate1Y][0] == null) {
@@ -229,9 +238,9 @@ class Grid {
             }
         }
 
-        int p2 = 1;
+        int pole2 = 1;
         if (this.grid[gate2X][gate2Y][1] != null) {
-            p2 = 0;
+            pole2 = 0;
             if (this.grid[gate2X + 1][gate2Y][0] == null) {
                 gate2X = gate2X + 1;
             } else if (this.grid[gate2X - 1][gate2Y][0] == null) {
@@ -247,13 +256,13 @@ class Grid {
         }
 
         int z;
-        for(z = p1; z < layer; z++) {
+        for(z = pole1; z < layer; z++) {
             this.addLine(lineNumber, gate1X, gate1Y, z);
-            lineLength1 = layer-p1;
+            lineLength1 = layer-pole1;
         }
-        for(z = p2; z < layer; z++) {
+        for(z = pole2; z < layer; z++) {
             this.addLine(lineNumber, gate2X, gate2Y, z);
-            lineLength2 = layer-p2;
+            lineLength2 = layer-pole2;
         }
 
         return new int[]{gate1X, gate1Y, gate2X, gate2Y, z-1, (lineLength1+lineLength2)};

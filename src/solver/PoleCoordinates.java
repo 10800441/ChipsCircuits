@@ -1,13 +1,22 @@
+/*
+    Chips 'n Circuits
+    Marijn van Ham, Martijn Heijstek, Michelle Appel
+    University of Amsterdam
+    27/05/2016
+
+    Class PoleCoordinates.java
+
+ */
 package solver;
 
 class PoleCoordinates {
     final int lineNum;
     final int x1;
     final int y1;
-     final int z1;
+    final int z1;
     final int x2;
     final int y2;
-     final int z2;
+    final int z2;
 
     public PoleCoordinates(int lineNum, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.lineNum = lineNum;
@@ -20,6 +29,6 @@ class PoleCoordinates {
     }
 
     public String toString(){
-        return "PC: " + x1 + x2;
+        return "This is a Pole Coordinate from line number " + lineNum;
     }
 }

@@ -1,3 +1,12 @@
+/*
+    Chips 'n Circuits
+    Marijn van Ham, Martijn Heijstek, Michelle Appel
+    University of Amsterdam
+    27/05/2016
+
+    Class GridScore.java
+    This class is used inside the hillclimber.
+ */
 package solver;
 
 import java.util.ArrayList;
@@ -13,7 +22,7 @@ class GridScore{
         this.netDatabase = netDatabase;
     }
     public String toString(){
-        return "Net: " + grid + " " + score;
+        return "Grid with a total score of: " + score;
 
     }
 

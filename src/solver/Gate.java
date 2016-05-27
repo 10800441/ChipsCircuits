@@ -1,3 +1,12 @@
+/*
+    Chips 'n Circuits
+    Marijn van Ham, Martijn Heijstek, Michelle Appel
+    University of Amsterdam
+    27/05/2016
+
+    Class Gate.java
+    This class contains the specifics from a gate.
+ */
 package solver;
 
 class Gate {
@@ -12,7 +21,7 @@ class Gate {
     }
 
     public String toString(){
-        return "" + (number - 1);
+        return "Gate number: " + (number - 1);
     }
 
 }
