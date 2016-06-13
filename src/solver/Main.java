@@ -18,7 +18,7 @@ class Main {
     // For Print2 the values are: X_SIZE = 18, Y_SIZE = 19, Z_SIZE = 7;
     final static int X_SIZE = 14;
     final static int Y_SIZE = 19;
-    final static int Z_SIZE = 7;
+    final static int Z_SIZE = 12;
 
     private static int minimumScore;
     private static long time1;
@@ -26,7 +26,7 @@ class Main {
 
     public static void main(String[] args) {
         // Initializing grid to work with
-        Grid grid = initializeGrid("src/print1Gates.txt", "src/print1Lines.txt");
+        Grid grid = initializeGrid("src/print1Gates.txt", "src/print3Lines.txt");
         minimumScore = grid.totalMinimumScore(grid.netDatabase);
 
         // Make an optimized solution
@@ -70,7 +70,7 @@ class Main {
             // One shoelace round applies the shoelace method to the whole netlist
             int shoelaceRound = 0;
             // Hillclimber: if there is no improvement after 10 times, return solution
-            while (shoelaceRound <= 10){
+            while (shoelaceRound <= 40){
                 // Applying the shoelace method
                 solution = optimizeSolution(solution);
                 shoelaceRound++;
